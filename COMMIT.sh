@@ -14,7 +14,7 @@ git commit -am "Automatic Commit"
 git push origin
 
 
-git config unset user.name 
-git config unset user.email
-git config --global unset user.name 
-git config --global unset user.email
+git config user.name unset
+git config user.email unset
+git config --global user.name unset
+git config --global user.email unset
