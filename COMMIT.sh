@@ -1,3 +1,5 @@
+#!/bin/sh
+
 @ECHO off
 git config user.name "Iranaphor"
 git config user.email "Primordia@live.com"
