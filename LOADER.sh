@@ -5,6 +5,7 @@ sudo apt-get purge "*gazebo*"
 sudo apt-get install ros-kinetic-uol-cmp9767m-base
 sudo apt-get install ros-kinetic-image-view
 sudo apt-get install ros-kinetic-rqt-graph
+sudo apt-get install ros-kinetic-rviz
 
 #source /opt/ros/kinetic/setup.bash
 #roslaunch uol_cmp9767m_base thorvald-sim.launch

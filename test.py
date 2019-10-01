@@ -9,7 +9,7 @@
 
 #ROSPY IMPORTS
 import rospy
-from std_msgs.msg import String
+from std_msgs.msg import String, Int8
 from sensor_msgs.msg import Image, LaserScan, JointState
 from nav_msgs.msg import Odometry, OccupancyGrid
 from geometry_msgs.msg import Twist, Quaternion, Pose, Point
@@ -40,6 +40,7 @@ from time import sleep
 
 class SUBSCRIBER_DATA:
 	IMG_RAW = Image()
+	IMG_RAW_CSV = Image()
 	#insert subscriber data here
 
 
@@ -52,15 +53,44 @@ class SUBSCRIBER:
 		print("LISTENERS.__init()__")
 		self.bridge = CvBridge()
 		#insert subscribers here
-		self.subscriberA = rospy.Subscriber("/thorvald_001/kinect2_sensor/sd/image_ir_rect", Image, self.subscriberA)
+		self.subscriberA = rospy.Subscriber("/thorvald_001/kinect2_camera/hd/image_color_rect", Image, self.callbackA)
+		self.subscriberB = rospy.Subscriber("/15591313/image_breakdown", Int8, self.callbackB)
 
 
 		
-	def subscriberA(self, data):
-		print("subscriberA()")
+	def callbackA(self, data):
+		#print("callbackA(Image Filter)")
 		SUBSCRIBER_DATA.IMG_RAW = self.bridge.imgmsg_to_cv2(data, "bgr8")
-		cv2.imshow('CAM_VIEW', SUBSCRIBER_DATA.IMG_RAW)
-		cv2.waitKey(1)
+		SUBSCRIBER_DATA.IMG_RAW_HSV = self.bridge.imgmsg_to_cv2(data, "passthrough")
+		
+
+	
+	def callbackB(self, data):
+		print("callbackB(PlotData)")
+		np.savetxt("data.txt", SUBSCRIBER_DATA.IMG_RAW[:,:,1])
+		#plt.figure(1559131301)
+
+
+		
+		#plt.subplot(411)
+		#plt.imshow(SUBSCRIBER_DATA.IMG_RAW[:,:,1])
+		#print(np.histogram(SUBSCRIBER_DATA.IMG_RAW[:,:,1]))
+		
+		#plt.subplot(413)
+		#plt.hist(SUBSCRIBER_DATA.IMG_RAW[:,:,1])
+		#for i in range(0,3):
+			#Display RGB graphs
+				#plt.subplot(423+(2*i))
+				#plt.hist(SUBSCRIBER_DATA.IMG_RAW[:,:,i]) 
+				#plt.xlim(0,125)
+
+			#Display HSV graphs
+				#plt.subplot(424+(2*i))
+				#plt.hist(SUBSCRIBER_DATA.IMG_RAW_HSV[:,:,i]) 
+				#plt.xlim(0,1)
+		#print(h)
+		#plt.show()
+
 
 		
 ##########################################################################################################
@@ -115,8 +145,8 @@ class CONTROL:
 	def main(self):
 		
 		while True:
-			cv2.imshow('CAM_VIEW', SUBSCRIBER_DATA.IMG_RAW)
-			cv2.waitKey(1)
+			#cv2.imshow('CAM_VIEW', SUBSCRIBER_DATA.IMG_RAW)
+			#cv2.waitKey(1)
 	        	if cv2.waitKey(0) == 27:
 				break
 
@@ -141,7 +171,7 @@ rate = rospy.Rate(10)
 
 
 #TODO: https://python-3-patterns-idioms-test.readthedocs.io/en/latest/Singleton.html
-lis = LISTENERS() #This is the only time LISTENERS is called as all functions within are automatic.
+sub = SUBSCRIBER() #This is the only time LISTENERS is called as all functions within are automatic.
 pub = PUBLISHERS() #This is used to send messages to publishers.
 controlSystem = CONTROL() #This initiates the system.
 
