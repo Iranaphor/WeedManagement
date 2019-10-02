@@ -52,6 +52,9 @@ class SUBSCRIBER:
 	def __init__(self):
 		print("LISTENERS.__init()__")
 		self.bridge = CvBridge()
+		#plt.show()
+		self.singletonCondition_B = True
+		self.axisLabelCounter = 0
 		#insert subscribers here
 		self.subscriberA = rospy.Subscriber("/thorvald_001/kinect2_camera/hd/image_color_rect", Image, self.callbackA)
 		self.subscriberB = rospy.Subscriber("/15591313/image_breakdown", Int8, self.callbackB)
@@ -61,35 +64,47 @@ class SUBSCRIBER:
 	def callbackA(self, data):
 		#print("callbackA(Image Filter)")
 		SUBSCRIBER_DATA.IMG_RAW = self.bridge.imgmsg_to_cv2(data, "bgr8")
-		SUBSCRIBER_DATA.IMG_RAW_HSV = self.bridge.imgmsg_to_cv2(data, "passthrough")
+		SUBSCRIBER_DATA.IMG_RAW_HSV = cv2.cvtColor(SUBSCRIBER_DATA.IMG_RAW, cv2.COLOR_BGR2HSV)
 		
 
 	
 	def callbackB(self, data):
 		print("callbackB(PlotData)")
-		np.savetxt("data.txt", SUBSCRIBER_DATA.IMG_RAW[:,:,1])
-		#plt.figure(1559131301)
+		plt.figure(1559131301)
+		plt.show(block=False)
 
 
+		plt.subplot(411)
+		plt.imshow(SUBSCRIBER_DATA.IMG_RAW)
 		
-		#plt.subplot(411)
-		#plt.imshow(SUBSCRIBER_DATA.IMG_RAW[:,:,1])
-		#print(np.histogram(SUBSCRIBER_DATA.IMG_RAW[:,:,1]))
-		
-		#plt.subplot(413)
-		#plt.hist(SUBSCRIBER_DATA.IMG_RAW[:,:,1])
-		#for i in range(0,3):
+		#https://stackoverflow.com/questions/5328556/histogram-matplotlib
+		for i in range(0,3):
 			#Display RGB graphs
-				#plt.subplot(423+(2*i))
-				#plt.hist(SUBSCRIBER_DATA.IMG_RAW[:,:,i]) 
-				#plt.xlim(0,125)
+			self.plotHist(SUBSCRIBER_DATA.IMG_RAW[:,:,i], 423+(2*i))
 
 			#Display HSV graphs
-				#plt.subplot(424+(2*i))
-				#plt.hist(SUBSCRIBER_DATA.IMG_RAW_HSV[:,:,i]) 
-				#plt.xlim(0,1)
-		#print(h)
-		#plt.show()
+			self.plotHist(SUBSCRIBER_DATA.IMG_RAW_HSV[:,:,i], 424+(2*i))
+
+		plt.draw()
+		print("78")
+		if (self.singletonCondition_B):
+			self.singletonCondition_B = False
+			plt.show()
+
+
+
+	def plotHist(self, data, subplot=111):
+		plt.subplot(subplot)
+		x = data
+		bins, edges = np.histogram(x, 50, normed=1)
+		left,right = edges[:-1],edges[1:]
+		X = np.array([left,right]).T.flatten()
+		Y = np.array([bins,bins]).T.flatten()
+		plt.plot(X,Y, label=str(self.axisLabelCounter))
+		self.axisLabelCounter=self.axisLabelCounter+1;
+		
+		#TODO: Fix the error appearing after overlaying the plots
+
 
 
 		
