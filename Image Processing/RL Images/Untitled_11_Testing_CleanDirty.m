@@ -1,6 +1,8 @@
 %% Setup
+figure
 Messy = imread('messy.png');
 Clean = imread('clean.png');
+Fake = imread('fake.png');
 I = Messy;
 I2 = rgb2hsv(I);
 
@@ -13,8 +15,8 @@ weed_binary = imbinarize(I2(:,:,1),.4)-dirtMask;
 weed_erode = imerode(weed_binary, ones(11));
 weed_filtered = imreconstruct(weed_erode, weed_binary);
 weed_filled = imfill(weed_filtered, 'holes');
-dirtMask = imdilate(weed_filled, strel('octagon',12));
-weed = I.*uint8(dirtMask);
+weedMask = imdilate(weed_filled, strel('octagon',12));
+weed = I.*uint8(weedMask);
 
 %% Carrot
 carrotMask = ~(dirtMask+weedMask);
