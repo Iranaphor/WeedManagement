@@ -7,6 +7,7 @@ sudo apt-get install ros-kinetic-image-view
 sudo apt-get install ros-kinetic-rqt-graph
 sudo apt-get install ros-kinetic-rviz
 
+sudo python -m easy_install --upgrade pyOpenSSL
 sudo python -m pip install --upgrade setuptools
 sudo python -m pip install --upgrade pip
 sudo python -m pip install matplotlib

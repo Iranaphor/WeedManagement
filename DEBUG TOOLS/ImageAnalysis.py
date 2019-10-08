@@ -41,90 +41,72 @@ from time import sleep
 
 ##########################################################################################################
 
-class SUBSCRIBER_DATA:
-	IMG_RAW = Image()
-	IMG_RAW_CSV = Image()
-	#insert subscriber data here
-
-
-
-
-class SUBSCRIBER:
+class ImageAnalysis:
 
 	#Subscriber Initiation
 	def __init__(self):
 		print("LISTENERS.__init()__")
 		self.bridge = CvBridge()
-		#insert subscribers here
 		self.subscriberA = rospy.Subscriber("/thorvald_001/kinect2_camera/hd/image_color_rect", Image, self.callbackA)
+		sc = SCRIPT_CONTROL()
+
 		
 		
 #######################################################################################
 	def callbackA(self, data):
-		SUBSCRIBER_DATA.IMG_RAW = self.bridge.imgmsg_to_cv2(data, "bgr8")
-		SUBSCRIBER_DATA.IMG_RAW_HSV = cv2.cvtColor(SUBSCRIBER_DATA.IMG_RAW, cv2.COLOR_BGR2HSV)
+		print("callbackA(Image Analysis)")
+		IMG_RAW = self.bridge.imgmsg_to_cv2(data, "bgr8")
+		IMG_RAW_HSV = cv2.cvtColor(IMG_RAW, cv2.COLOR_BGR2HSV)
+		
+		self.pltB = plt.figure(15590)
+		
+		plt.subplot(411)
+		plt.imshow(IMG_RAW)
+		
+		for i in range(0,3):
+			#Display RGB graphs
+			self.plotHist(IMG_RAW[:,:,i], 423+(2*i))
+
+			#Display HSV graphs
+			self.plotHist(IMG_RAW_HSV[:,:,i], 424+(2*i))
+
+
+		plt.show();
+		SCRIPT_CONTROLER.ender_loop = False
 		
 
 
+	def plotHist(self, data, subplot=111):
+		#https://stackoverflow.com/questions/5328556/histogram-matplotlib
+		plt.subplot(subplot)
+		x = data
+		bins, edges = np.histogram(x, 50, normed=1)
+		left,right = edges[:-1],edges[1:]
+		X = np.array([left,right]).T.flatten()
+		Y = np.array([bins,bins]).T.flatten()
+		plt.plot(X,Y, label=str("..."))
+
+
+
 ##########################################################################################################
-##########################################################################################################
-class PUBLISHERS_LOG:
-	GOAL_SEND = rospy.Time(1, 0)
 
+class SCRIPT_CONTROLER:
+	ender_loop = True
 
-class PUBLISHERS:
-
-	#Publisher Creation
-	def __init__(self):
-		print("PUBLISHERS.__init()__")
-
-
-
-	
-##########################################################################################################
-##########################################################################################################
-class CONTROL_DATA:
-	debug = False
-
-
-class CONTROL:
-	def __init__(self):
-		#Delay to allow motors to rev up
-		sleep(2)
-		
-		
-		#http://momori.animenfo.com:8080/listen.pls
-
-		
-		while True:
+class SCRIPT_CONTROL:
+	def __init__(self):	
+		while SCRIPT_CONTROLER.ender_loop:
 			if cv2.waitKey(0) == 27:
 				break
 
-		
-
 ##########################################################################################################
 
-#?If errors occur try the following...
-#sudo python -m easy_install --upgrade pyOpenSSL
-#sudo python -m pip install matplotlib
-
-
-#Reset Thorvald_001
-#os.system("rosservice call /gazebo/reset_simulation '{}'")
-#os.system("rosrun image_view image_view image:=/thorvald_001/kinect2_camera/hd/image_color_rect &")
-#os.system("rosservice call /thorvald_001/spray")
-
-rospy.init_node('XXXX_CONTROL_SYSTEM_XXXX', anonymous=False)
+rospy.init_node('XXXX_IMAGE_ANALYSIS_XXXX', anonymous=False)
 rate = rospy.Rate(10)
 
 
 
-#TODO: https://python-3-patterns-idioms-test.readthedocs.io/en/latest/Singleton.html
-sub = SUBSCRIBER() #This is the only time SUBSCRIBER is called as all functions within are automatic.
-pub = PUBLISHERS() #Used to send messages to publishers.
-controlSystem = CONTROL() #This initiates the system.
-
-
+sub = ImageAnalysis()
 cv2.destroyAllWindows()
 plt.close(1)
 sys.exit()
