@@ -75,13 +75,11 @@ class SUBSCRIBER:
 #######################################################################################
 	def callbackB(self, data):
 		print("callbackB(PlotData)")
-		plt.figure(1559131301)
-		plt.show(block=False)
+		plt.figure(1)
 
 		plt.subplot(411)
 		plt.imshow(SUBSCRIBER_DATA.IMG_RAW)
 		
-		#https://stackoverflow.com/questions/5328556/histogram-matplotlib
 		for i in range(0,3):
 			#Display RGB graphs
 			self.plotHist(SUBSCRIBER_DATA.IMG_RAW[:,:,i], 423+(2*i))
@@ -89,14 +87,19 @@ class SUBSCRIBER:
 			#Display HSV graphs
 			self.plotHist(SUBSCRIBER_DATA.IMG_RAW_HSV[:,:,i], 424+(2*i))
 
-		plt.draw()
-		if (self.singletonCondition_B):
-			self.singletonCondition_B = False
+		if plt.fignum_exists(1):
+			print("1 draw()")
+			plt.draw()
+			print("1 draw(end)")
+		else:
+			print("1 show()")
 			plt.show()
+			print("1 show(end)")
 
 
 
 	def plotHist(self, data, subplot=111):
+		#https://stackoverflow.com/questions/5328556/histogram-matplotlib
 		plt.subplot(subplot)
 		x = data
 		bins, edges = np.histogram(x, 50, normed=1)
@@ -108,25 +111,20 @@ class SUBSCRIBER:
 
 #######################################################################################
 	def callbackC(self, data):
-		print("callbackC(AnalyseData)")
-		plt.figure(1559131302)
-		plt.show(block=False)
-		
+		print("callbackC(AnalyseData) + " + str(plt.fignum_exists(1)))
+
+
+		if not(plt.fignum_exists(1)):
+			plt.close()
+
+		self.pltC = plt.figure()
+
 		
 		GREENMAX = 84;
 		HUEMAX = 0.14;
 		st3 = np.ones((5,5),np.uint8)
 		st6 = np.ones((11,11),np.uint8)
 		st11 = np.ones((23,23),np.uint8)
-	
-	
-##	I=imread(d(i).name);
-#	I2 = rgb2hsv(I);
-#	I3 = I2(:,:,1);
-##	I3(I3 > 0.5) = 0;
-##	I3(I3 < 0.14) = 0;
-#	I3(I3 ~= 0) = 1;
-##	imero = imerode(I3,st);
 	
 		I = SUBSCRIBER_DATA.IMG_RAW ##
 		I2 = SUBSCRIBER_DATA.IMG_RAW_HSV
@@ -137,20 +135,6 @@ class SUBSCRIBER:
 		plt.subplot(331), plt.imshow(I), plt.title("I")
 		plt.subplot(332), plt.imshow(I3), plt.title("I3")
 		plt.subplot(333), plt.imshow(imero), plt.title("imero")
-		
-		
-#	G = I(:,:,2);
-#	G2 = G;
-#	G2(G2<=GREENMAX)=0;
-##	G2(G2~=0)=1;
-#	bwm = bwmorph(G2, 'skel', 2);
-#	med = medfilt2(bwm);
-#	sk = bwmorph(med, 'skel', 2);
-##	fin = medfilt2(sk, [6,6]);
-##	rec2 = imreconstruct(fin, logical(imero));
-##	lab = bwlabel(fin);
-
-#########https://uk.mathworks.com/matlabcentral/answers/164349-how-to-calculate-the-curvature-of-a-boundaries-in-binary-images
 		
 		G = I[:,:,1]
 		_,G2 = cv2.threshold(G,GREENMAX,255,cv2.THRESH_BINARY)##
@@ -164,14 +148,7 @@ class SUBSCRIBER:
 		plt.subplot(335), plt.imshow(ero), plt.title("ero")
 		plt.subplot(339), plt.imshow(rec), plt.title("rec")
 		
-		
-		
-		
-		#Singleton Instance to prevent issues with multilple windows
-		plt.draw()
-		if (self.singletonCondition_C):
-			self.singletonCondition_C = False
-			plt.show()
+		self.pltC.show()
 			
 
 	def bwskel(self, img, recursions=-1):
@@ -314,7 +291,7 @@ class CONTROL:
 
 #Reset Thorvald_001
 #os.system("rosservice call /gazebo/reset_simulation '{}'")
-#os.system("rosrun image_view image_view image:=/thorvald_001/kinect2_sensor/sd/image_ir_rect &")
+#os.system("rosrun image_view image_view image:=/thorvald_001/kinect2_camera/hd/image_color_rect &")
 #os.system("rosservice call /thorvald_001/spray")
 
 rospy.init_node('XXXX_CONTROL_SYSTEM_XXXX', anonymous=False)

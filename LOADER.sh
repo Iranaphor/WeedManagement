@@ -7,6 +7,10 @@ sudo apt-get install ros-kinetic-image-view
 sudo apt-get install ros-kinetic-rqt-graph
 sudo apt-get install ros-kinetic-rviz
 
+sudo python -m pip install --upgrade setuptools
+sudo python -m pip install --upgrade pip
+sudo python -m pip install matplotlib
+
 #source /opt/ros/kinetic/setup.bash
 #roslaunch uol_cmp9767m_base thorvald-sim.launch
 
