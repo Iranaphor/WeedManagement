@@ -6,71 +6,97 @@ clear all;
 cast_ray = @ray;
 
 % Define Boundary
-x = -100:100;
-y = x.*0;
+xB = -100:100;
+yB = xB.*0;
 
-% Plot Boundary
-plot(x, y+max(x), 'b', x, y+min(x), 'b', y+max(x), x, 'b', y+min(x), x, 'b');
+%% Plot Boundary
+subplot(4,1,1:3); cla
+plot(xB, yB+max(xB), 'b', xB, yB+min(xB), 'b', yB+max(xB), xB, 'b', yB+min(xB), xB, 'b');
 grid on;
 axis image;
 hold on;
 
-% Plot Robot
-scatter(0,0,200,'filled','r','s')
+%% Plot Robot
+startX = (rand()-0.5)*200;
+startY = (rand()-0.5)*200;
 
+scatter(startX, startY, 200, 'filled', 'r', 's')
+  
+
+%% Perform Laser Scan
 r = rand()*360;
-for i = 0+r:5:180+r
-    cast_ray(i);
+total_degrees = 180;
+increments = 2;
+
+
+FOV = floor(total_degrees/2);
+endpoints = zeros(2,total_degrees/increments);
+j=1;
+for i = -FOV:increments:FOV
+    [rx, ry] = cast_ray(i+r, startX, startY, -100, 100, -100, 100);
+    endpoints(:,j) = [rx, ry];
+    j=j+1;
 end
-[rx, ry] = cast_ray(90+r);
+
+
+%% Plot Focal Point
+[rx, ry] = cast_ray(r, startX, startY, -100, 100, -100, 100);
 scatter(rx, ry,100,'filled','r');
-title(r-(360*floor(r/360)))
+title("Robot @ [" + startX + ", " + startY + "] w/ direction: " + (r-(360*floor(r/360))) + "°")
 
 
+scatter(startX, startY, 200, 'filled', 'r', 's')
+%% Convert laserscan coordinates to distances
+distances = sqrt((endpoints(1,:)-startX).^2 + (endpoints(2,:)-startY).^2);
+subplot(4,1,4), cla, plot(distances);
 
 
-
-
-function [retX, retY] = ray(direction) %degrees clockwise from +x
+%% Cast ray and find where hit
+function [retX, retY] = ray(direction, oX, oY, xMin, xMax, yMin, yMax) %degrees clockwise from +x
+    %% Define Corners
+    o = oY-yMin; a = xMax-oX;    ang1 = atand(o/a)+(0);
+    a = oY-yMin; o = oX-xMin;    ang2 = atand(o/a)+(90);
+    o = yMax-oY; a = oX-xMin;    ang3 = atand(o/a)+(180);
+    a = yMax-oY; o = xMax-oX;    ang4 = atand(o/a)+(270);
     
-    %Calculate Ray
-    %direction = rand()*360; %degrees clockwise from +x
+    %% Calculate Ray
     direction = direction-(360*floor(direction/360));
     if (direction == 90 || direction == 270)
         direction = direction + 0.00000001;
     end
 
-    % Define Ray
+    %% Define Ray
     m = -sind(direction)/cosd(direction);
-
-    if (direction<45 || direction>=315) %East Wall
-%         disp("East -> " + direction + " -> " + m);
-        x = 0:100;
-        plot(x,x*m,'c');
-        scatter(100,100*m,50,'filled','g')
-        retX = 100; retY = 100*m;
+    c = oY-(m*oX);
+    
+    
+    %% Determine Which wall is hit
+    if (direction<ang1 || direction>=ang4) %East Wall
+        disp("East -> " + direction + " -> " + m);
+        x = oX:xMax;
+        plot(x,(x*m)+c,'c');
+        retX = xMax; retY = (xMax*m)+c;
         
-    elseif (direction<135) %South Wall
-%         disp("South -> " + direction + " -> " + m);
-        y = -100:0;
-        plot(y/m,y,'c');
-        scatter(-100/m,-100,50,'filled','g')
-        retX = -100/m; retY = -100;
+    elseif (direction<ang2) %South Wall
+        disp("South -> " + direction + " -> " + m);
+        y = yMin:oY;
+        plot((y-c)/m,y,'c');
+        retX = (yMin-c)/m; retY = yMin;
         
-    elseif (direction<225) %West Wall
-%         disp("West -> " + direction + " -> " + m);
-        x = -100:0;
-        plot(x,x*m,'c');
-        scatter(-100,-100*m,50,'filled','g')
-        retX = -100; retY = -100*m;
+    elseif (direction<ang3) %West Wall
+        disp("West -> " + direction + " -> " + m);
+        x = xMin:oX;
+        plot(x,(x*m)+c,'c');
+        retX = xMin; retY = (xMin*m)+c;
         
-    elseif (direction<315) %North Wall
-%         disp("North -> " + direction + " -> " + m);
-        y = 0:100;
-        plot(y/m,y,'c');
-        scatter(100/m,100,50,'filled','g')
-        retX = 100/m; retY = 100;
+    elseif (direction<ang4) %North Wall
+        disp("North -> " + direction + " -> " + m);
+        y = oY:yMax;
+        plot((y-c)/m,y,'c');
+        retX = (yMax-c)/m; retY = yMax;
     end
+    
+    scatter(retX, retY,20,'filled','g')
 
 end
 
