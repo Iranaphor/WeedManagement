@@ -17,6 +17,7 @@ from sensor_msgs.msg import Image, LaserScan, JointState
 from nav_msgs.msg import Odometry, OccupancyGrid
 from geometry_msgs.msg import Twist, Quaternion, Pose, Point
 from tf.transformations import quaternion_from_euler, euler_from_quaternion
+from src.image_processing.weed_detection import basil as _basil #, imreconstruct
 
 #OPENCV IMPORTS
 import cv2
@@ -64,7 +65,7 @@ class SUBSCRIBER:
 		SUBSCRIBER_DATA.IMG_RAW = self.bridge.imgmsg_to_cv2(data, "bgr8")
 		SUBSCRIBER_DATA.IMG_RAW_HSV = cv2.cvtColor(SUBSCRIBER_DATA.IMG_RAW, cv2.COLOR_BGR2HSV)
 		
-
+		SUBSCRIBER_DATA.BASIL = _basil(SUBSCRIBER_DATA.IMG_RAW);
 
 ##########################################################################################################
 ##########################################################################################################
