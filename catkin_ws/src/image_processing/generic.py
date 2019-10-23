@@ -43,4 +43,7 @@ def imfill(im_in, n): #swap this out to only accept binary images
 
 	#return not(reconstructed)
 	return RET
-	
+
+def imbinarize(im_in, threshold, maxvalue=1):
+	_,bina = cv2.threshold(im_in,threshold,maxvalue,cv2.THRESH_BINARY)
+	return bina 
