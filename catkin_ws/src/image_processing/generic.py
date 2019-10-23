@@ -21,7 +21,7 @@ def imreconstruct(img, mask, st): #img is dilated
 			img_new = img
 			
 
-def imfill(im_in, n):
+def imfill(im_in, n): #swap this out to only accept binary images
 	h, w = im_in.shape[:2]
 	
 	#invert im_in (padd by 2)

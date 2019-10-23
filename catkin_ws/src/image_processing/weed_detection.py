@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 from .generic import imreconstruct, imfill
 
 def basil(IMG_RAW):
-	#IMG_RAW = cv2.imread('image4.png')
 	IMG_RAW_HSV = cv2.cvtColor(IMG_RAW, cv2.COLOR_BGR2HSV)
 
 	im = IMG_RAW.copy()
@@ -16,7 +15,6 @@ def basil(IMG_RAW):
 	im_plant_2 = im_h.copy();
 	x=np.round(im_plant_2*100);
 	im_plant_2[x!=24] = 0;
-	print(np.max(np.max(im_plant_2)));
 	im_plant_2[x==24] = 1;
 
 	im_plant_3 = cv2.morphologyEx(im_plant_2, cv2.MORPH_OPEN, np.ones((10,10),np.uint8))
@@ -42,6 +40,24 @@ def basil(IMG_RAW):
 	cv2.imwrite('out/im_weedMask.png', weedMask*255)
 	cv2.imwrite('out/im_dirtMask1.png', dirtMask*255)
 
+
+def cabbage(IMG_RAW):
+	IMG_RAW_HSV = cv2.cvtColor(IMG_RAW, cv2.COLOR_BGR2HSV)
+
+	im = IMG_RAW.copy()
+	im_hsv = IMG_RAW_HSV.copy()
+	im_h = im_hsv[:,:,0].astype(float)/180
+
+	
+	# Dirt Mask
+	im_dirt_1 = [1-im_h].*im_h;
+	im_dirt_2 = cv2.threshold(im_h,.145,1,cv2.THRESH_BINARY)
+	dirtMask = imfill(im_dirt_2, .5);
+
+	# Plant Mask
+	strel_disk_35 = cv2.imread("strel_disk_35.png");
+	plantMask = imopen(~dirtMask, strel_disk_35);
+	im_plant_3 = cv2.morphologyEx(im_plant_2, cv2.MORPH_OPEN, np.ones((10,10),np.uint8))
 
 
 	
