@@ -13,7 +13,7 @@ sudo python -m pip install --upgrade pip
 sudo python -m pip install matplotlib
 
 #source /opt/ros/kinetic/setup.bash
-#roslaunch uol_cmp9767m_base thorvald-sim.launch
+#roslaunch uol_cmp9767m_base thorvald-sim.launch obstacles:=true second_robot:=false
 
 #rosrun rviz rviz
 

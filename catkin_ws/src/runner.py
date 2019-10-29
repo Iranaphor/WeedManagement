@@ -48,7 +48,8 @@ class SUBSCRIBER_DATA:
 	IMG_RAW = Image()
 	IMG_RAW_CSV = Image()
 	#insert subscriber data here
-
+	
+	LASER_PLOT = False
 
 
 
@@ -58,26 +59,59 @@ class SUBSCRIBER:
 	def __init__(self):
 		print("LISTENERS.__init()__")
 		self.bridge = CvBridge()
-		#insert subscribers here
-		self.subscriberA = rospy.Subscriber("/thorvald_001/kinect2_camera/hd/image_color_rect", Image, self.callbackA)
-		
 		self.strel_disk_35 = cv2.cvtColor(cv2.imread("image_processing/strel_disk_35.png").astype(np.uint8), cv2.COLOR_BGR2GRAY)
 		self.strel_disk_25 = cv2.cvtColor(cv2.imread("image_processing/strel_disk_25.png").astype(np.uint8), cv2.COLOR_BGR2GRAY)
-	
-		
-#######################################################################################
-	def callbackA(self, data):
-		SUBSCRIBER_DATA.IMG_RAW = self.bridge.imgmsg_to_cv2(data, "bgr8")
-		SUBSCRIBER_DATA.IMG_RAW_HSV = cv2.cvtColor(SUBSCRIBER_DATA.IMG_RAW, cv2.COLOR_BGR2HSV)
-		
-		SUBSCRIBER_DATA.BASIL,_,_,_ = basil(cv2.resize(SUBSCRIBER_DATA.IMG_RAW, (960, 540)));
-		#SUBSCRIBER_DATA.CABBAGE,_,_,_ = cabbage(cv2.resize(SUBSCRIBER_DATA.IMG_RAW, (480, 270)), self.strel_disk_25, self.strel_disk_35);
 
-		cv2.imshow('Basil', SUBSCRIBER_DATA.BASIL)
-		#cv2.imshow('Cabbage', SUBSCRIBER_DATA.CABBAGE)
+		#insert subscribers here
+		#self.subscriberIP_a = rospy.Subscriber("/thorvald_001/kinect2_camera/hd/image_color_rect", Image, self.callbackIP_a) #Basil
+		#self.subscriberIP_b = rospy.Subscriber("/thorvald_001/kinect2_camera/hd/image_color_rect", Image, self.callbackIP_b) #Cabbage
+		#self.subscriberIP_c = rospy.Subscriber("/thorvald_001/kinect2_camera/hd/image_color_rect", Image, self.callbackIP_c) #Onion
+		self.subscriberSCAN = rospy.Subscriber("/thorvald_001/scan", LaserScan, self.callbackSCAN)
+		
+	
+	def callbackIP_a(self, data):
+		IMG_RAW = self.bridge.imgmsg_to_cv2(data, "bgr8")
+		BASIL,_,_,_ = basil(cv2.resize(SUBSCRIBER_DATA.IMG_RAW, (960, 540)));
+		cv2.imshow('Basil', BASIL)
 		cv2.waitKey(1)
 
-##########################################################################################################
+		markclusters()
+
+	def callbackIP_b(self, data):
+		IMG_RAW = self.bridge.imgmsg_to_cv2(data, "bgr8")
+		CABBAGE,_,_,_ = cabbage(cv2.resize(SUBSCRIBER_DATA.IMG_RAW, (480, 270)), self.strel_disk_25, self.strel_disk_35);
+		cv2.imshow('Cabbage', CABBAGE)
+		cv2.waitKey(1)
+
+
+	def callbackSCAN(self, data):
+		print("listenerE()")
+		a=np.array(data.ranges)
+		
+		if SUBSCRIBER_DATA.LASER_PLOT:
+			print("Update LaserScan Graph")
+
+			if self.y == 10:
+				self.y=0;
+				self.laser_scan.set_ydata(a)
+				self.fig.canvas.draw()
+				self.fig.canvas.flush_events()
+
+		else:
+			print("Setup LaserScan Plot")
+			SUBSCRIBER_DATA.LASER_PLOT = True
+			plt.ion()
+			self.fig = plt.figure()
+			self.ax = self.fig.add_subplot(111)
+			self.laser_scan, = self.ax.plot(np.linspace(0, a.shape[0], a.shape[0]), a)
+			plt.ylim(0, 30)
+			self.y = 0;
+
+		self.y= self.y+1;
+
+
+
+
 ##########################################################################################################
 class PUBLISHERS_LOG:
 	GOAL_SEND = rospy.Time(1, 0)
@@ -92,7 +126,6 @@ class PUBLISHERS:
 
 
 	
-##########################################################################################################
 ##########################################################################################################
 class CONTROL_DATA:
 	debug = False
