@@ -4,11 +4,10 @@ cd WORKSPACE/catkin_ws
 rm -rf build
 catkin_make
 
-source /opt/ros/kinetic/setup.bash &
+source /opt/ros/kinetic/setup.bash
 
-roslaunch uol_cmp9767m_base thorvald-sim.launch obstacles:=true second_robot:=false map_server:=true
-
-roslaunch uol_cmp9767m_tutorial move_base.launch
+#roslaunch uol_cmp9767m_base thorvald-sim.launch obstacles:=true second_robot:=false map_server:=true
+#roslaunch uol_cmp9767m_tutorial move_base.launch
 
 #rosrun rviz rviz
 
