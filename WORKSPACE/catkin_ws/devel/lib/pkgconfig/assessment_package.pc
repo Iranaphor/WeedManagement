@@ -1,0 +1,8 @@
+prefix=/home/computing/Thorvald/WORKSPACE/catkin_ws/devel
+
+Name: assessment_package
+Description: Description of assessment_package
+Version: 0.0.1
+Cflags: 
+Libs: -L/home/computing/Thorvald/WORKSPACE/catkin_ws/devel/lib 
+Requires: 

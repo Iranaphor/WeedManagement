@@ -127,6 +127,7 @@ if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
   include("/home/computing/Thorvald/WORKSPACE/catkin_ws/build/gtest/cmake_install.cmake")
   include("/home/computing/Thorvald/WORKSPACE/catkin_ws/build/uol_cmp9767m_base/cmake_install.cmake")
+  include("/home/computing/Thorvald/WORKSPACE/catkin_ws/build/assessment_package/cmake_install.cmake")
   include("/home/computing/Thorvald/WORKSPACE/catkin_ws/build/uol_cmp9767m_tutorial/cmake_install.cmake")
 
 endif()

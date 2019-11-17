@@ -21,4 +21,4 @@ sudo python -m pip install --upgrade pip
 sudo python -m pip install matplotlib
 
 sudo chmod +777 LOADER.sh
-sudo ./LOADER.sh
+./LOADER.sh
