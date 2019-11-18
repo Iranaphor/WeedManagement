@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+
+<launch>
+	<!-- map server -->
+	<arg name="map_file" default="$(find uol_cmp9767m_base)maps/cropped.yaml"/>
+	<node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)"/>
+
+
+	<!-- move_base setup -->
+	<include file="$(find assessment_package)/launch/move_base_robot.launch">
+		<arg name="robot_name" value="thorvald_001" />
+	</include>
+
+	<include file="$(find assessment_package)/launch/move_base_robot.launch">
+		<arg name="robot_name" value="thorvald_002" />
+	</include>
+
+</launch>
