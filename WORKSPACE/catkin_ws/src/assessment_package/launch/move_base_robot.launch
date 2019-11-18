@@ -16,7 +16,7 @@
 		<!-- move_base -->
 		<node name="move_base" pkg="move_base" type="move_base" output="screen">
 			<remap from="odom" to="odometry/base_raw" />
-			<remap from="cmd_vel" to="move_base/nav_vel" />
+			<remap from="cmd_vel" to="nav_vel" />
 	
 			<rosparam file="$(find uol_cmp9767m_tutorial)/config/costmap_$(arg robot_name)_params.yaml" command="load" ns="global_costmap"/>
 			<rosparam file="$(find uol_cmp9767m_tutorial)/config/costmap_$(arg robot_name)_params.yaml" command="load" ns="local_costmap"/>
