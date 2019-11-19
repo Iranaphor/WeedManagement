@@ -23,7 +23,7 @@ generate_messages(
 catkin_package()
 include_directories( ${catkin_INCLUDE_DIRS} )
 install(PROGRAMS
-   scripts/set_topo_nav_goal.py
+   scripts/python_file.py
    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 foreach (dir launch models config maps)

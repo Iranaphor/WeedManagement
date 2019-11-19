@@ -11,7 +11,7 @@ class CONTROL:
 				return;
 
 if __name__ == '__main__':
-	rospy.init_node('python_file_1', anonymous=True)
+	rospy.init_node('python_file_1')
 	cs = CONTROL()
 	rospy.spin()
 

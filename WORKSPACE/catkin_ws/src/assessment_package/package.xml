@@ -3,11 +3,11 @@
   <name>assessment_package</name>
   <version>0.0.1</version>
   <description>The a package</description>
-  <maintainer email="a@a.net">mhanheide</maintainer>
+  <maintainer email="a@a.net">a</maintainer>
 
   <license>TODO</license>
 
-  <author email="a@a.net">mhanheide</author>
+  <author email="a@a.net">a</author>
 
 
   <buildtool_depend>catkin</buildtool_depend>
