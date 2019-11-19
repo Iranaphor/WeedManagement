@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+
+<launch>
+	<arg name="plant_name"/>
+	<arg name="robot_name"/>
+	<group ns="$(arg plant_name)">
+		<node name="$(arg plant_name)_detector" pkg="assessment_package" type="weed_detector.py" output="screen" args="-$(arg plant_name) -$(arg robot_name)"/>
+	<group/>
+</launch>
+
