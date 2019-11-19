@@ -8,4 +8,6 @@
 
 # modified environment variables
 export GAZEBO_MODEL_PATH="/home/computing/Thorvald/WORKSPACE/catkin_ws/src/models:/home/computing/Thorvald/WORKSPACE/catkin_ws/install/share/uol_cmp9767m_base/models:$GAZEBO_MODEL_PATH"
+export LD_LIBRARY_PATH="/home/computing/Thorvald/WORKSPACE/catkin_ws/devel/lib:/opt/ros/kinetic/lib:/opt/ros/kinetic/lib/x86_64-linux-gnu"
+export PKG_CONFIG_PATH="/home/computing/Thorvald/WORKSPACE/catkin_ws/devel/lib/pkgconfig:/opt/ros/kinetic/lib/pkgconfig:/opt/ros/kinetic/lib/x86_64-linux-gnu/pkgconfig"
 export PWD="/home/computing/Thorvald/WORKSPACE/catkin_ws/build"

@@ -1,6 +1,6 @@
 set(_CATKIN_CURRENT_PACKAGE "assessment_package")
 set(assessment_package_VERSION "0.0.1")
-set(assessment_package_MAINTAINER "mhanheide <a@a.net>")
+set(assessment_package_MAINTAINER "a <a@a.net>")
 set(assessment_package_PACKAGE_FORMAT "2")
 set(assessment_package_BUILD_DEPENDS "geometry_msgs" "nav_msgs" "sensor_msgs" "rospy" "rostest" "std_msgs" "cv_bridge" "topological_navigation" "uol_cmp9767m_base" "message_generation")
 set(assessment_package_BUILD_EXPORT_DEPENDS "geometry_msgs" "nav_msgs" "sensor_msgs" "rospy" "rostest" "std_msgs" "cv_bridge" "topological_navigation" "uol_cmp9767m_base")

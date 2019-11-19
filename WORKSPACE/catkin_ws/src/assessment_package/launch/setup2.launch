@@ -2,7 +2,7 @@
 
 <launch>
 	
-	<node name="python_file_1" pkg="assessment_package" type="python_file" output="screen"/>
+	<node name="python_file_1" pkg="assessment_package" type="python_file.py" output="screen"/>
 
 </launch>
 

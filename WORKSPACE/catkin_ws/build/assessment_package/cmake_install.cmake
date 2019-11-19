@@ -68,7 +68,7 @@ if(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspeci
 endif()
 
 if(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/assessment_package" TYPE PROGRAM FILES "/home/computing/Thorvald/WORKSPACE/catkin_ws/src/assessment_package/scripts/set_topo_nav_goal.py")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/assessment_package" TYPE PROGRAM FILES "/home/computing/Thorvald/WORKSPACE/catkin_ws/src/assessment_package/scripts/python_file.py")
 endif()
 
 if(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")

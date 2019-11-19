@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+
+<launch>
+	
+	<node name="basil_detector" pkg="assessment_package" type="basil_detector.py" output="screen"/>
+
+</launch>
+

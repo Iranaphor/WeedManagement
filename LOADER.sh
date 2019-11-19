@@ -5,7 +5,6 @@ rm -rf build
 catkin_make
 
 #source /opt/ros/kinetic/setup.bash
-#source ~/Thorvald/WORKSPACE/catkin_ws/devel/setup.bash
 source ./WORKSPACE/catkin_ws/devel/setup.bash
 
 #roslaunch uol_cmp9767m_base thorvald-sim.launch obstacles:=false second_robot:=true map_server:=true
