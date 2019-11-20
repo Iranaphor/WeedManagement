@@ -41,7 +41,7 @@ class detector:
 
 		
 		#calculate list of weed locations in local space
-		#calculate list of weed locations in global space 
+		#calculate list of weed locations in global space
 		
 		#apply weeds image to map
 		# 

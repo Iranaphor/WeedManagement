@@ -4,7 +4,7 @@
 	<arg name="robot_name"/>
 	<arg name="basil"/>
 	<arg name="cabbage"/>
-
+	
 	<!-- Launch basil detector -->
 	<group ns="$(arg robot_name)" if="$(arg basil)">
 		<node name="basil_detector" pkg="assessment_package" type="weed_detector.py" output="screen" args="basil $(arg robot_name)"/>
