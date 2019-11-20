@@ -4,11 +4,8 @@ Panels:
     Name: Displays
     Property Tree Widget:
       Expanded:
-        - /Global Options1
         - /Local CostMap1/Position1
         - /Local CostMap1/Orientation1
-        - /Cabbage Overlay1
-        - /Cabbage Weed1
       Splitter Ratio: 0.5
     Tree Height: 846
   - Class: rviz/Selection
@@ -470,7 +467,7 @@ Visualization Manager:
       Radius: 0.0299999993
       Shaft Diameter: 0.100000001
       Shaft Length: 0.100000001
-      Topic: /thorvald_001/move_base/NavfnROS/plan
+      Topic: /thorvald_001/move_base/TrajectoryPlannerROS/global_plan
       Unreliable: false
       Value: true
     - Alpha: 1

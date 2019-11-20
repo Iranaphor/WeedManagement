@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+
 import rospy
 from time import sleep
 import os.path
