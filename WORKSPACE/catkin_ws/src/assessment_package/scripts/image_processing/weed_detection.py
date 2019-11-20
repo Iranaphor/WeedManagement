@@ -27,7 +27,7 @@ def basil(IMG_RAW):
 	dirtMask = (dirtMask1==0)
 
 	# Weed Mask
-	weedMask = (im_h>im_s);
+	weedMask = np.array(im_h>im_s, dtype='uint8');
 
 	# Overlay
 	Overlay = im.copy()

@@ -16,7 +16,7 @@
 
 
 	<!-- plant_detection -->
-	<include file="$(find assessment_package)/launch/plant_detection.launch">
+	<include file="$(find assessment_package)/launch/plant_detectors.launch">
 		<arg name="robot_name" value="thorvald_001" />
 		<arg name="basil" value="true" />
 		<arg name="cabbage" value="true" />
