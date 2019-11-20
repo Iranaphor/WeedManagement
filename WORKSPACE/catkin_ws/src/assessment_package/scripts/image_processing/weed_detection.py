@@ -19,15 +19,15 @@ def basil(IMG_RAW):
 
 	im_plant_3 = cv2.morphologyEx(im_plant_2, cv2.MORPH_OPEN, np.ones((10,10),np.uint8))
 	im_plant_4 = imreconstruct(im_plant_3,im_plant_2, np.ones((10,10),np.uint8))
-	plantMask = imfill(im_plant_4*255, 128)
+	plantMask = np.array(imfill(im_plant_4*255, 128), dtype='uint8')
 
 
 	# Dirt Mask
 	dirtMask1 = imbinarize(im_h, 0.2)
-	dirtMask = (dirtMask1==0)
+	dirtMask = np.array(dirtMask1==0, dtype='uint8')
 
 	# Weed Mask
-	weedMask = np.array(im_h>im_s, dtype='uint8');
+	weedMask = np.array(im_h>im_s, dtype='uint8')
 
 	# Overlay
 	Overlay = im.copy()
@@ -53,18 +53,18 @@ def cabbage(IMG_RAW, strel_disk_25, strel_disk_35):
 	#im_dirt_1 = [1-im_h]*im_h; #reference using im_dirt_1[0,:,:]
 	im_dirt_2 = imbinarize(im_h, .145)
 	dirtMask1 = imfill(im_dirt_2, .5);
-	dirtMask = (dirtMask1==0)
+	dirtMask = np.array(dirtMask1==0, dtype='uint8')
 
 	# Plant Mask
 	#strel_disk_35 = cv2.cvtColor(cv2.imread("image_processing/strel_disk_35.png").astype(np.uint8), cv2.COLOR_BGR2GRAY)
-	plantMask = cv2.morphologyEx(dirtMask1.astype(np.uint8), cv2.MORPH_OPEN, strel_disk_35)
+	plantMask = np.array(cv2.morphologyEx(dirtMask1.astype(np.uint8), cv2.MORPH_OPEN, strel_disk_35), dtype='uint8')
 
 
 	# Weed Mask
 	#strel_disk_25 = cv2.cvtColor(cv2.imread("image_processing/strel_disk_25.png").astype(np.uint8), cv2.COLOR_BGR2GRAY)
 	im_weed_1 = cv2.dilate(plantMask, strel_disk_25, iterations=1) + dirtMask
 	weedMask1 = imbinarize(im_weed_1,0)
-   	weedMask = (weedMask1==0);
+   	weedMask = np.array(weedMask1==0, dtype='uint8')
 
 	# Overlay
 	Overlay = IMG_RAW.copy()

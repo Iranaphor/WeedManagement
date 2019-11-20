@@ -12,7 +12,7 @@ if __name__ == '__main__':
 	rospy.spin()
 
 
-
+#os.system("rosservice call /thorvald_001/spray")
 
 
 

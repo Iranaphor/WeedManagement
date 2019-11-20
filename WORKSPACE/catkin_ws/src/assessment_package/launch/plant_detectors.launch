@@ -15,4 +15,3 @@
 		<node name="cabbage_detector" pkg="assessment_package" type="weed_detector.py" output="screen" args="cabbage $(arg robot_name)"/>
 	</group>
 </launch>
-
