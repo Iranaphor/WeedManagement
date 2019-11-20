@@ -8,7 +8,8 @@ catkin_make
 source ./WORKSPACE/catkin_ws/devel/setup.bash
 
 #roslaunch uol_cmp9767m_base thorvald-sim.launch obstacles:=false second_robot:=true map_server:=true
-#roslaunch uol_cmp9767m_tutorial move_base.launch
+#NO MORE #roslaunch uol_cmp9767m_tutorial move_base.launch
+#roslaunch assessment_package setup.launch
 
 #rosrun rviz rviz
 

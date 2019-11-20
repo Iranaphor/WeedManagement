@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+
+<launch>
+	<arg name="robot_name"/>
+
+	<!-- Launch basil detector -->
+	<group ns="$(arg robot_name)">
+		<node name="sprayer" pkg="assessment_package" type="sprayer.py" output="screen" args="$(arg robot_name)"/>
+	</group>
+
+</launch>
+
