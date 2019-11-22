@@ -16,7 +16,8 @@ class navigation_manager:
 		print("navigation_manager.__init()__")
 
 		path_details = yaml.safe_load(open(yaml_path))
-		self.path = self.generate_list(path_details)
+		self.path_raw = self.generate_list(path_details)
+		self.path = self.path_raw
 		print(self.path)
 		self.goal_send = rospy.Time.now()
 		self.move_base_goal = rospy.Publisher("/thorvald_001/move_base/goal", MoveBaseActionGoal, queue_size = 2)
@@ -66,7 +67,9 @@ class navigation_manager:
 					if (len(self.path) > 0):
 						self.move(self.path.pop(0)) #move the pop till only when the target is met
 
-
+		else:
+			print("ELSE: ")
+			self.path = self.path_raw
 
 
 if __name__ == '__main__':
