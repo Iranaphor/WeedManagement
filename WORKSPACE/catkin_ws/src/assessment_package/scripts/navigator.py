@@ -8,6 +8,7 @@ from actionlib_msgs.msg import GoalStatusArray
 from sys import argv
 import os
 import yaml
+from time import sleep
 
 class navigation_manager:
 
@@ -37,25 +38,31 @@ class navigation_manager:
 	#Send message to mobve_base/goal
 	def move(self, position):
 		print("\nMoving to: " + str(position[0]) + ", " + str(position[1]))
-		
+		sleep(0.1)
 		goal = MoveBaseActionGoal()
+		goal.goal.target_pose.header.seq = 5
 		goal.goal.target_pose.header.frame_id = 'map'
 		goal.goal.target_pose.pose.position.x = position[0]
 		goal.goal.target_pose.pose.position.y = position[1]
 		goal.goal.target_pose.pose.orientation.w = 0.1
-		goal.goal.target_pose.header.stamp = rospy.Time.now()
+		a = rospy.Time.now()
+		print(a)
+		goal.goal.target_pose.header.stamp = a
+		
+		print("------------------------------")
+		print("Moving?")
+		print(goal)
+		print("------------------------------")
 		self.move_base_goal.publish(goal)
 		
 	def movebase_goal_tracker(self, data):
-		data.goal.target_pose.header.stamp = self.goal_send
-		print("tracker:")
-		print("tracker " + self.goal_send)
+		self.goal_send = data.goal.target_pose.header.stamp
+		print("tracker: " + str(self.goal_send))
 	
 	def movebase_status(self, data):
 		#http://docs.ros.org/melodic/api/actionlib_msgs/html/msg/GoalStatus.html
 		if(len(data.status_list)>0):
-			print(self.goal_send)
-#			print(data.status_list[-1].goal_id.stamp)
+			print(data.status_list[-1].goal_id.stamp)
 #			if data.status_list[-1].status == 3 & self.goal_send == data.status_list[-1].goal_id.stamp:
 #				self.move(self.path.pop(0))
 
