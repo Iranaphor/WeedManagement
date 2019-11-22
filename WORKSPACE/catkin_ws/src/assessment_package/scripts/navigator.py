@@ -22,6 +22,7 @@ class navigation_manager:
 		self.move_base_goal = rospy.Publisher("/thorvald_001/move_base/goal", MoveBaseActionGoal, queue_size = 2)
 		self.move_base_status = rospy.Subscriber("/thorvald_001/move_base/goal", MoveBaseActionGoal, self.movebase_goal_tracker)
 		self.move_base_status = rospy.Subscriber("/thorvald_001/move_base/status", GoalStatusArray, self.movebase_status)
+		sleep(1) #sleep to enable the movebase publisher to respond
 		self.move(self.path.pop(0))
 	
 	def generate_list(self, path_details):
@@ -29,31 +30,28 @@ class navigation_manager:
 		for row in enumerate(path_details['row_location_x']):
 			if (row[0]%2==0):
 				path.append((path_details['row_start_y'],row[1]))
-				path.append((path_details['row_end_y'],row[1]))
+				path.append((path_details['row_end_y'],row[1])) #TODO add angle definition based on the direction
 			else:
 				path.append((path_details['row_end_y'],row[1]))
-				path.append((path_details['row_start_y'],row[1]))	
+				path.append((path_details['row_start_y'],row[1])) #TODO add angle definition based on the direction
 		return path
 	
 	#Send message to mobve_base/goal
 	def move(self, position):
-		print("\nMoving to: " + str(position[0]) + ", " + str(position[1]))
-		sleep(0.1)
+		print("------------------------------")
+		print("Moving to: " + str(position[0]) + ", " + str(position[1]))
 		goal = MoveBaseActionGoal()
 		goal.goal.target_pose.header.seq = 5
 		goal.goal.target_pose.header.frame_id = 'map'
 		goal.goal.target_pose.pose.position.x = position[0]
 		goal.goal.target_pose.pose.position.y = position[1]
-		goal.goal.target_pose.pose.orientation.w = 0.1
+		goal.goal.target_pose.pose.orientation.w = 0.1 #TODO add angle definition based on the direction
 		a = rospy.Time.now()
 		print(a)
 		goal.goal.target_pose.header.stamp = a
-		
-		print("------------------------------")
-		print("Moving?")
-		print(goal)
-		print("------------------------------")
+		goal.goal_id.stamp = a
 		self.move_base_goal.publish(goal)
+		#print(self.path)
 		
 	def movebase_goal_tracker(self, data):
 		self.goal_send = data.goal.target_pose.header.stamp
@@ -61,10 +59,12 @@ class navigation_manager:
 	
 	def movebase_status(self, data):
 		#http://docs.ros.org/melodic/api/actionlib_msgs/html/msg/GoalStatus.html
-		if(len(data.status_list)>0):
-			print(data.status_list[-1].goal_id.stamp)
-#			if data.status_list[-1].status == 3 & self.goal_send == data.status_list[-1].goal_id.stamp:
-#				self.move(self.path.pop(0))
+		if(len(self.path)>0):
+			#print(data.status_list[-1].goal_id.stamp)
+			if data.status_list[-1].status == 3:
+				if self.goal_send == data.status_list[-1].goal_id.stamp:
+					if (len(self.path) > 0):
+						self.move(self.path.pop(0)) #move the pop till only when the target is met
 
 
 
