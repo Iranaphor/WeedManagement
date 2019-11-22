@@ -31,11 +31,11 @@
 	</include>-->
 	
 
-	<!-- sprayer_system -->
+	<!-- sprayer_system 
 	<include file="$(find assessment_package)/launch/weed_tracker.launch">
 		<arg name="sprayer_robot_name" value="thorvald_002" />
 		<arg name="robot_name" value="thorvald_001" />
-	</include>
+	</include>-->
 	
 	
 	

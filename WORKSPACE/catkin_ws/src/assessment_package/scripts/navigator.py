@@ -3,6 +3,7 @@ import rospy
 from sensor_msgs.msg import Image
 from assessment_package.msg import weed_location
 from move_base_msgs.msg import MoveBaseActionGoal, MoveBaseActionFeedback
+from actionlib_msgs.msg import GoalStatusArray
 
 from sys import argv
 import os
@@ -13,42 +14,53 @@ class navigation_manager:
 	def __init__(self, yaml_path):
 		print("navigation_manager.__init()__")
 
-		#with open(yaml_path) as file:
-			#documents = yaml.safe_load(file)
 		path_details = yaml.safe_load(open(yaml_path))
-		path = self.generate_list(path_details)
-		print(path)
-		self.weed_found = rospy.Publisher('/weed_found', weed_location)
-		self.move_base_goal = rospy.Publisher("/move_base/goal", MoveBaseActionGoal, queue_size = 2)
-		self.subscriberF1 = rospy.Subscriber("/move_base/status", GoalStatusArray, self.movebase_status)
+		self.path = self.generate_list(path_details)
+		print(self.path)
+		self.goal_send = rospy.Time.now()
+		self.move_base_goal = rospy.Publisher("/thorvald_001/move_base/goal", MoveBaseActionGoal, queue_size = 2)
+		self.move_base_status = rospy.Subscriber("/thorvald_001/move_base/goal", MoveBaseActionGoal, self.movebase_goal_tracker)
+		self.move_base_status = rospy.Subscriber("/thorvald_001/move_base/status", GoalStatusArray, self.movebase_status)
+		self.move(self.path.pop(0))
 	
 	def generate_list(self, path_details):
 		path = []
 		for row in enumerate(path_details['row_location_x']):
 			if (row[0]%2==0):
-				path.append((row[1],path_details['row_start_y']))
-				path.append((row[1],path_details['row_end_y']))
+				path.append((path_details['row_start_y'],row[1]))
+				path.append((path_details['row_end_y'],row[1]))
 			else:
-				path.append((row[1],path_details['row_end_y']))
-				path.append((row[1],path_details['row_start_y']))	
+				path.append((path_details['row_end_y'],row[1]))
+				path.append((path_details['row_start_y'],row[1]))	
 		return path
+	
+	#Send message to mobve_base/goal
+	def move(self, position):
+		print("\nMoving to: " + str(position[0]) + ", " + str(position[1]))
 		
-	def move_in_path(self):
-		#movebase(self.path[0])
-		#self.goal_time = movebase.goal_time
+		goal = MoveBaseActionGoal()
+		goal.goal.target_pose.header.frame_id = 'map'
+		goal.goal.target_pose.pose.position.x = position[0]
+		goal.goal.target_pose.pose.position.y = position[1]
+		goal.goal.target_pose.pose.orientation.w = 0.1
+		goal.goal.target_pose.header.stamp = rospy.Time.now()
+		self.move_base_goal.publish(goal)
 		
+	def movebase_goal_tracker(self, data):
+		data.goal.target_pose.header.stamp = self.goal_send
+		print("tracker:")
+		print("tracker " + self.goal_send)
+	
 	def movebase_status(self, data):
 		#http://docs.ros.org/melodic/api/actionlib_msgs/html/msg/GoalStatus.html
-		#if(len(data.status_list)>0):
-			#self.GOAL_STATUS = data.status_list[-1].text
-			#self.GOAL_TIME = data.status_list[-1].goal_id.stamp
-			
-			#if data.status == 'completed' && self.goal_time!=data.goal_time
-				#self.path[0]=[]
-				#self.move_in_path()
+		if(len(data.status_list)>0):
+			print(self.goal_send)
+#			print(data.status_list[-1].goal_id.stamp)
+#			if data.status_list[-1].status == 3 & self.goal_send == data.status_list[-1].goal_id.stamp:
+#				self.move(self.path.pop(0))
 
-		
-			
+
+
 
 if __name__ == '__main__':
 	print("---------------------------------------")

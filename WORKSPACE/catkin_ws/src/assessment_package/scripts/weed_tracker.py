@@ -12,7 +12,7 @@ class CONTROL:
 		self.WEEDS=[]
 		self.spawner = rospy.ServiceProxy("weed_killer/spray", Empty)
 		rospy.Subscriber("/spray", String, self.callback)
-		rospy.Subscriber(path_details['weed_notification'], weed_location, self.new_weed_detected)
+		rospy.Subscriber("/weed_found", weed_location, self.new_weed_detected)
 
 	def callback(self, data):
 		print("Spraying Weed: " + str(data))
