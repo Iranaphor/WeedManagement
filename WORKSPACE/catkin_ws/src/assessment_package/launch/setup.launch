@@ -23,12 +23,12 @@
 	</include>
 
 
-	<!-- weed_detection -->
+	<!-- weed_detection 
 	<include file="$(find assessment_package)/launch/weed_detector.launch">
 		<arg name="robot_name" value="thorvald_001" />
 		<arg name="basil" value="true" />
 		<arg name="cabbage" value="true" />
-	</include>
+	</include>-->
 	
 
 	<!-- sprayer_system -->

@@ -56,6 +56,7 @@ class detector:
 		# how?
 
 
+
 if __name__ == '__main__':
 	path = os.path.dirname(argv[0])
 	plant_type = argv[1]

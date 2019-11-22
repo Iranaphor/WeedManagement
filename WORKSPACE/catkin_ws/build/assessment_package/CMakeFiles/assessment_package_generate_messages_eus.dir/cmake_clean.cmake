@@ -1,5 +1,6 @@
 file(REMOVE_RECURSE
   "CMakeFiles/assessment_package_generate_messages_eus"
+  "/home/computing/Thorvald/WORKSPACE/catkin_ws/devel/share/roseus/ros/assessment_package/msg/weed_location.l"
   "/home/computing/Thorvald/WORKSPACE/catkin_ws/devel/share/roseus/ros/assessment_package/manifest.l"
 )
 

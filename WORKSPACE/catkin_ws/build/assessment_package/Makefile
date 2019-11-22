@@ -66,6 +66,18 @@ list_install_components/fast: list_install_components
 
 .PHONY : list_install_components/fast
 
+# Special rule for the target install
+install: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
+	/usr/bin/cmake -P cmake_install.cmake
+.PHONY : install
+
+# Special rule for the target install
+install/fast: preinstall/fast
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
+	/usr/bin/cmake -P cmake_install.cmake
+.PHONY : install/fast
+
 # Special rule for the target test
 test:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running tests..."
@@ -87,18 +99,6 @@ install/local: preinstall
 install/local/fast: install/local
 
 .PHONY : install/local/fast
-
-# Special rule for the target install
-install: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
-	/usr/bin/cmake -P cmake_install.cmake
-.PHONY : install
-
-# Special rule for the target install
-install/fast: preinstall/fast
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
-	/usr/bin/cmake -P cmake_install.cmake
-.PHONY : install/fast
 
 # Special rule for the target edit_cache
 edit_cache:
@@ -181,19 +181,19 @@ assessment_package_generate_messages_cpp/fast:
 .PHONY : assessment_package_generate_messages_cpp/fast
 
 # Convenience name for target.
-assessment_package/CMakeFiles/assessment_package_generate_messages_eus.dir/rule:
-	cd /home/computing/Thorvald/WORKSPACE/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 assessment_package/CMakeFiles/assessment_package_generate_messages_eus.dir/rule
-.PHONY : assessment_package/CMakeFiles/assessment_package_generate_messages_eus.dir/rule
+assessment_package/CMakeFiles/_assessment_package_generate_messages_check_deps_weed_location.dir/rule:
+	cd /home/computing/Thorvald/WORKSPACE/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 assessment_package/CMakeFiles/_assessment_package_generate_messages_check_deps_weed_location.dir/rule
+.PHONY : assessment_package/CMakeFiles/_assessment_package_generate_messages_check_deps_weed_location.dir/rule
 
 # Convenience name for target.
-assessment_package_generate_messages_eus: assessment_package/CMakeFiles/assessment_package_generate_messages_eus.dir/rule
+_assessment_package_generate_messages_check_deps_weed_location: assessment_package/CMakeFiles/_assessment_package_generate_messages_check_deps_weed_location.dir/rule
 
-.PHONY : assessment_package_generate_messages_eus
+.PHONY : _assessment_package_generate_messages_check_deps_weed_location
 
 # fast build rule for target.
-assessment_package_generate_messages_eus/fast:
-	cd /home/computing/Thorvald/WORKSPACE/catkin_ws/build && $(MAKE) -f assessment_package/CMakeFiles/assessment_package_generate_messages_eus.dir/build.make assessment_package/CMakeFiles/assessment_package_generate_messages_eus.dir/build
-.PHONY : assessment_package_generate_messages_eus/fast
+_assessment_package_generate_messages_check_deps_weed_location/fast:
+	cd /home/computing/Thorvald/WORKSPACE/catkin_ws/build && $(MAKE) -f assessment_package/CMakeFiles/_assessment_package_generate_messages_check_deps_weed_location.dir/build.make assessment_package/CMakeFiles/_assessment_package_generate_messages_check_deps_weed_location.dir/build
+.PHONY : _assessment_package_generate_messages_check_deps_weed_location/fast
 
 # Convenience name for target.
 assessment_package/CMakeFiles/topological_navigation_generate_messages_py.dir/rule:
@@ -209,6 +209,36 @@ topological_navigation_generate_messages_py: assessment_package/CMakeFiles/topol
 topological_navigation_generate_messages_py/fast:
 	cd /home/computing/Thorvald/WORKSPACE/catkin_ws/build && $(MAKE) -f assessment_package/CMakeFiles/topological_navigation_generate_messages_py.dir/build.make assessment_package/CMakeFiles/topological_navigation_generate_messages_py.dir/build
 .PHONY : topological_navigation_generate_messages_py/fast
+
+# Convenience name for target.
+assessment_package/CMakeFiles/assessment_package_generate_messages.dir/rule:
+	cd /home/computing/Thorvald/WORKSPACE/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 assessment_package/CMakeFiles/assessment_package_generate_messages.dir/rule
+.PHONY : assessment_package/CMakeFiles/assessment_package_generate_messages.dir/rule
+
+# Convenience name for target.
+assessment_package_generate_messages: assessment_package/CMakeFiles/assessment_package_generate_messages.dir/rule
+
+.PHONY : assessment_package_generate_messages
+
+# fast build rule for target.
+assessment_package_generate_messages/fast:
+	cd /home/computing/Thorvald/WORKSPACE/catkin_ws/build && $(MAKE) -f assessment_package/CMakeFiles/assessment_package_generate_messages.dir/build.make assessment_package/CMakeFiles/assessment_package_generate_messages.dir/build
+.PHONY : assessment_package_generate_messages/fast
+
+# Convenience name for target.
+assessment_package/CMakeFiles/assessment_package_generate_messages_eus.dir/rule:
+	cd /home/computing/Thorvald/WORKSPACE/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 assessment_package/CMakeFiles/assessment_package_generate_messages_eus.dir/rule
+.PHONY : assessment_package/CMakeFiles/assessment_package_generate_messages_eus.dir/rule
+
+# Convenience name for target.
+assessment_package_generate_messages_eus: assessment_package/CMakeFiles/assessment_package_generate_messages_eus.dir/rule
+
+.PHONY : assessment_package_generate_messages_eus
+
+# fast build rule for target.
+assessment_package_generate_messages_eus/fast:
+	cd /home/computing/Thorvald/WORKSPACE/catkin_ws/build && $(MAKE) -f assessment_package/CMakeFiles/assessment_package_generate_messages_eus.dir/build.make assessment_package/CMakeFiles/assessment_package_generate_messages_eus.dir/build
+.PHONY : assessment_package_generate_messages_eus/fast
 
 # Convenience name for target.
 assessment_package/CMakeFiles/assessment_package_gencpp.dir/rule:
@@ -346,21 +376,6 @@ assessment_package_genlisp/fast:
 .PHONY : assessment_package_genlisp/fast
 
 # Convenience name for target.
-assessment_package/CMakeFiles/assessment_package_generate_messages.dir/rule:
-	cd /home/computing/Thorvald/WORKSPACE/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 assessment_package/CMakeFiles/assessment_package_generate_messages.dir/rule
-.PHONY : assessment_package/CMakeFiles/assessment_package_generate_messages.dir/rule
-
-# Convenience name for target.
-assessment_package_generate_messages: assessment_package/CMakeFiles/assessment_package_generate_messages.dir/rule
-
-.PHONY : assessment_package_generate_messages
-
-# fast build rule for target.
-assessment_package_generate_messages/fast:
-	cd /home/computing/Thorvald/WORKSPACE/catkin_ws/build && $(MAKE) -f assessment_package/CMakeFiles/assessment_package_generate_messages.dir/build.make assessment_package/CMakeFiles/assessment_package_generate_messages.dir/build
-.PHONY : assessment_package_generate_messages/fast
-
-# Convenience name for target.
 assessment_package/CMakeFiles/assessment_package_generate_messages_nodejs.dir/rule:
 	cd /home/computing/Thorvald/WORKSPACE/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 assessment_package/CMakeFiles/assessment_package_generate_messages_nodejs.dir/rule
 .PHONY : assessment_package/CMakeFiles/assessment_package_generate_messages_nodejs.dir/rule
@@ -413,9 +428,12 @@ help:
 	@echo "... depend"
 	@echo "... list_install_components"
 	@echo "... assessment_package_generate_messages_cpp"
+	@echo "... _assessment_package_generate_messages_check_deps_weed_location"
+	@echo "... topological_navigation_generate_messages_py"
+	@echo "... install"
+	@echo "... assessment_package_generate_messages"
 	@echo "... assessment_package_generate_messages_eus"
 	@echo "... test"
-	@echo "... topological_navigation_generate_messages_py"
 	@echo "... assessment_package_gencpp"
 	@echo "... topological_navigation_generate_messages_cpp"
 	@echo "... assessment_package_generate_messages_lisp"
@@ -426,8 +444,6 @@ help:
 	@echo "... topological_navigation_generate_messages_nodejs"
 	@echo "... assessment_package_gennodejs"
 	@echo "... assessment_package_genlisp"
-	@echo "... assessment_package_generate_messages"
-	@echo "... install"
 	@echo "... assessment_package_generate_messages_nodejs"
 	@echo "... edit_cache"
 	@echo "... assessment_package_generate_messages_py"

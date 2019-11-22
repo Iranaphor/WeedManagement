@@ -2,9 +2,14 @@
 
 <launch>
 	<arg name="robot_name"/>
-	<arg name="basil"/>
-	<arg name="cabbage"/>
+	<arg name="basil" default="false"/>
+	<arg name="cabbage" default="false"/>
 	
+	<group ns="$(arg robot_name)">
+		<arg name="map_file" default="$(find assessment_package)config/navigation_targets.yaml"/>
+		<node name="navigator" pkg="assessment_package" type="navigator.py" output="screen" args="$(arg robot_name) $(arg map_file)"/>
+	</group>
+
 	<!-- Launch basil detector -->
 	<group ns="$(arg robot_name)" if="$(arg basil)">
 		<node name="basil_detector" pkg="assessment_package" type="weed_detector.py" output="screen" args="basil $(arg robot_name)"/>

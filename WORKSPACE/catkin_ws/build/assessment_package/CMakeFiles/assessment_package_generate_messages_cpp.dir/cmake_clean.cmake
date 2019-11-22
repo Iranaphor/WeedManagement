@@ -1,3 +1,7 @@
+file(REMOVE_RECURSE
+  "CMakeFiles/assessment_package_generate_messages_cpp"
+  "/home/computing/Thorvald/WORKSPACE/catkin_ws/devel/include/assessment_package/weed_location.h"
+)
 
 # Per-language clean rules from dependency scanning.
 foreach(lang )
