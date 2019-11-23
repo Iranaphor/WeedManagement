@@ -6,8 +6,8 @@
 	<arg name="cabbage" default="false"/>
 	
 	<group ns="$(arg robot_name)">
-		<arg name="map_file" default="$(find assessment_package)config/navigation_targets.yaml"/>
-		<node name="navigator" pkg="assessment_package" type="navigator.py" output="screen" args="$(arg robot_name) $(arg map_file)"/>
+		<arg name="navigation_targets" default="$(find assessment_package)config/navigation_targets.yaml"/>
+		<node name="navigator" pkg="assessment_package" type="navigator.py" output="screen" args="$(arg robot_name) $(arg navigation_targets)"/>
 	</group>
 
 	<!-- Launch basil detector -->
