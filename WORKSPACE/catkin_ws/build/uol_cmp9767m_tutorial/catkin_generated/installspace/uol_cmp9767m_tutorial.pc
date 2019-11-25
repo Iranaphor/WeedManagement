@@ -1,0 +1,8 @@
+prefix=/home/computing/Thorvald/WORKSPACE/catkin_ws/install
+
+Name: uol_cmp9767m_tutorial
+Description: Description of uol_cmp9767m_tutorial
+Version: 0.5.1
+Cflags: -I/home/computing/Thorvald/WORKSPACE/catkin_ws/install/include
+Libs: -L/home/computing/Thorvald/WORKSPACE/catkin_ws/install/lib 
+Requires: 
