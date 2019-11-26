@@ -31,24 +31,40 @@ class detector:
 		
 		#Detect the weeds 
 		if self.plant_type == "basil":
-			OVERLAY,WEED,_,_ = basil(cv2.resize(IMG_RAW, (480, 270)))
+			#OVERLAY,WEED,_,_ = basil(cv2.resize(IMG_RAW, (480, 270)))#, "weed_only")
+			WEED = basil(cv2.resize(IMG_RAW, (160, 90)), "weed_only") #TODO smaller images plants disappear under erode
 		elif self.plant_type == "cabbage":
 			OVERLAY,WEED,_,_ = cabbage(cv2.resize(IMG_RAW, (960, 540)), self.strel_disk_25, self.strel_disk_35)
 		
 		#Publish Images
 		a = self.bridge.cv2_to_imgmsg(WEED*255, "mono8")
 		self.pub_weed.publish(a)
+
+		#b = self.bridge.cv2_to_imgmsg(OVERLAY,"bgr8")
+		#self.pub_overlay.publish(b)
 		
-		b = self.bridge.cv2_to_imgmsg(OVERLAY,"bgr8")
-		self.pub_overlay.publish(b)
 		
 		
+
+
+
+
 		#calculate list of weed locations in local space
 		#for each thing in WEED
-		#
+		
+		contours,_ = cv2.findContours(WEED,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
+		#print("hi")
+		#for c in contours:
+		#    if 200<cv2.contourArea(c)<5000:
+		#	cv2.drawContours(OVERLAY,[c],0,(0,255,0),2)
+		#	cv2.drawContours(WEED,[c],0,255,-1)
+		#b = self.bridge.cv2_to_imgmsg(WEED,"bgr8")
+		#self.pub_overlay.publish(b)
+
+		
+
 
 		#calculate list of weed locations in global space
-		
 		#apply weeds image to map
 		# 
 

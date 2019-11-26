@@ -1,17 +1,17 @@
 <?xml version="1.0"?>
 
 <launch>
-	<!-- robots setup
+	<!-- robots setup -->
 	<include file="$(find uol_cmp9767m_base)/launch/thorvald-sim.launch">
 		<arg name="obstacles" value="false" />
 		<arg name="second_robot" value="true" />
 		<arg name="map_server" value="true" />
-	</include> -->
+	</include>
 
 
 	<!-- map server 
 	<arg name="map_file" default="$(find uol_cmp9767m_base)maps/cropped.yaml"/>
-	<node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)"/>-->
+	<node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)"/> -->
 
 
 	<!-- move_base -->
@@ -28,7 +28,7 @@
 		<arg name="robot_name" value="thorvald_001" />
 		<arg name="basil" value="true" />
 		<arg name="cabbage" value="true" />
-	</include>-->
+	</include> -->
 	
 
 	<!-- sprayer_system 

@@ -46,11 +46,11 @@ class navigation_manager:
 		for row in enumerate(path_details['row_location_x']):
 			#Switch to enable snaking through rows
 			if (row[0]%2==0):
-				path.append((path_details['row_start_y'],row[1],180))
-				path.append((path_details['row_end_y'],row[1],0)) #TODO add angle definition based on the direction
-			else:
+				path.append((path_details['row_start_y'],row[1],0))
 				path.append((path_details['row_end_y'],row[1],0))
-				path.append((path_details['row_start_y'],row[1],180)) #TODO add angle definition based on the direction
+			else:
+				path.append((path_details['row_end_y'],row[1],180))
+				path.append((path_details['row_start_y'],row[1],180))
 		return path
 	
 

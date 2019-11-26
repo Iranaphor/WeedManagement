@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from generic import imreconstruct, imfill, imbinarize
 
-def basil(IMG_RAW):
+def basil(IMG_RAW, filter_type=""):
 	IMG_RAW_HSV = cv2.cvtColor(IMG_RAW, cv2.COLOR_BGR2HSV)
 
 	im = IMG_RAW.copy()
@@ -11,23 +11,27 @@ def basil(IMG_RAW):
 	im_h = im_hsv[:,:,0].astype(float)/180
 	im_s = im_hsv[:,:,1].astype(float)/256
 
-	# Plant Mask
-	im_plant_2 = im_h.copy();
-	x=np.round(im_plant_2*100);
-	im_plant_2[x!=24] = 0;
-	im_plant_2[x==24] = 1;
-
-	im_plant_3 = cv2.morphologyEx(im_plant_2, cv2.MORPH_OPEN, np.ones((10,10),np.uint8))
-	im_plant_4 = imreconstruct(im_plant_3,im_plant_2, np.ones((10,10),np.uint8))
-	plantMask = np.array(imfill(im_plant_4*255, 128), dtype='uint8')
-
-
-	# Dirt Mask
-	dirtMask1 = imbinarize(im_h, 0.2)
-	dirtMask = np.array(dirtMask1==0, dtype='uint8')
+	if filter_type=="weed_only":
+		im_weed_1 = np.array(im_h>im_s, dtype='uint8')
+		im_weed_2 = cv2.morphologyEx(im_weed_1, cv2.MORPH_CLOSE, np.ones((5,5)))
+		im_weed_3 = cv2.erode(im_weed_2, np.ones((5,5)), iterations=1)
+		weedMask = imreconstruct(im_weed_3, im_weed_2, np.ones((3,3),np.uint8))
+		return (weedMask)
 
 	# Weed Mask
-	weedMask = np.array(im_h>im_s, dtype='uint8')
+	im_weed_1 = np.array(im_h>im_s, dtype='uint8')
+	im_weed_2 = cv2.morphologyEx(im_weed_1, cv2.MORPH_CLOSE, np.ones((5,5)))
+	im_weed_3 = cv2.erode(im_weed_2, np.ones((5,5)), iterations=1)
+	weedMask = imreconstruct(im_weed_3, im_weed_2, np.ones((3,3),np.uint8))
+	
+	
+	# Dirt Mask
+	dirtMask1 = 1-imbinarize(im_h, 0.2)
+	dirtMask = ((dirtMask1+weedMask)>0)-weedMask
+	
+	
+	# Plant Mask 2
+	plantMask = 1-(dirtMask+weedMask);
 
 	# Overlay
 	Overlay = im.copy()
