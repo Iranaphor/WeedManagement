@@ -52,7 +52,7 @@ class detector:
 		#calculate list of weed locations in local space
 		#for each thing in WEED
 		
-		contours,_ = cv2.findContours(WEED,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
+		#eerror contours,_ = cv2.findContours(WEED,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
 		#print("hi")
 		#for c in contours:
 		#    if 200<cv2.contourArea(c)<5000:

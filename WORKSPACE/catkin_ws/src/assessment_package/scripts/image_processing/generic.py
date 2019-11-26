@@ -27,19 +27,15 @@ def imfill(im_in, n): #swap this out to only accept binary images
 	#invert im_in (padd by 2)
 	in2 = np.ones((h+2, w+2), np.uint8)
 	in2[1:h+1,1:w+1] = im_in==0
-	#cv2.imwrite('out/in2.png', in2*255)
 	
 	#make empty array (padd by 2)
 	emptyMask = np.zeros((h+2, w+2), np.uint8)
 	emptyMask[0,0] = 1
-	#cv2.imwrite('out/emptyMask.png', emptyMask*255)
 	
 	#imreconstruct(emptyMask, im_in)
 	rec = imreconstruct(emptyMask, in2, np.ones((3,3),np.uint8))
-	#cv2.imwrite('out/rec.png', rec*255)
 	
 	RET = (rec[1:h+1,1:w+1]==0)
-	#cv2.imwrite('out/RET.png', RET*255)
 
 	#return not(reconstructed)
 	return RET
