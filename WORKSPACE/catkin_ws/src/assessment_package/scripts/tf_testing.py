@@ -6,6 +6,8 @@ import geometry_msgs.msg
 from time import sleep
 from sensor_msgs.msg import CameraInfo
 from geometry_msgs.msg import PoseStamped
+from tf.transformations import quaternion_from_euler, euler_from_quaternion
+import image_geometry
 
 class pixel2pos:
 
@@ -20,11 +22,12 @@ class pixel2pos:
 		try:
 			#Get position of camera relative to map
 			(trans,rot) = self.tf_listener.lookupTransform('map', cam_frame, rospy.Time())
-			print(trans)
-			print(rot)
+			orientat = euler_from_quaternion(rot)
+			print("trans map2camframe " + str(trans))
+			print("rot map2camframe " + str(orientat))
 			
 			#Get depth as position of pixel relative to camera
-			image_depth = trans[2];
+			#image_depth = trans[2];
 			
 			#Calculate Position of pixel in 3D Space
 			K=data.K;
@@ -32,33 +35,33 @@ class pixel2pos:
 			fy=K[4]
 			cx=K[2]
 			cy=K[5]
-			PIXEL = [self.pixel_x,self.pixel_y]
+			PIXEL = [self.pixel_y,self.pixel_x]
 			PRINC = [cx,cy]
 			FOCAL = [fx,fy]
-			print("focal")
-			print(FOCAL)
-			print("princ")
-			print(PRINC)
+			print("pixel " + str(PIXEL))
+			print("focal " + str(FOCAL))
+			print("princ " + str(PRINC))
 			X = (PIXEL[0]-PRINC[0])/FOCAL[0]
 			Y = (PIXEL[1]-PRINC[1])/FOCAL[1]
-			Z = -0.5 #will always be 0
+			Z = 0.5 #will always be 0
 			pixel_relative_camera = [X,Y,Z]
-			print("Pix_rel_cam")
-			print(pixel_relative_camera)
+			print("Pix_rel_cam " + str(pixel_relative_camera))
+			print("")
 			
-			#Calculate position of pixel in world space
-			print("Trans+")
-			print([trans[0]+X,trans[1]+Y,0])
+			#
+			#cam_model = image_geometry.PinholeCameraModel()
+			#print("Ray: " + cam_model.projectPixelTo3dRay(PIXEL))
 			
-			#We must factor in rot, with our calculations
+			#Transform position of pixel to world space
 			p_robot = PoseStamped()
 			p_robot.header.frame_id = cam_frame
 			p_robot.pose.position.x = X
 			p_robot.pose.position.y = Y
 			p_robot.pose.position.z = Z
 			print(p_robot)
+			print("")
+			
 			p_cam = self.tf_listener.transformPose('map', p_robot)
-			print("pcam")
 			print(p_cam)
 			
 			
@@ -74,8 +77,7 @@ if __name__ == '__main__':
 	#Initialise Topic
 	cam_frame = '/thorvald_001/kinect2_rgb_optical_frame'
 	cam_info_topic = '/thorvald_001/kinect2_camera/hd/camera_info'
-	p2p = pixel2pos(cam_frame,cam_info_topic,960*2,540)
-
+	p2p = pixel2pos(cam_frame,cam_info_topic,0,540)
 
 	rospy.spin()
 

@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 
 <launch>
-	<arg name="sprayer_robot_name" /> t2
-	<arg name="robot_name"/> t1
+	<arg name="sprayer_robot_name" default="thorvald_001"/>
+	<arg name="robot_name" default="thorvald_001"/>
 
 	<!-- Launch basil detector -->
 	<group ns="$(arg sprayer_robot_name)">
