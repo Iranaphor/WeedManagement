@@ -7,15 +7,15 @@ from time import sleep
 from sensor_msgs.msg import CameraInfo
 from geometry_msgs.msg import PoseStamped, Quaternion, Point
 from tf.transformations import quaternion_from_euler, euler_from_quaternion
+#import image_geometry
 
 class pixel2pos:
-	def __init__(self, cam_frame, cam_info_topic, pixel_horizontal, pixel_vertical):
+
+	def __init__(self, cam_frame, cam_info_topic):
 		self.tf_listener = tf.TransformListener()
 		sleep(1)
-		self.pixel_x = pixel_horizontal
-		self.pixel_y = pixel_vertical
-		self.caminfo = rospy.Subscriber(cam_info_topic, CameraInfo, self.info)		
-		
+		self.caminfo = rospy.Subscriber(cam_info_topic, CameraInfo, self.info)
+
 	def info(self, data):
 		try:
 			#Calculate Position of pixel in 3D Space
@@ -29,20 +29,17 @@ class pixel2pos:
 			print("princ " + str(self.PRINC))
 			print("focal " + str(self.FOCAL))
 
-			#Define pixel
-			self.calc_ray([0,0])
-			self.calc_ray([data.width/2,data.height/2])
-			self.calc_ray([data.width,data.height])
-			self.calc_ray([0,data.height])
-			self.calc_ray([data.width,0])
-
 		except (tf.Exception) as e:
 			print(e)
 
 		self.caminfo.unregister()
 
 
-	def calc_ray(self,PIXEL):
+
+	def get_position(self, x,y)
+		return self.calc_ray([x,y])
+
+	def get_position(self,PIXEL):
 		print("pixel " + str(PIXEL))
 
 		#Calculate ray vector
@@ -59,6 +56,8 @@ class pixel2pos:
 		pos = p_cam.pose.position;
 		print("Location: x("+str(pos.x)+") | y("+str(pos.y)+")")
 		print("---------------------------------------------------")
+
+		return [pos.x, pos.y]
 			
 			
 			
@@ -70,7 +69,7 @@ if __name__ == '__main__':
 	#Initialise Topic
 	cam_frame = '/thorvald_001/kinect2_rgb_optical_frame'
 	cam_info_topic = '/thorvald_001/kinect2_camera/hd/camera_info'
-	p2p = pixel2pos(cam_frame,cam_info_topic,1920,1080)
+	p2p = pixel2pos(cam_frame,cam_info_topic)
 
 	rospy.spin()
 

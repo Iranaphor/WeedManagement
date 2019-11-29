@@ -1,13 +1,23 @@
 #!/usr/bin/env python
+
+#ros libraries
 import rospy
 from sensor_msgs.msg import Image
+
+#common python libraries
 import cv2
-from cv_bridge import CvBridge, CvBridgeError
-from sys import argv
 import numpy as np
-#assessment_package
-from image_processing.weed_detection import basil, cabbage
+from cv_bridge import CvBridge, CvBridgeError
+
+#os libraries
 import os
+from sys import argv
+
+#assessment_package
+from assessment_package.msg import weed_location
+from weed_logger import pixel2pos
+from image_processing.weed_detection import basil, cabbage
+
 
 class detector:
 
@@ -20,10 +30,20 @@ class detector:
 		if plant_type == "cabbage":
 			self.strel_disk_35 = cv2.cvtColor(cv2.imread(path+"/image_processing/strel_disk_35.png").astype(np.uint8), cv2.COLOR_BGR2GRAY)
 			self.strel_disk_25 = cv2.cvtColor(cv2.imread(path+"/image_processing/strel_disk_25.png").astype(np.uint8), cv2.COLOR_BGR2GRAY)
-		self.pub_weed = rospy.Publisher("/"+self.robot_name+"/weed_detector/"+self.plant_type+"/WEED", Image, queue_size=10)
-		self.pub_overlay = rospy.Publisher("/"+self.robot_name+"/weed_detector/"+self.plant_type+"/OVERLAY", Image, queue_size=10)
-		self.subscriber = rospy.Subscriber("/"+robot_name+"/kinect2_camera/hd/image_color_rect", Image, self.callback)
+
+		#Define Image publishers
+		#self.pub_weed = rospy.Publisher("/"+self.robot_name+"/weed_detector/"+self.plant_type+"/WEED", Image, queue_size=10)
+		#self.pub_overlay = rospy.Publisher("/"+self.robot_name+"/weed_detector/"+self.plant_type+"/OVERLAY", Image, queue_size=10)
 		
+		#Weed Logger
+		cam_frame = "/thorvald_001/kinect2_rgb_optical_frame"
+		cam_info_topic = "/thorvald_001/kinect2_camera/hd/camera_info"
+		self.pixel2pos = pixel2pos(cam_frame,cam_info_topic)
+		self.pub_overlay = rospy.Publisher("/YAY", weed_location, queue_size=10)
+
+		#Define Image Subscriber
+		self.subscriber = rospy.Subscriber("/"+robot_name+"/kinect2_camera/hd/image_color_rect", Image, self.callback)
+
 
 	def callback(self, data):
 		IMG_RAW = self.bridge.imgmsg_to_cv2(data, "bgr8")
@@ -37,41 +57,42 @@ class detector:
 			OVERLAY,WEED,_,_ = cabbage(cv2.resize(IMG_RAW, (960, 540)), self.strel_disk_25, self.strel_disk_35)
 		
 		#Publish Images
-		a = self.bridge.cv2_to_imgmsg(WEED*255, "mono8")
-		self.pub_weed.publish(a)
-
+		#a = self.bridge.cv2_to_imgmsg(WEED*255, "mono8")
+		#self.pub_weed.publish(a)
 		#b = self.bridge.cv2_to_imgmsg(OVERLAY,"bgr8")
 		#self.pub_overlay.publish(b)
 		
+		#Find Centre/Worldpoints of weed clusters
+		centres = self.find_points(WEED)
+		self.pixel2pos.get_position(centres[0])
 		
 		
-
-
-
-
-		#calculate list of weed locations in local space
-		#for each thing in WEED
+		#Publish points
 		
-		#eerror contours,_ = cv2.findContours(WEED,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
-		#print("hi")
-		#for c in contours:
-		#    if 200<cv2.contourArea(c)<5000:
-		#	cv2.drawContours(OVERLAY,[c],0,(0,255,0),2)
-		#	cv2.drawContours(WEED,[c],0,255,-1)
-		#b = self.bridge.cv2_to_imgmsg(WEED,"bgr8")
-		#self.pub_overlay.publish(b)
-
 		
+		
+		
+	def find_points(self, WEED):
+		
+		centroids = []
 
+		# find contours in the binary image
+		im2, contours, hierarchy = cv2.findContours(WEED,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
+		for c in contours:
+			# calculate moments for each contour
+			M = cv2.moments(c)
 
-		#calculate list of weed locations in global space
-		#apply weeds image to map
-		# 
+			# calculate x,y coordinate of center
+			if M["m00"] != 0:
+				cX = int(M["m10"] / M["m00"])
+				cY = int(M["m01"] / M["m00"])
+			else:
+				cX, cY = 0, 0	
+			
+			centroids.append((cx,cy))
 
-		#publish transformations
-		# how?
-
-
+		return [centroids]
+		
 
 if __name__ == '__main__':
 	path = os.path.dirname(argv[0])
@@ -82,22 +103,6 @@ if __name__ == '__main__':
 	rospy.init_node(plant_type+"_detector", anonymous=False)
 	d = detector(plant_type, robot_name, path)
 	rospy.spin()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

@@ -1,7 +1,7 @@
 #!/bin/sh
 
-sudo apt-get update && sudo apt-get upgrade
 sudo apt-get purge "*gazebo*"
+sudo apt-get update && sudo apt-get upgrade
 sudo apt-get install \
 	ros-kinetic-uol-cmp9767m-base \
 	ros-kinetic-uol-cmp9767m-tutorial

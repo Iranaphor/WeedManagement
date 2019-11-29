@@ -1,5 +1,4 @@
-uint32 id
-uint8 row
-uint8 xpos
-uint8 ypos
-
+uint32 weed_id
+uint8 row_id
+uint8 x
+uint8 y
