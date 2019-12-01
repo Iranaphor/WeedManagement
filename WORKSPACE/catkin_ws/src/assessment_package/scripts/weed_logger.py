@@ -12,6 +12,7 @@ from tf.transformations import quaternion_from_euler, euler_from_quaternion
 class pixel2pos:
 
 	def __init__(self, cam_frame, cam_info_topic):
+		self.cam_frame = cam_frame
 		self.tf_listener = tf.TransformListener()
 		sleep(1)
 		self.caminfo = rospy.Subscriber(cam_info_topic, CameraInfo, self.info)
@@ -34,28 +35,21 @@ class pixel2pos:
 
 		self.caminfo.unregister()
 
-
-
-	def get_position(self, x,y)
-		return self.calc_ray([x,y])
-
 	def get_position(self,PIXEL):
-		print("pixel " + str(PIXEL))
+		#print("pixel " + str(PIXEL))
 
 		#Calculate ray vector
 		X = (PIXEL[0]-self.PRINC[0])/self.FOCAL[0] #vertical
 		Y = (PIXEL[1]-self.PRINC[1])/self.FOCAL[1] #horizontal
-		Z = PIXEL[2] #depth
+		Z = 0.5 #depth
 		
 		#Transform to world frame
 		p_robot = PoseStamped()
-		p_robot.header.frame_id = cam_frame
+		p_robot.header.frame_id = self.cam_frame
 		p_robot.pose.position = Point(X*Z,Y*Z,Z)
 
 		p_cam = self.tf_listener.transformPose('map', p_robot)
 		pos = p_cam.pose.position;
-		print("Location: x("+str(pos.x)+") | y("+str(pos.y)+")")
-		print("---------------------------------------------------")
 
 		return [pos.x, pos.y]
 			

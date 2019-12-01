@@ -7,6 +7,7 @@ Panels:
         - /Global Options1
         - /Axes1
         - /Axes2
+        - /Axes3
       Splitter Ratio: 0.5
     Tree Height: 818
   - Class: rviz/Selection
@@ -284,6 +285,7 @@ Visualization Manager:
       Unreliable: false
       Value: false
       Visibility:
+        "": true
         Axes: true
         Grid: true
         RobotModel: true
@@ -302,6 +304,13 @@ Visualization Manager:
       Name: Axes
       Radius: 0.100000001
       Reference Frame: thorvald_001/kinect2_link
+      Value: true
+    - Class: rviz/Axes
+      Enabled: true
+      Length: 1
+      Name: Axes
+      Radius: 0.100000001
+      Reference Frame: thorvald_001/base_link
       Value: true
   Enabled: true
   Global Options:
@@ -325,25 +334,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 11.0456657
+      Distance: 24.1088638
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.0599999987
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0.610948503
-        Y: -0.905881703
-        Z: 0.498863906
+        X: -2.51717854
+        Y: -0.977733791
+        Z: -3.51413059
       Focal Shape Fixed Size: false
       Focal Shape Size: 0.0500000007
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Pitch: 0.78039825
+      Pitch: 0.630399168
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 3.21539998
+      Yaw: 3.3404038
     Saved:
       - Class: rviz/Orbit
         Distance: 10

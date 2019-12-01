@@ -48,7 +48,7 @@ class pixel2pos:
 		#Calculate ray vector
 		X = (PIXEL[0]-self.PRINC[0])/self.FOCAL[0] #vertical
 		Y = (PIXEL[1]-self.PRINC[1])/self.FOCAL[1] #horizontal
-		Z = PIXEL[2] #depth
+		Z = 0.5 #depth
 		
 		#Transform to world frame
 		p_robot = PoseStamped()

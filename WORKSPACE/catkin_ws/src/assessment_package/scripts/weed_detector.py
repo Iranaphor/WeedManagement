@@ -3,11 +3,14 @@
 #ros libraries
 import rospy
 from sensor_msgs.msg import Image
+from geometry_msgs.msg import Point
+from nav_msgs.msg import OccupancyGrid
 
 #common python libraries
 import cv2
 import numpy as np
 from cv_bridge import CvBridge, CvBridgeError
+from time import sleep
 
 #os libraries
 import os
@@ -33,16 +36,26 @@ class detector:
 
 		#Define Image publishers
 		#self.pub_weed = rospy.Publisher("/"+self.robot_name+"/weed_detector/"+self.plant_type+"/WEED", Image, queue_size=10)
-		#self.pub_overlay = rospy.Publisher("/"+self.robot_name+"/weed_detector/"+self.plant_type+"/OVERLAY", Image, queue_size=10)
+		self.pub_overlay = rospy.Publisher("/"+self.robot_name+"/weed_detector/"+self.plant_type+"/OVERLAY", Image, queue_size=10)
 		
 		#Weed Logger
 		cam_frame = "/thorvald_001/kinect2_rgb_optical_frame"
 		cam_info_topic = "/thorvald_001/kinect2_camera/hd/camera_info"
 		self.pixel2pos = pixel2pos(cam_frame,cam_info_topic)
-		self.pub_overlay = rospy.Publisher("/YAY", weed_location, queue_size=10)
+		self.pub_weed_loc = rospy.Publisher("/YAY", weed_location, queue_size=10)
+		self.plot_point = rospy.Publisher("weed_killer/spray_topic", Point, queue_size=10)
 
 		#Define Image Subscriber
+#		self.map_taker = rospy.Subscriber("/map", OccupancyGrid, self.map_take)
 		self.subscriber = rospy.Subscriber("/"+robot_name+"/kinect2_camera/hd/image_color_rect", Image, self.callback)
+
+#	def map_take(self, data):
+#		print(self.path)
+#		self.MAP = cv2.resize(cv2.flip(cv2.rotate(np.reshape(data.data, newshape=(data.info.height, data.info.width)), cv2.ROTATE_90_COUNTERCLOCKWISE), 1),(12000,12000))
+#		print("yy")
+#		cv2.imwrite(self.path+"/thinggy.png",self.MAP)
+#		print("yyy")
+#		self.map_taker.unregister()
 
 
 	def callback(self, data):
@@ -51,28 +64,35 @@ class detector:
 		
 		#Detect the weeds 
 		if self.plant_type == "basil":
-			#OVERLAY,WEED,_,_ = basil(cv2.resize(IMG_RAW, (480, 270)))#, "weed_only")
-			WEED = basil(cv2.resize(IMG_RAW, (160, 90)), "weed_only") #TODO smaller images plants disappear under erode
+			OVERLAY,WEED,_,_ = basil(cv2.resize(IMG_RAW, (160,90)))
+			#WEED = basil(cv2.resize(IMG_RAW, (160, 90)), "weed_only") #TODO smaller images plants disappear under erode
 		elif self.plant_type == "cabbage":
 			OVERLAY,WEED,_,_ = cabbage(cv2.resize(IMG_RAW, (960, 540)), self.strel_disk_25, self.strel_disk_35)
 		
 		#Publish Images
-		#a = self.bridge.cv2_to_imgmsg(WEED*255, "mono8")
-		#self.pub_weed.publish(a)
-		#b = self.bridge.cv2_to_imgmsg(OVERLAY,"bgr8")
-		#self.pub_overlay.publish(b)
+		a = self.bridge.cv2_to_imgmsg(WEED*255, "mono8")
+		self.pub_weed.publish(a)
+		b = self.bridge.cv2_to_imgmsg(OVERLAY,"bgr8")
+		self.pub_overlay.publish(b)
 		
 		#Find Centre/Worldpoints of weed clusters
-		centres = self.find_points(WEED)
-		self.pixel2pos.get_position(centres[0])
+		centres = self.find_points(cv2.resize(WEED, (1920, 1080)))
+		point=[]
+		for c in centres:
+			p=self.pixel2pos.get_position(c)
+			point.append(p)
+			
+			P=Point()
+			P.x=p[0]
+			P.y=p[1]
+			#self.plot_point.publish(P)
 		
-		
-		#Publish points
-		
-		
-		
-		
-	def find_points(self, WEED):
+		self.subscriber.unregister()
+		sleep(2)
+		self.subscriber = rospy.Subscriber("/"+robot_name+"/kinect2_camera/hd/image_color_rect", Image, self.callback)
+
+	#Adapted from https://www.learnopencv.com/find-center-of-blob-centroid-using-opencv-cpp-python/
+	def find_points(self, WEED): 
 		
 		centroids = []
 
@@ -89,9 +109,9 @@ class detector:
 			else:
 				cX, cY = 0, 0	
 			
-			centroids.append((cx,cy))
+			centroids.append((cX,cY))
 
-		return [centroids]
+		return centroids
 		
 
 if __name__ == '__main__':
