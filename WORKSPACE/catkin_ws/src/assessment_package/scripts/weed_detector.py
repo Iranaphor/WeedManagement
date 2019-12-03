@@ -19,7 +19,7 @@ from sys import argv
 #assessment_package
 from assessment_package.msg import weed_location
 from weed_logger import pixel2pos
-from image_processing.weed_detection import basil, cabbage
+from image_processing.weed_detection import basil, cabbage, onion
 
 
 class detector:
@@ -35,7 +35,7 @@ class detector:
 			self.strel_disk_25 = cv2.cvtColor(cv2.imread(path+"/image_processing/strel_disk_25.png").astype(np.uint8), cv2.COLOR_BGR2GRAY)
 
 		#Define Image publishers
-		#self.pub_weed = rospy.Publisher("/"+self.robot_name+"/weed_detector/"+self.plant_type+"/WEED", Image, queue_size=10)
+		self.pub_weed = rospy.Publisher("/"+self.robot_name+"/weed_detector/"+self.plant_type+"/WEED", Image, queue_size=10)
 		self.pub_overlay = rospy.Publisher("/"+self.robot_name+"/weed_detector/"+self.plant_type+"/OVERLAY", Image, queue_size=10)
 		
 		#Weed Logger
@@ -67,7 +67,9 @@ class detector:
 			OVERLAY,WEED,_,_ = basil(cv2.resize(IMG_RAW, (160,90)))
 			#WEED = basil(cv2.resize(IMG_RAW, (160, 90)), "weed_only") #TODO smaller images plants disappear under erode
 		elif self.plant_type == "cabbage":
-			OVERLAY,WEED,_,_ = cabbage(cv2.resize(IMG_RAW, (960, 540)), self.strel_disk_25, self.strel_disk_35)
+			OVERLAY,WEED,_,_ = cabbage(cv2.resize(IMG_RAW, (480, 270)))
+		elif self.plant_type == "onion":
+			OVERLAY,WEED,_,_ = onion(cv2.resize(IMG_RAW, (240, 135)),0)
 		
 		#Publish Images
 		a = self.bridge.cv2_to_imgmsg(WEED*255, "mono8")
@@ -76,20 +78,20 @@ class detector:
 		self.pub_overlay.publish(b)
 		
 		#Find Centre/Worldpoints of weed clusters
-		centres = self.find_points(cv2.resize(WEED, (1920, 1080)))
-		point=[]
-		for c in centres:
-			p=self.pixel2pos.get_position(c)
-			point.append(p)
-			
-			P=Point()
-			P.x=p[0]
-			P.y=p[1]
-			#self.plot_point.publish(P)
-		
-		self.subscriber.unregister()
-		sleep(2)
-		self.subscriber = rospy.Subscriber("/"+robot_name+"/kinect2_camera/hd/image_color_rect", Image, self.callback)
+		#centres = self.find_points(cv2.resize(WEED, (1920, 1080)))
+		#point=[]
+		#for c in centres:
+		#	p=self.pixel2pos.get_position(c)
+		#	point.append(p)
+		#	
+		#	P=Point()
+		#	P.x=p[0]
+		#	P.y=p[1]
+		#	#self.plot_point.publish(P)
+		#
+		#self.subscriber.unregister()
+		#sleep(2)
+		#self.subscriber = rospy.Subscriber("/"+robot_name+"/kinect2_camera/hd/image_color_rect", Image, self.callback)
 
 	#Adapted from https://www.learnopencv.com/find-center-of-blob-centroid-using-opencv-cpp-python/
 	def find_points(self, WEED): 
@@ -123,6 +125,7 @@ if __name__ == '__main__':
 	rospy.init_node(plant_type+"_detector", anonymous=False)
 	d = detector(plant_type, robot_name, path)
 	rospy.spin()
+
 
 
 

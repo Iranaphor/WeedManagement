@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-
-<launch>
-	
-	<node name="cabbage_detector" pkg="assessment_package" type="cabbage_detector.py" output="screen"/>
-
-</launch>
-

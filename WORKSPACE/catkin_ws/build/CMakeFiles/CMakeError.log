@@ -1,22 +1,22 @@
 Determining if the pthread_create exist failed with the following output:
 Change Dir: /home/computing/Thorvald/WORKSPACE/catkin_ws/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_fba86/fast"
-/usr/bin/make -f CMakeFiles/cmTC_fba86.dir/build.make CMakeFiles/cmTC_fba86.dir/build
+Run Build Command:"/usr/bin/make" "cmTC_d2528/fast"
+/usr/bin/make -f CMakeFiles/cmTC_d2528.dir/build.make CMakeFiles/cmTC_d2528.dir/build
 make[1]: Entering directory '/home/computing/Thorvald/WORKSPACE/catkin_ws/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_fba86.dir/CheckSymbolExists.c.o
-/usr/bin/cc     -o CMakeFiles/cmTC_fba86.dir/CheckSymbolExists.c.o   -c /home/computing/Thorvald/WORKSPACE/catkin_ws/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
-Linking C executable cmTC_fba86
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_fba86.dir/link.txt --verbose=1
-/usr/bin/cc       CMakeFiles/cmTC_fba86.dir/CheckSymbolExists.c.o  -o cmTC_fba86 -rdynamic 
-CMakeFiles/cmTC_fba86.dir/CheckSymbolExists.c.o: In function `main':
+Building C object CMakeFiles/cmTC_d2528.dir/CheckSymbolExists.c.o
+/usr/bin/cc     -o CMakeFiles/cmTC_d2528.dir/CheckSymbolExists.c.o   -c /home/computing/Thorvald/WORKSPACE/catkin_ws/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_d2528
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_d2528.dir/link.txt --verbose=1
+/usr/bin/cc       CMakeFiles/cmTC_d2528.dir/CheckSymbolExists.c.o  -o cmTC_d2528 -rdynamic 
+CMakeFiles/cmTC_d2528.dir/CheckSymbolExists.c.o: In function `main':
 CheckSymbolExists.c:(.text+0x16): undefined reference to `pthread_create'
 collect2: error: ld returned 1 exit status
-CMakeFiles/cmTC_fba86.dir/build.make:97: recipe for target 'cmTC_fba86' failed
-make[1]: *** [cmTC_fba86] Error 1
+CMakeFiles/cmTC_d2528.dir/build.make:97: recipe for target 'cmTC_d2528' failed
+make[1]: *** [cmTC_d2528] Error 1
 make[1]: Leaving directory '/home/computing/Thorvald/WORKSPACE/catkin_ws/build/CMakeFiles/CMakeTmp'
-Makefile:126: recipe for target 'cmTC_fba86/fast' failed
-make: *** [cmTC_fba86/fast] Error 2
+Makefile:126: recipe for target 'cmTC_d2528/fast' failed
+make: *** [cmTC_d2528/fast] Error 2
 
 File /home/computing/Thorvald/WORKSPACE/catkin_ws/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
 /* */
@@ -36,20 +36,20 @@ int main(int argc, char** argv)
 Determining if the function pthread_create exists in the pthreads failed with the following output:
 Change Dir: /home/computing/Thorvald/WORKSPACE/catkin_ws/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_1738a/fast"
-/usr/bin/make -f CMakeFiles/cmTC_1738a.dir/build.make CMakeFiles/cmTC_1738a.dir/build
+Run Build Command:"/usr/bin/make" "cmTC_1d8d3/fast"
+/usr/bin/make -f CMakeFiles/cmTC_1d8d3.dir/build.make CMakeFiles/cmTC_1d8d3.dir/build
 make[1]: Entering directory '/home/computing/Thorvald/WORKSPACE/catkin_ws/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_1738a.dir/CheckFunctionExists.c.o
-/usr/bin/cc    -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTC_1738a.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.5/Modules/CheckFunctionExists.c
-Linking C executable cmTC_1738a
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_1738a.dir/link.txt --verbose=1
-/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create    CMakeFiles/cmTC_1738a.dir/CheckFunctionExists.c.o  -o cmTC_1738a -rdynamic -lpthreads 
+Building C object CMakeFiles/cmTC_1d8d3.dir/CheckFunctionExists.c.o
+/usr/bin/cc    -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTC_1d8d3.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.5/Modules/CheckFunctionExists.c
+Linking C executable cmTC_1d8d3
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_1d8d3.dir/link.txt --verbose=1
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create    CMakeFiles/cmTC_1d8d3.dir/CheckFunctionExists.c.o  -o cmTC_1d8d3 -rdynamic -lpthreads 
 /usr/bin/ld: cannot find -lpthreads
 collect2: error: ld returned 1 exit status
-CMakeFiles/cmTC_1738a.dir/build.make:97: recipe for target 'cmTC_1738a' failed
-make[1]: *** [cmTC_1738a] Error 1
+CMakeFiles/cmTC_1d8d3.dir/build.make:97: recipe for target 'cmTC_1d8d3' failed
+make[1]: *** [cmTC_1d8d3] Error 1
 make[1]: Leaving directory '/home/computing/Thorvald/WORKSPACE/catkin_ws/build/CMakeFiles/CMakeTmp'
-Makefile:126: recipe for target 'cmTC_1738a/fast' failed
-make: *** [cmTC_1738a/fast] Error 2
+Makefile:126: recipe for target 'cmTC_1d8d3/fast' failed
+make: *** [cmTC_1d8d3/fast] Error 2
 
 

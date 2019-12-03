@@ -7,16 +7,15 @@ import struct
 
 
 class weed_location(genpy.Message):
-  _md5sum = "7f660f9d4b49f000c880a057d53b40c1"
+  _md5sum = "fc8bc5e93d03fc0fbc549a0dab8e8013"
   _type = "assessment_package/weed_location"
   _has_header = False #flag to mark the presence of a Header object
-  _full_text = """uint32 id
-uint8 row
-uint8 xpos
-uint8 ypos
-
+  _full_text = """uint32 weed_id
+uint8 row_id
+uint8 x
+uint8 y
 """
-  __slots__ = ['id','row','xpos','ypos']
+  __slots__ = ['weed_id','row_id','x','y']
   _slot_types = ['uint32','uint8','uint8','uint8']
 
   def __init__(self, *args, **kwds):
@@ -27,7 +26,7 @@ uint8 ypos
     changes.  You cannot mix in-order arguments and keyword arguments.
 
     The available fields are:
-       id,row,xpos,ypos
+       weed_id,row_id,x,y
 
     :param args: complete set of field values, in .msg order
     :param kwds: use keyword arguments corresponding to message field names
@@ -36,19 +35,19 @@ uint8 ypos
     if args or kwds:
       super(weed_location, self).__init__(*args, **kwds)
       #message fields cannot be None, assign default values for those that are
-      if self.id is None:
-        self.id = 0
-      if self.row is None:
-        self.row = 0
-      if self.xpos is None:
-        self.xpos = 0
-      if self.ypos is None:
-        self.ypos = 0
+      if self.weed_id is None:
+        self.weed_id = 0
+      if self.row_id is None:
+        self.row_id = 0
+      if self.x is None:
+        self.x = 0
+      if self.y is None:
+        self.y = 0
     else:
-      self.id = 0
-      self.row = 0
-      self.xpos = 0
-      self.ypos = 0
+      self.weed_id = 0
+      self.row_id = 0
+      self.x = 0
+      self.y = 0
 
   def _get_types(self):
     """
@@ -63,7 +62,7 @@ uint8 ypos
     """
     try:
       _x = self
-      buff.write(_get_struct_I3B().pack(_x.id, _x.row, _x.xpos, _x.ypos))
+      buff.write(_get_struct_I3B().pack(_x.weed_id, _x.row_id, _x.x, _x.y))
     except struct.error as se: self._check_types(struct.error("%s: '%s' when writing '%s'" % (type(se), str(se), str(locals().get('_x', self)))))
     except TypeError as te: self._check_types(ValueError("%s: '%s' when writing '%s'" % (type(te), str(te), str(locals().get('_x', self)))))
 
@@ -77,7 +76,7 @@ uint8 ypos
       _x = self
       start = end
       end += 7
-      (_x.id, _x.row, _x.xpos, _x.ypos,) = _get_struct_I3B().unpack(str[start:end])
+      (_x.weed_id, _x.row_id, _x.x, _x.y,) = _get_struct_I3B().unpack(str[start:end])
       return self
     except struct.error as e:
       raise genpy.DeserializationError(e) #most likely buffer underfill
@@ -91,7 +90,7 @@ uint8 ypos
     """
     try:
       _x = self
-      buff.write(_get_struct_I3B().pack(_x.id, _x.row, _x.xpos, _x.ypos))
+      buff.write(_get_struct_I3B().pack(_x.weed_id, _x.row_id, _x.x, _x.y))
     except struct.error as se: self._check_types(struct.error("%s: '%s' when writing '%s'" % (type(se), str(se), str(locals().get('_x', self)))))
     except TypeError as te: self._check_types(ValueError("%s: '%s' when writing '%s'" % (type(te), str(te), str(locals().get('_x', self)))))
 
@@ -106,7 +105,7 @@ uint8 ypos
       _x = self
       start = end
       end += 7
-      (_x.id, _x.row, _x.xpos, _x.ypos,) = _get_struct_I3B().unpack(str[start:end])
+      (_x.weed_id, _x.row_id, _x.x, _x.y,) = _get_struct_I3B().unpack(str[start:end])
       return self
     except struct.error as e:
       raise genpy.DeserializationError(e) #most likely buffer underfill

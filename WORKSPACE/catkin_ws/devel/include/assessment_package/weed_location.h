@@ -24,32 +24,32 @@ struct weed_location_
   typedef weed_location_<ContainerAllocator> Type;
 
   weed_location_()
-    : id(0)
-    , row(0)
-    , xpos(0)
-    , ypos(0)  {
+    : weed_id(0)
+    , row_id(0)
+    , x(0)
+    , y(0)  {
     }
   weed_location_(const ContainerAllocator& _alloc)
-    : id(0)
-    , row(0)
-    , xpos(0)
-    , ypos(0)  {
+    : weed_id(0)
+    , row_id(0)
+    , x(0)
+    , y(0)  {
   (void)_alloc;
     }
 
 
 
-   typedef uint32_t _id_type;
-  _id_type id;
+   typedef uint32_t _weed_id_type;
+  _weed_id_type weed_id;
 
-   typedef uint8_t _row_type;
-  _row_type row;
+   typedef uint8_t _row_id_type;
+  _row_id_type row_id;
 
-   typedef uint8_t _xpos_type;
-  _xpos_type xpos;
+   typedef uint8_t _x_type;
+  _x_type x;
 
-   typedef uint8_t _ypos_type;
-  _ypos_type ypos;
+   typedef uint8_t _y_type;
+  _y_type y;
 
 
 
@@ -129,12 +129,12 @@ struct MD5Sum< ::assessment_package::weed_location_<ContainerAllocator> >
 {
   static const char* value()
   {
-    return "7f660f9d4b49f000c880a057d53b40c1";
+    return "fc8bc5e93d03fc0fbc549a0dab8e8013";
   }
 
   static const char* value(const ::assessment_package::weed_location_<ContainerAllocator>&) { return value(); }
-  static const uint64_t static_value1 = 0x7f660f9d4b49f000ULL;
-  static const uint64_t static_value2 = 0xc880a057d53b40c1ULL;
+  static const uint64_t static_value1 = 0xfc8bc5e93d03fc0fULL;
+  static const uint64_t static_value2 = 0xbc549a0dab8e8013ULL;
 };
 
 template<class ContainerAllocator>
@@ -153,11 +153,10 @@ struct Definition< ::assessment_package::weed_location_<ContainerAllocator> >
 {
   static const char* value()
   {
-    return "uint32 id\n\
-uint8 row\n\
-uint8 xpos\n\
-uint8 ypos\n\
-\n\
+    return "uint32 weed_id\n\
+uint8 row_id\n\
+uint8 x\n\
+uint8 y\n\
 ";
   }
 
@@ -176,10 +175,10 @@ namespace serialization
   {
     template<typename Stream, typename T> inline static void allInOne(Stream& stream, T m)
     {
-      stream.next(m.id);
-      stream.next(m.row);
-      stream.next(m.xpos);
-      stream.next(m.ypos);
+      stream.next(m.weed_id);
+      stream.next(m.row_id);
+      stream.next(m.x);
+      stream.next(m.y);
     }
 
     ROS_DECLARE_ALLINONE_SERIALIZER
@@ -198,14 +197,14 @@ struct Printer< ::assessment_package::weed_location_<ContainerAllocator> >
 {
   template<typename Stream> static void stream(Stream& s, const std::string& indent, const ::assessment_package::weed_location_<ContainerAllocator>& v)
   {
-    s << indent << "id: ";
-    Printer<uint32_t>::stream(s, indent + "  ", v.id);
-    s << indent << "row: ";
-    Printer<uint8_t>::stream(s, indent + "  ", v.row);
-    s << indent << "xpos: ";
-    Printer<uint8_t>::stream(s, indent + "  ", v.xpos);
-    s << indent << "ypos: ";
-    Printer<uint8_t>::stream(s, indent + "  ", v.ypos);
+    s << indent << "weed_id: ";
+    Printer<uint32_t>::stream(s, indent + "  ", v.weed_id);
+    s << indent << "row_id: ";
+    Printer<uint8_t>::stream(s, indent + "  ", v.row_id);
+    s << indent << "x: ";
+    Printer<uint8_t>::stream(s, indent + "  ", v.x);
+    s << indent << "y: ";
+    Printer<uint8_t>::stream(s, indent + "  ", v.y);
   }
 };
 
