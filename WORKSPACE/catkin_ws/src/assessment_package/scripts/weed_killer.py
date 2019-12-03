@@ -27,13 +27,6 @@ BOX_SDF="""
           <izz>0.0000083</izz>       <!-- for a box: izz = 0.083 * mass * (x*x + y*y) -->
         </inertia>
       </inertial>
-      <collision name="collision">
-        <geometry>
-          <box>
-            <size>.1 .1 .01</size>
-          </box>
-        </geometry>
-      </collision>
       <visual name="visual">
         <geometry>
           <box>
@@ -56,12 +49,11 @@ BOX_SDF2="""
    <model name="killbox">
       <pose>0 0 0 0 0 0</pose>
       <static>true</static>
-      
       <link name="link_box">
          <visual name="visual">
             <geometry>
                <box>
-                  <size>.05 .05 .01</size>
+                  <size>.01 .01 .01</size>
                </box>
             </geometry>
             <material>

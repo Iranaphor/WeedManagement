@@ -54,7 +54,10 @@ class detector:
 			self.plant_type = data.data
 						
 			#Colate list of coordinates
-			print(self.P_List)
+			xx = list(set(self.P_List))
+			#print(xx)
+			print(xx.__len__())
+			print(self.P_List.__len__())
 			self.P_List = []
 			
 			
@@ -83,8 +86,8 @@ class detector:
 				p=self.pixel2pos.get_position(c,t)
 				point.append(p)
 				P=Point()
-				P.x=np.around(p[0], 3)
-				P.y=np.around(p[1], 3)
+				P.x=np.around(p[0], 2)
+				P.y=np.around(p[1], 2)
 				self.P_List.append((str(P.x),str(P.y)))
 				#self.plot_point.publish(P)
 

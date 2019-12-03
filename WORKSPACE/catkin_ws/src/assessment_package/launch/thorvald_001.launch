@@ -14,9 +14,6 @@
 	<!-- Launch detectors -->
 	<include file="$(find assessment_package)/launch/detectors.launch">
 		<arg name="robot_name" value="$(arg robot_name)" />
-		<arg name="basil" default="true"/>
-		<arg name="cabbage" default="true"/>
-		<arg name="onion" default="true"/>
 	</include>
 
 </launch>
