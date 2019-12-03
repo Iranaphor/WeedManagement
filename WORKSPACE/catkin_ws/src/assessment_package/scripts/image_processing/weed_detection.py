@@ -36,7 +36,7 @@ def basil(IMG_RAW, filter_type=""):
 	Overlay[:,:,1] = Overlay[:,:,1]+plantMask*100;
 	Overlay[:,:,0] = Overlay[:,:,0]+dirtMask*100;
 
-	cv2.imwrite('/media/computing/141E-156D/GITHUB REPOSITORIES/MODULES/ROBOT PROGRAMMING/Weed Extraction/Overlay.png', Overlay)
+	#cv2.imwrite('out/Overlay.png', Overlay)
 	#cv2.imwrite('out/plantMask.png', plantMask*255)
 	#cv2.imwrite('out/weedMask.png', weedMask*255)
 	#cv2.imwrite('out/dirtMask.png', dirtMask*255)
@@ -70,7 +70,7 @@ def cabbage(IMG_RAW):
 	Overlay[:,:,1] = Overlay[:,:,1]+plantMask*100;
 	Overlay[:,:,0] = Overlay[:,:,0]+dirtMask*100;
 	
-	cv2.imwrite('/media/computing/141E-156D/GITHUB REPOSITORIES/MODULES/ROBOT PROGRAMMING/Weed Extraction/Overlay.png', Overlay)
+	#cv2.imwrite('out/Overlay.png', Overlay)
 	#cv2.imwrite('out/plantMask.png', plantMask*255)
 	#cv2.imwrite('out/weedMask.png', weedMask*255)
 	#cv2.imwrite('out/dirtMask.png', dirtMask*255)
@@ -79,7 +79,7 @@ def cabbage(IMG_RAW):
 
 
 def onion(IMG_RAW,n):
-	path = '/media/computing/141E-156D/GITHUB REPOSITORIES/MODULES/ROBOT PROGRAMMING/Weed Extraction'
+
 	im_hsv = bgr2hsv(IMG_RAW)
 	im_r = IMG_RAW[:,:,2].astype(float)
 	im_g = IMG_RAW[:,:,1].astype(float)
@@ -89,7 +89,7 @@ def onion(IMG_RAW,n):
 	# Plant Mask
 	x = np.array(np.ceil(im_r/2)+np.ceil(im_g/2), dtype='uint8')
 	im_plant_1 = np.array(x<im_b, dtype='uint8')
-	im_plant_rot = imrotate(im_plant_1,n,'bilinear','crop') #IMROTATE DOES NOT WORK THE SAME AS MATLAB
+	im_plant_rot = imrotate(im_plant_1,n,'bilinear','crop') #DOES NOT WORK THE SAME AS MATLAB
 	im_plant_2 = T(T(im_plant_rot)*T(summ(im_plant_rot,'column')))
 	im_plant_3 = np.divide(im_plant_2.astype(float),np.amax(im_plant_2)) #Normalize image
 	im_plant_4 = imbinarize(im_plant_3,0.35)

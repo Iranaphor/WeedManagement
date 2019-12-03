@@ -24,10 +24,11 @@
 
 
 	<!-- weed_detection 
-	<include file="$(find assessment_package)/launch/weed_detector.launch">
+	<include file="$(find assessment_package)/launch/thorvald_001.launch">
 		<arg name="robot_name" value="thorvald_001" />
 		<arg name="basil" value="true" />
 		<arg name="cabbage" value="true" />
+		<arg name="onion" value="true" />
 	</include> -->
 	
 

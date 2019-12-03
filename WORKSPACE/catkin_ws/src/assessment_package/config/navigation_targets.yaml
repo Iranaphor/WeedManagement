@@ -2,16 +2,9 @@ weed_notification: '/weed_found'
 
 row_end_y: 6.5
 row_start_y: -6.5
-row_location_x: [-3.75,-2.8,-0.75,0.25,2.15,3.25]
-row_location_x1: [2.15,3.25]
 
-path: [
-(-6.5, -3.75, 0),   ( 6.5, -3.75, 0), 
-( 6.5, -2.80, 180), (-6.5, -2.80, 180), 
-(-6.5, -0.75, 0),   ( 6.5, -0.75, 0), 
-( 6.5,  0.25, 180), (-6.5,  0.25, 180), 
-(-6.5,  2.15, 0),   ( 6.5,  2.15, 0), 
-( 6.5,  3.25, 180), (-6.5,  3.25, 180)
+row_details: [
+{pos: -3.75, type: 'basil'}, {pos: -2.75, type: 'basil'}, 
+{pos: -0.75, type: 'cabbage'}, {pos: 0.25, type: 'cabbage'}, 
+{pos: 2.15, type: 'onion'}, {pos: 3.25, type: 'onion'}, 
 ]
-
-

@@ -35,7 +35,7 @@ class pixel2pos:
 
 		self.caminfo.unregister()
 
-	def get_position(self,PIXEL):
+	def get_position(self,PIXEL,t):
 		#print("pixel " + str(PIXEL))
 
 		#Calculate ray vector
@@ -50,6 +50,8 @@ class pixel2pos:
 
 		p_cam = self.tf_listener.transformPose('map', p_robot)
 		pos = p_cam.pose.position;
+
+		#print(self.tf_listener.lookupTransform('map', p_robot, t))
 
 		return [pos.x, pos.y]
 			

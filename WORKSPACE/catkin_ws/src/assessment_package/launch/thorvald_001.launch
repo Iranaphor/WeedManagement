@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+
+<launch>
+	<arg name="robot_name" default="thorvald_001"/>
+	<arg name="basil" default="false"/>
+	<arg name="cabbage" default="false"/>
+	<arg name="onion" default="false"/>
+	
+	<!-- Launch movement -->
+	<include file="$(find assessment_package)/launch/navigator.launch">
+		<arg name="robot_name" value="$(arg robot_name)" />
+	</include>
+
+	<!-- Launch detectors -->
+	<include file="$(find assessment_package)/launch/detectors.launch">
+		<arg name="robot_name" value="$(arg robot_name)" />
+		<arg name="basil" default="true"/>
+		<arg name="cabbage" default="true"/>
+		<arg name="onion" default="true"/>
+	</include>
+
+</launch>

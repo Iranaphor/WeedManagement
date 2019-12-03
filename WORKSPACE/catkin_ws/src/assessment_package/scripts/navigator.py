@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import rospy
+from std_msgs.msg import String
 from sensor_msgs.msg import Image
 from assessment_package.msg import weed_location
 from move_base_msgs.msg import MoveBaseActionGoal, MoveBaseActionFeedback
@@ -33,6 +34,7 @@ class navigation_manager:
 
 		#Initialise Publishers and Subscribers
 		self.move_base_goal = rospy.Publisher("/"+robot_name+"/move_base/goal", MoveBaseActionGoal, queue_size = 2)
+		self.row_type = rospy.Publisher("/"+robot_name+"/row_type", String, queue_size = 2)
 		self.move_base_status = rospy.Subscriber("/"+robot_name+"/move_base/goal", MoveBaseActionGoal, self.movebase_goal_tracker)
 		self.move_base_status = rospy.Subscriber("/"+robot_name+"/move_base/status", GoalStatusArray, self.movebase_status)
 		sleep(1) #sleep to enable the movebase publisher to respond
@@ -43,14 +45,14 @@ class navigation_manager:
 	#Generate path list from yaml input
 	def generate_list(self, path_details):
 		path = []
-		for row in enumerate(path_details['row_location_x']):
+		for row in enumerate(path_details['row_details']):
 			#Switch to enable snaking through rows
 			if (row[0]%2==0):
-				path.append((path_details['row_start_y'],row[1],0))
-				path.append((path_details['row_end_y'],row[1],0))
+				path.append((path_details['row_start_y'],row[1]['pos'],0,'null'))
+				path.append((path_details['row_end_y'],row[1]['pos'],0,row[1]['type']))
 			else:
-				path.append((path_details['row_end_y'],row[1],180))
-				path.append((path_details['row_start_y'],row[1],180))
+				path.append((path_details['row_end_y'],row[1]['pos'],180,'null'))
+				path.append((path_details['row_start_y'],row[1]['pos'],180,row[1]['type']))
 		return path
 	
 
@@ -86,6 +88,7 @@ class navigation_manager:
 		
 		#Publish Goal
 		self.move_base_goal.publish(goal)
+		self.row_type.publish(position[3])
 	
 	#Subscriber to track the publish time for the goal
 	#This is used to manage external move_base goals

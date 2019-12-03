@@ -7,7 +7,7 @@
 	<arg name="cabbage" default="false"/>
 	<arg name="onion" default="false"/>
 	
-	<group ns="$(arg robot_name)" else="$(arg navigating)">
+	<group ns="$(arg robot_name)">
 		<arg name="navigation_targets" default="$(find assessment_package)config/navigation_targets.yaml"/>
 		<node name="navigator" pkg="assessment_package" type="navigator.py" output="screen" args="$(arg robot_name) $(arg navigation_targets)"/>
 	</group>
