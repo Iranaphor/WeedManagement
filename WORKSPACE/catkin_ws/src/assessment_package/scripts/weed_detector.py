@@ -46,7 +46,7 @@ class detector:
 
 		#Define Image Subscriber
 		self.subscriber = rospy.Subscriber("/"+robot_name+"/kinect2_camera/hd/image_color_rect", Image, self.callback)
-		self.rpw_type_subscriber = rospy.Subscriber("/"+robot_name+"/row_type", String, self.row_type_callback)
+		self.row_type_subscriber = rospy.Subscriber("/"+robot_name+"/row_type", String, self.row_type_callback)
 
 	#Save the current row
 	def row_type_callback(self, data):
@@ -55,9 +55,9 @@ class detector:
 						
 			#Colate list of coordinates
 			xx = list(set(self.P_List))
-			#print(xx)
-			print(xx.__len__())
-			print(self.P_List.__len__())
+			print(xx)
+			print(len(xx))
+			print(len(self.P_List))
 			self.P_List = []
 			
 			
@@ -89,7 +89,6 @@ class detector:
 				P.x=np.around(p[0], 2)
 				P.y=np.around(p[1], 2)
 				self.P_List.append((str(P.x),str(P.y)))
-				#self.plot_point.publish(P)
 
 
 	#Adapted from https://www.learnopencv.com/find-center-of-blob-centroid-using-opencv-cpp-python/
