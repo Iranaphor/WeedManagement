@@ -102,15 +102,18 @@ def onion(IMG_RAW,n):
 
 	# Weed Mask
 	weedMask1 = plantMask+dirtMask;
-	weedMask = np.array(imclearborder(weedMask1==0), dtype='uint8')
+	weedMask = np.array(weedMask1==0, dtype='uint8')
+	#weedMask = np.array(imclearborder(weedMask1==0), dtype='uint8')
 	im_weed_target_1b = imfill(weedMask, .5);
-	im_weed_target_2b = imerode(im_weed_target_1b, strel('disk',10))
+	im_weed_target_2b = np.array(imclearborder(imerode(im_weed_target_1b, strel('disk',10))), dtype='uint8')
 
 	# Overlay
 	Overlay = IMG_RAW.copy()
 	Overlay[:,:,2] = Overlay[:,:,2]+weedMask*100;
 	Overlay[:,:,1] = Overlay[:,:,1]+plantMask*100;
 	Overlay[:,:,0] = Overlay[:,:,0]+dirtMask*100;
+	Overlay[:,:,0] = Overlay[:,:,0]+im_weed_target_2b*255
+	Overlay[:,:,1] = Overlay[:,:,1]+im_weed_target_2b*255
 	Overlay[:,:,2] = Overlay[:,:,2]+im_weed_target_2b*255
 
 	#cv2.imwrite(path+'/Overlay.png', Overlay)

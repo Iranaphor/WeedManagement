@@ -36,7 +36,6 @@ def imfill(im_in, n): #swap this out to only accept binary images
 	
 	RET = (rec[1:h+1,1:w+1]==0)
 
-	#return not(reconstructed)
 	return RET
 
 def imbinarize(im_in, threshold, maxvalue=1):
@@ -89,43 +88,32 @@ def imclearborder(I):
 	I = np.array(I, dtype='uint8')
 	s=(I.shape[0], I.shape[1])
 	I_copy = I.copy()*0
-
+	
 	# Create Border
-	Mask = np.ones(I.shape)
-	Mask[1:s[0]-1,1:s[1]-1]=0
-	
+	Mask = np.ones(I.shape,dtype='uint8')
+	border = 20;
+	Mask[border:s[0]-border,border:s[1]-border]=0
+
 	# Extract Intersections of blobs and border
-	Intersections = Mask & I	
-
-	# Find things to remove
-	_,contours,_ = cv2.findContours(I, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
-
-	# Calculate centrepoint of each blob
-	for c in contours:
-		print(c)
-		# calculate moments for each contour
-		M = cv2.moments(c)
-
-		# calculate x,y coordinate of center
-		if M["m00"] != 0:
-			cX = int(M["m10"] / M["m00"])
-			cY = int(M["m01"] / M["m00"])
-		else:
-			cX, cY = 0, 0	
+	Intersections = np.array(Mask & I, dtype='uint8')
 	
 
-		print("------------")
-		break
-
-		centroids.append((cX,cY))
-
+	# Reconstruct the mask containing only edges
+	rec = imreconstruct(I, Intersections, strel('square',10))
 	
+	# Mask - edgepieces
+	filtered = np.array(I - rec, dtype='uint8');
+
+	#cv2.imshow('cv2',np.array(filtered+I)*124)
+	#cv2.waitKey(1)
+	
+	return filtered
 
 
 	#CREATING BORDER OF 1 on mask
 	#take difference of border and original
 	#	these are the points
-	#imreconstruct the centroids of these points
+	#imreconstruct them
 	#negate
 	
 	

@@ -46,13 +46,13 @@ class detector:
 
 		#Define Image Subscriber
 		self.subscriber = rospy.Subscriber("/"+robot_name+"/kinect2_camera/hd/image_color_rect", Image, self.callback)
-		#self.row_type_subscriber = rospy.Subscriber("/"+robot_name+"/row_type", String, self.row_type_callback)
+		self.row_type_subscriber = rospy.Subscriber("/"+robot_name+"/row_type", String, self.row_type_callback)
 
 	#Save the current row
 	def row_type_callback(self, data):
 		if self.plant_type != data.data:
 			self.plant_type = data.data
-						
+			print(self.plant_type)
 			#Colate list of coordinates
 			xx = list(set(self.P_List))
 			print(xx)
@@ -67,7 +67,7 @@ class detector:
 		t = rospy.Time.now()	
 
 		#DEBUG TOOL	
-		self.plant_type = "onion"
+		#self.plant_type = "onion"
 
 		#Detect the weeds 
 		if self.plant_type == "basil":
@@ -85,6 +85,7 @@ class detector:
 			#Find Centre/Worldpoints of weed clusters
 			centres = self.find_points(cv2.resize(WEED, (1920, 1080)))
 			point=[]
+			#print(len(centres))
 			for c in centres:
 				p=self.pixel2pos.get_position(c,t)
 				point.append(p)
@@ -101,33 +102,17 @@ class detector:
 		# Find contours in the binary image
 		_,contours,_ = cv2.findContours(WEED, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
 
-		# Remove components touching edge
-		for c in contours:
-			bounding_rect = cv2.boundingRect(c)
-			s=(WEED.shape[0]-2,WEED.shape[1]-2)
-			print(s)
-			r = cv2.rectangle(WEED, (1,1), s, 1)
-			print(r)
-			test_rect = bounding_rect & r
-			if (bounding_rect != test_rect):
-			    cv2.drawContours(WEED, c, cv2.Scalar(0),-1)
-	
 		# Calculate centrepoint of each blob
 		for c in contours:
-			print(c)
 			# calculate moments for each contour
 			M = cv2.moments(c)
-			self.subscriber.Unregister()
+
 			# calculate x,y coordinate of center
 			if M["m00"] != 0:
 				cX = int(M["m10"] / M["m00"])
 				cY = int(M["m01"] / M["m00"])
 			else:
-				cX, cY = 0, 0	
-			
-
-			print("------------")
-			break
+				cX, cY = 0, 0
 
 			centroids.append((cX,cY))
 
