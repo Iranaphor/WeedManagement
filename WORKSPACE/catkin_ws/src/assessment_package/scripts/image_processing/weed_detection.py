@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
-from generic import imreconstruct, imfill, imbinarize, imdilate, imerode, imclose, imopen, bgr2hsv, imrotate, strel, T, summ
+from generic import imreconstruct, imfill, imbinarize, imdilate, imerode, imclose, imopen, bgr2hsv, imrotate, strel, T, summ, imclearborder 
 from sys import argv
 import os
 
@@ -17,7 +17,7 @@ def basil(IMG_RAW, filter_type=""):
 	im_weed_1 = np.array(im_h>im_s, dtype='uint8')
 	im_weed_2 = imclose(im_weed_1, strel('square',5))
 	im_weed_3 = imerode(im_weed_2, strel('square',5))
-	weedMask = imreconstruct(im_weed_3, im_weed_2, strel('square',3))
+	weedMask = imreconstruct(imclearborder(im_weed_3), im_weed_2, strel('square',3))
 
 	if filter_type=="weed_only":
                 return (weedMask)
@@ -62,7 +62,7 @@ def cabbage(IMG_RAW):
 	# Weed Mask
 	im_weed_1 = imdilate(plantMask, strel('disk',25)) + dirtMask
 	weedMask1 = imbinarize(im_weed_1,0)
-	weedMask = np.array(weedMask1==0, dtype='uint8')
+	weedMask = np.array(imclearborder(weedMask1==0), dtype='uint8')
 	
 	# Overlay
 	Overlay = IMG_RAW.copy()
@@ -102,9 +102,9 @@ def onion(IMG_RAW,n):
 
 	# Weed Mask
 	weedMask1 = plantMask+dirtMask;
-	weedMask = np.array(weedMask1==0, dtype='uint8')
+	weedMask = np.array(imclearborder(weedMask1==0), dtype='uint8')
 	im_weed_target_1b = imfill(weedMask, .5);
-	im_weed_target_2b = imerode(im_weed_target_1b, strel('disk',50))
+	im_weed_target_2b = imerode(im_weed_target_1b, strel('disk',10))
 
 	# Overlay
 	Overlay = IMG_RAW.copy()
@@ -118,7 +118,7 @@ def onion(IMG_RAW,n):
 	#cv2.imwrite('out/weedMask.png', weedMask*255)
 	#cv2.imwrite('out/dirtMask.png', dirtMask*255)
 
-	return (Overlay, weedMask, plantMask, dirtMask)
+	return (Overlay, im_weed_target_2b, plantMask, dirtMask)
 
 
 
