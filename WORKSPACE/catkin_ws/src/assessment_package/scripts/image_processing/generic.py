@@ -84,14 +84,14 @@ def summ(I,dimension='column'):
 		return [sum(row) for row in I]
 
 #Adapted from https://answers.opencv.org/question/173768/how-to-delete-those-border-component/?answer=173769#post-id-173769
-def imclearborder(I):
+def imclearborder(I, border=10):
+
 	I = np.array(I, dtype='uint8')
 	s=(I.shape[0], I.shape[1])
 	I_copy = I.copy()*0
 	
 	# Create Border
 	Mask = np.ones(I.shape,dtype='uint8')
-	border = 20;
 	Mask[border:s[0]-border,border:s[1]-border]=0
 
 	# Extract Intersections of blobs and border

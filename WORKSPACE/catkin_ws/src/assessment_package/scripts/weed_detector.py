@@ -54,21 +54,24 @@ class detector:
 	def mapper(self, data):
 		self.map.unregister()
 		scale = 10
-		self.weed_map = np.array(np.zeros(((data.info.height*0.75)*scale, (data.info.width*0.75)*scale)),dtype='uint8')
+		self.weed_map = np.array(255*np.ones(((data.info.height*0.6)*scale, (data.info.width*0.45)*scale)),dtype='uint8')
+		self.weed_map[2:self.weed_map.shape[0]-4,2:self.weed_map.shape[1]-4]=0
+
 		self.weed_map_resolution = data.info.resolution/scale #m/cell 0.5m/10 = 0.05 (5cm/cell) #DISTANCE PER CELL
-		self.plot_to_map(( 6.5,-3.75), 0.1)
-		self.plot_to_map(( 6.5,-2.75), 0.1)
-		self.plot_to_map(( 6.5,-0.75), 0.1)
-		self.plot_to_map(( 6.5, 0.25), 0.1)
-		self.plot_to_map(( 6.5, 2.25), 0.1)
-		self.plot_to_map(( 6.5, 3.25), 0.1)
-		self.plot_to_map((-6.5,-3.75), 0.1)
-		self.plot_to_map((-6.5,-2.75), 0.1)
-		self.plot_to_map((-6.5,-0.75), 0.1)
-		self.plot_to_map((-6.5, 0.25), 0.1)
-		self.plot_to_map((-6.5, 2.25), 0.1)
-		self.plot_to_map((-6.5, 3.25), 0.1)
+		self.plot_to_map(( 5,-3.75), 0.1)
+		self.plot_to_map(( 5,-2.75), 0.1)
+		self.plot_to_map(( 5,-0.75), 0.1)
+		self.plot_to_map(( 5, 0.25), 0.1)
+		self.plot_to_map(( 5, 2.25), 0.1)
+		self.plot_to_map(( 5, 3.25), 0.1)
+		self.plot_to_map((-5,-3.75), 0.1)
+		self.plot_to_map((-5,-2.75), 0.1)
+		self.plot_to_map((-5,-0.75), 0.1)
+		self.plot_to_map((-5, 0.25), 0.1)
+		self.plot_to_map((-5, 2.25), 0.1)
+		self.plot_to_map((-5, 3.25), 0.1)
 		
+		cv2.imwrite('mapp.png', cv2.rotate(self.weed_map, cv2.ROTATE_90_COUNTERCLOCKWISE))
 
 		#cv2.imshow('MAP', self.weed_map)
 		#cv2.waitKey(10)
@@ -81,10 +84,10 @@ class detector:
 		center_coordinates = np.array(b,dtype='uint32')
 		
 		#Convert /map frame radius to pixel locations
-		map_radius = 0#int(radius/self.weed_map_resolution)
+		map_radius = int(radius/self.weed_map_resolution)
 
 		#Add circle to map
-		self.weed_map = cv2.circle(self.weed_map, (center_coordinates[0],center_coordinates[1]), map_radius, 255, -1)
+		self.weed_map = cv2.circle(self.weed_map, (center_coordinates[1],center_coordinates[0]), map_radius, 255, -1)
 		
 
 	#Save the current row
@@ -94,41 +97,31 @@ class detector:
 
 				#Colate list of coordinates
 				xx = list(set(self.P_List))
-				#print(xx)
 				print(self.plant_type + "::" + str(len(xx)) + "|" + str(len(self.P_List)))
 				
-				#P=Point()
 				for p in xx:
-					self.plot_to_map((float(p[0]), float(p[1])), 0.1)
-					
-					#P.x=float(p[0])
-					#P.y=float(p[1])
-					#self.plot_point.publish(P)
+					self.plot_to_map((float(p[0]), float(p[1])), float(p[2]))
 				
 				self.P_List = []
 
 			self.plant_type = data.data
 			
-			cv2.imwrite('mapp.png', self.weed_map)
-			
-			#cv2.imshow('MAP', self.weed_map)
-			#cv2.waitKey(10)
-			
+			cv2.imwrite('mapp.png', cv2.rotate(self.weed_map, cv2.ROTATE_90_COUNTERCLOCKWISE))
 
 	def callback(self, data):
 		IMG_RAW = self.bridge.imgmsg_to_cv2(data, "bgr8")
 		t = rospy.Time.now()	
 
-		#DEBUG TOOL
-		#self.plant_type = "onion"
-
-		#Detect the weeds 
+		#Detect the weeds
 		if self.plant_type == "basil":
 			OVERLAY,WEED,_,_ = basil(cv2.resize(IMG_RAW, (160,90)))
+			rad = 0.025;
 		elif self.plant_type == "cabbage":
 			OVERLAY,WEED,_,_ = cabbage(cv2.resize(IMG_RAW, (480, 270)))
+			rad = 0.015;
 		elif self.plant_type == "onion":
 			OVERLAY,WEED,_,_ = onion(cv2.resize(IMG_RAW, (240, 135)),0)
+			rad = 0.05;
 
 		#Publish Images
 		if self.plant_type != "null":
@@ -136,14 +129,13 @@ class detector:
 			#Find Centre/Worldpoints of weed clusters
 			centres = self.find_points(cv2.resize(WEED, (1920, 1080)))
 			point=[]
-			#print(len(centres))
 			for c in centres:
 				p=self.pixel2pos.get_position(c,t)
 				point.append(p)
 				P=Point()
 				P.x=np.around(p[0], 2)
 				P.y=np.around(p[1], 2)
-				self.P_List.append((str(P.x),str(P.y)))
+				self.P_List.append( (str(P.x),str(P.y),str(rad)) )
 
 			self.pub_weed.publish(self.bridge.cv2_to_imgmsg(WEED*255, "mono8"))
 			self.pub_overlay.publish(self.bridge.cv2_to_imgmsg(OVERLAY,"bgr8"))

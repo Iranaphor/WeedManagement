@@ -52,17 +52,19 @@ def cabbage(IMG_RAW):
 	
 	# Dirt Mask
 	#im_dirt_1 = [1-im_h]*im_h; #reference using im_dirt_1[0,:,:]
-	im_dirt_2 = imbinarize(im_h, .145)
+	im_dirt_2 = imbinarize(im_h, .2)
 	dirtMask1 = imfill(im_dirt_2, .5);
+	#dirtMask2 = imerode(dirtMask1,strel('disk', 7))
 	dirtMask = np.array(dirtMask1==0, dtype='uint8')
 	
 	# Plant Mask
-	plantMask = np.array(cv2.morphologyEx(dirtMask1.astype(np.uint8), cv2.MORPH_OPEN, strel('disk',35)), dtype='uint8')
+	plantMask = np.array(imopen(dirtMask1.astype(np.uint8), strel('disk',35)), dtype='uint8')
 	
 	# Weed Mask
 	im_weed_1 = imdilate(plantMask, strel('disk',25)) + dirtMask
 	weedMask1 = imbinarize(im_weed_1,0)
 	weedMask2 = imopen(weedMask1,strel('disk',2))
+	weedMask2 = imerode(weedMask2,strel('disk',10))
 	weedMask = np.array(imclearborder(weedMask2==0), dtype='uint8')
 	
 	# Overlay
