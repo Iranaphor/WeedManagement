@@ -4,7 +4,7 @@ row_end_y: 6.5
 row_start_y: -6.5
 
 row_details: [
-#{pos: -3.75, type: 'basil'}, {pos: -2.75, type: 'basil'}, 
+{pos: -3.75, type: 'basil'}, {pos: -2.75, type: 'basil'}, 
 {pos: -0.75, type: 'cabbage'}, {pos: 0.25, type: 'cabbage'}, 
-#{pos: 2.15, type: 'onion'}, {pos: 3.25, type: 'onion'}
+{pos: 2.15, type: 'onion'}, {pos: 3.25, type: 'onion'}
 ]

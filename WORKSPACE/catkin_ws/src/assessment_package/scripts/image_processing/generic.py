@@ -45,6 +45,12 @@ def imbinarize(im_in, threshold, maxvalue=1):
 		_,bina = cv2.threshold(im_in.astype(np.uint8),threshold,maxvalue,cv2.THRESH_BINARY)
 	return bina
 
+#add condition for variable type
+def imbinarizerange(im_in, minthreshold, maxthreshold):
+	bina1 = np.array(im_in>minthreshold,dtype='uint8')
+	bina2 = np.array(im_in<maxthreshold,dtype='uint8')
+	return bina1*bina2
+
 def imdilate(I, kernel):
 	return cv2.dilate(I.astype(np.uint8),  kernel, iterations=1)
 

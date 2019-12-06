@@ -115,9 +115,11 @@ class detector:
 		#Detect the weeds
 		if self.plant_type == "basil":
 			OVERLAY,WEED,_,_ = basil(cv2.resize(IMG_RAW, (160,90)))
+			
 			rad = 0.025;
 		elif self.plant_type == "cabbage":
-			OVERLAY,WEED,_,_ = cabbage(cv2.resize(IMG_RAW, (480, 270)))
+			OVERLAY,WEED,_,_,crap = cabbage(cv2.resize(IMG_RAW, (480, 270)))
+			self.pub_weed.publish(self.bridge.cv2_to_imgmsg(crap, "mono8"))
 			rad = 0.015;
 		elif self.plant_type == "onion":
 			OVERLAY,WEED,_,_ = onion(cv2.resize(IMG_RAW, (240, 135)),0)
@@ -137,7 +139,7 @@ class detector:
 				P.y=np.around(p[1], 2)
 				self.P_List.append( (str(P.x),str(P.y),str(rad)) )
 
-			self.pub_weed.publish(self.bridge.cv2_to_imgmsg(WEED*255, "mono8"))
+			#self.pub_weed.publish(self.bridge.cv2_to_imgmsg(WEED*255, "mono8"))
 			self.pub_overlay.publish(self.bridge.cv2_to_imgmsg(OVERLAY,"bgr8"))
 
 	#Adapted from https://www.learnopencv.com/find-center-of-blob-centroid-using-opencv-cpp-python/

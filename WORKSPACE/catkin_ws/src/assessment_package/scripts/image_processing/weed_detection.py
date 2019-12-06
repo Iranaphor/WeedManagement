@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
-from generic import imreconstruct, imfill, imbinarize, imdilate, imerode, imclose, imopen, bgr2hsv, imrotate, strel, T, summ, imclearborder 
+from generic import imreconstruct, imfill, imbinarize, imbinarizerange, imdilate, imerode, imclose, imopen, bgr2hsv, imrotate, strel, T, summ, imclearborder 
 from sys import argv
 import os
 
@@ -51,9 +51,11 @@ def cabbage(IMG_RAW):
 
 	
 	# Dirt Mask
-	#im_dirt_1 = [1-im_h]*im_h; #reference using im_dirt_1[0,:,:]
-	im_dirt_2 = imbinarize(im_h, .2)
-	dirtMask1 = imfill(im_dirt_2, .5);
+	im_dirt_1 = (1-im_h)*im_h; #reference using im_dirt_1[0,:,:]
+	im_dirt_1 = np.array(im_dirt_1*255,dtype='uint8')*255
+	im_dirt_1 = imbinarizerange(im_dirt_1, 150,215)
+	#im_dirt_1 = imbinarize(im_h, .2)
+	dirtMask1 = imfill(im_dirt_1, .5)
 	#dirtMask2 = imerode(dirtMask1,strel('disk', 7))
 	dirtMask = np.array(dirtMask1==0, dtype='uint8')
 	
@@ -64,8 +66,9 @@ def cabbage(IMG_RAW):
 	im_weed_1 = imdilate(plantMask, strel('disk',25)) + dirtMask
 	weedMask1 = imbinarize(im_weed_1,0)
 	weedMask2 = imopen(weedMask1,strel('disk',2))
-	weedMask2 = imerode(weedMask2,strel('disk',10))
-	weedMask = np.array(imclearborder(weedMask2==0), dtype='uint8')
+	weedMask2 = imerode(weedMask2,strel('disk',10))==0
+	weedMask3 = np.array(imclearborder(weedMask2), dtype='uint8')
+	weedMask = np.array(imclearborder(weedMask2), dtype='uint8')
 	
 	# Overlay
 	Overlay = IMG_RAW.copy()
@@ -78,7 +81,7 @@ def cabbage(IMG_RAW):
 	#cv2.imwrite('out/weedMask.png', weedMask*255)
 	#cv2.imwrite('out/dirtMask.png', dirtMask*255)
 	
-	return (Overlay, weedMask, plantMask, dirtMask)
+	return (Overlay, weedMask, plantMask, dirtMask, np.array(weedMask3, dtype='uint8')*123)
 
 
 def onion(IMG_RAW,n):
