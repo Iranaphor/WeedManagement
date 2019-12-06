@@ -3,8 +3,9 @@
 import rospy
 import os
 from sys import argv
-from gazebo_msgs.srv import SpawnModel, SpawnModelRequest
+from gazebo_msgs.srv import SpawnModel, SpawnModelRequest, DeleteModel, DeleteModelRequest
 from std_srvs.srv import Empty
+from std_msgs.msg import String
 from uuid import uuid4
 from geometry_msgs.msg import Point
 
@@ -77,9 +78,20 @@ class Sprayer:
 	self.robot_name = robot_name
         self.sdf = BOX_SDF
         self.sdf2 = BOX_SDF2
+	self.allmodels = []
         rospy.Service("weed_killer/spray", Empty, self.spray)
 	self.plot_point = rospy.Subscriber("weed_killer/spray_topic", Point, self.plot_point)
+	self.plot_point = rospy.Subscriber("weed_killer/reset", String, self.reset)
         self.spawner = rospy.ServiceProxy("/gazebo/spawn_sdf_model", SpawnModel)
+        #self.remover = rospy.ServiceProxy("/gazebo/delete_model", DeleteModel)
+
+    #def reset(self, data):
+	#print(self.allmodels)
+	#d = DeleteModelRequest()
+	#for model in self.allmodels:
+		#d.model_name = model
+		#self.remover(model)
+
 
     def spray(self, r):
         request = SpawnModelRequest()
@@ -93,9 +105,10 @@ class Sprayer:
         return []
 
     def plot_point(self, r):
-	print("Spraying")
         request = SpawnModelRequest()
         request.model_name = 'killbox_%s' % uuid4()
+	#self.allmodels.append(str(request.model_name))
+	#print("PLOT: " + request.model_name)
         request.model_xml = self.sdf2
         request.reference_frame = "/map"
         request.initial_pose.position.x = r.x

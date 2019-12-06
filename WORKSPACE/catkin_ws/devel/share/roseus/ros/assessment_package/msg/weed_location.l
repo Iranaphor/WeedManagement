@@ -14,87 +14,86 @@
 
 (defclass assessment_package::weed_location
   :super ros::object
-  :slots (_id _row _xpos _ypos ))
+  :slots (_weed_id _row_id _x _y ))
 
 (defmethod assessment_package::weed_location
   (:init
    (&key
-    ((:id __id) 0)
-    ((:row __row) 0)
-    ((:xpos __xpos) 0)
-    ((:ypos __ypos) 0)
+    ((:weed_id __weed_id) 0)
+    ((:row_id __row_id) 0)
+    ((:x __x) 0)
+    ((:y __y) 0)
     )
    (send-super :init)
-   (setq _id (round __id))
-   (setq _row (round __row))
-   (setq _xpos (round __xpos))
-   (setq _ypos (round __ypos))
+   (setq _weed_id (round __weed_id))
+   (setq _row_id (round __row_id))
+   (setq _x (round __x))
+   (setq _y (round __y))
    self)
-  (:id
-   (&optional __id)
-   (if __id (setq _id __id)) _id)
-  (:row
-   (&optional __row)
-   (if __row (setq _row __row)) _row)
-  (:xpos
-   (&optional __xpos)
-   (if __xpos (setq _xpos __xpos)) _xpos)
-  (:ypos
-   (&optional __ypos)
-   (if __ypos (setq _ypos __ypos)) _ypos)
+  (:weed_id
+   (&optional __weed_id)
+   (if __weed_id (setq _weed_id __weed_id)) _weed_id)
+  (:row_id
+   (&optional __row_id)
+   (if __row_id (setq _row_id __row_id)) _row_id)
+  (:x
+   (&optional __x)
+   (if __x (setq _x __x)) _x)
+  (:y
+   (&optional __y)
+   (if __y (setq _y __y)) _y)
   (:serialization-length
    ()
    (+
-    ;; uint32 _id
+    ;; uint32 _weed_id
     4
-    ;; uint8 _row
+    ;; uint8 _row_id
     1
-    ;; uint8 _xpos
+    ;; uint8 _x
     1
-    ;; uint8 _ypos
+    ;; uint8 _y
     1
     ))
   (:serialize
    (&optional strm)
    (let ((s (if strm strm
               (make-string-output-stream (send self :serialization-length)))))
-     ;; uint32 _id
-       (write-long _id s)
-     ;; uint8 _row
-       (write-byte _row s)
-     ;; uint8 _xpos
-       (write-byte _xpos s)
-     ;; uint8 _ypos
-       (write-byte _ypos s)
+     ;; uint32 _weed_id
+       (write-long _weed_id s)
+     ;; uint8 _row_id
+       (write-byte _row_id s)
+     ;; uint8 _x
+       (write-byte _x s)
+     ;; uint8 _y
+       (write-byte _y s)
      ;;
      (if (null strm) (get-output-stream-string s))))
   (:deserialize
    (buf &optional (ptr- 0))
-   ;; uint32 _id
-     (setq _id (sys::peek buf ptr- :integer)) (incf ptr- 4)
-   ;; uint8 _row
-     (setq _row (sys::peek buf ptr- :char)) (incf ptr- 1)
-   ;; uint8 _xpos
-     (setq _xpos (sys::peek buf ptr- :char)) (incf ptr- 1)
-   ;; uint8 _ypos
-     (setq _ypos (sys::peek buf ptr- :char)) (incf ptr- 1)
+   ;; uint32 _weed_id
+     (setq _weed_id (sys::peek buf ptr- :integer)) (incf ptr- 4)
+   ;; uint8 _row_id
+     (setq _row_id (sys::peek buf ptr- :char)) (incf ptr- 1)
+   ;; uint8 _x
+     (setq _x (sys::peek buf ptr- :char)) (incf ptr- 1)
+   ;; uint8 _y
+     (setq _y (sys::peek buf ptr- :char)) (incf ptr- 1)
    ;;
    self)
   )
 
-(setf (get assessment_package::weed_location :md5sum-) "7f660f9d4b49f000c880a057d53b40c1")
+(setf (get assessment_package::weed_location :md5sum-) "fc8bc5e93d03fc0fbc549a0dab8e8013")
 (setf (get assessment_package::weed_location :datatype-) "assessment_package/weed_location")
 (setf (get assessment_package::weed_location :definition-)
-      "uint32 id
-uint8 row
-uint8 xpos
-uint8 ypos
-
+      "uint32 weed_id
+uint8 row_id
+uint8 x
+uint8 y
 
 ")
 
 
 
-(provide :assessment_package/weed_location "7f660f9d4b49f000c880a057d53b40c1")
+(provide :assessment_package/weed_location "fc8bc5e93d03fc0fbc549a0dab8e8013")
 
 

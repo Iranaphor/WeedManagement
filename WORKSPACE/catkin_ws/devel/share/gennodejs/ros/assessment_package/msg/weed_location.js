@@ -18,49 +18,49 @@ class weed_location {
   constructor(initObj={}) {
     if (initObj === null) {
       // initObj === null is a special case for deserialization where we don't initialize fields
-      this.id = null;
-      this.row = null;
-      this.xpos = null;
-      this.ypos = null;
+      this.weed_id = null;
+      this.row_id = null;
+      this.x = null;
+      this.y = null;
     }
     else {
-      if (initObj.hasOwnProperty('id')) {
-        this.id = initObj.id
+      if (initObj.hasOwnProperty('weed_id')) {
+        this.weed_id = initObj.weed_id
       }
       else {
-        this.id = 0;
+        this.weed_id = 0;
       }
-      if (initObj.hasOwnProperty('row')) {
-        this.row = initObj.row
-      }
-      else {
-        this.row = 0;
-      }
-      if (initObj.hasOwnProperty('xpos')) {
-        this.xpos = initObj.xpos
+      if (initObj.hasOwnProperty('row_id')) {
+        this.row_id = initObj.row_id
       }
       else {
-        this.xpos = 0;
+        this.row_id = 0;
       }
-      if (initObj.hasOwnProperty('ypos')) {
-        this.ypos = initObj.ypos
+      if (initObj.hasOwnProperty('x')) {
+        this.x = initObj.x
       }
       else {
-        this.ypos = 0;
+        this.x = 0;
+      }
+      if (initObj.hasOwnProperty('y')) {
+        this.y = initObj.y
+      }
+      else {
+        this.y = 0;
       }
     }
   }
 
   static serialize(obj, buffer, bufferOffset) {
     // Serializes a message object of type weed_location
-    // Serialize message field [id]
-    bufferOffset = _serializer.uint32(obj.id, buffer, bufferOffset);
-    // Serialize message field [row]
-    bufferOffset = _serializer.uint8(obj.row, buffer, bufferOffset);
-    // Serialize message field [xpos]
-    bufferOffset = _serializer.uint8(obj.xpos, buffer, bufferOffset);
-    // Serialize message field [ypos]
-    bufferOffset = _serializer.uint8(obj.ypos, buffer, bufferOffset);
+    // Serialize message field [weed_id]
+    bufferOffset = _serializer.uint32(obj.weed_id, buffer, bufferOffset);
+    // Serialize message field [row_id]
+    bufferOffset = _serializer.uint8(obj.row_id, buffer, bufferOffset);
+    // Serialize message field [x]
+    bufferOffset = _serializer.uint8(obj.x, buffer, bufferOffset);
+    // Serialize message field [y]
+    bufferOffset = _serializer.uint8(obj.y, buffer, bufferOffset);
     return bufferOffset;
   }
 
@@ -68,14 +68,14 @@ class weed_location {
     //deserializes a message object of type weed_location
     let len;
     let data = new weed_location(null);
-    // Deserialize message field [id]
-    data.id = _deserializer.uint32(buffer, bufferOffset);
-    // Deserialize message field [row]
-    data.row = _deserializer.uint8(buffer, bufferOffset);
-    // Deserialize message field [xpos]
-    data.xpos = _deserializer.uint8(buffer, bufferOffset);
-    // Deserialize message field [ypos]
-    data.ypos = _deserializer.uint8(buffer, bufferOffset);
+    // Deserialize message field [weed_id]
+    data.weed_id = _deserializer.uint32(buffer, bufferOffset);
+    // Deserialize message field [row_id]
+    data.row_id = _deserializer.uint8(buffer, bufferOffset);
+    // Deserialize message field [x]
+    data.x = _deserializer.uint8(buffer, bufferOffset);
+    // Deserialize message field [y]
+    data.y = _deserializer.uint8(buffer, bufferOffset);
     return data;
   }
 
@@ -90,17 +90,16 @@ class weed_location {
 
   static md5sum() {
     //Returns md5sum for a message object
-    return '7f660f9d4b49f000c880a057d53b40c1';
+    return 'fc8bc5e93d03fc0fbc549a0dab8e8013';
   }
 
   static messageDefinition() {
     // Returns full string definition for message
     return `
-    uint32 id
-    uint8 row
-    uint8 xpos
-    uint8 ypos
-    
+    uint32 weed_id
+    uint8 row_id
+    uint8 x
+    uint8 y
     
     `;
   }
@@ -111,32 +110,32 @@ class weed_location {
       msg = {};
     }
     const resolved = new weed_location(null);
-    if (msg.id !== undefined) {
-      resolved.id = msg.id;
+    if (msg.weed_id !== undefined) {
+      resolved.weed_id = msg.weed_id;
     }
     else {
-      resolved.id = 0
+      resolved.weed_id = 0
     }
 
-    if (msg.row !== undefined) {
-      resolved.row = msg.row;
+    if (msg.row_id !== undefined) {
+      resolved.row_id = msg.row_id;
     }
     else {
-      resolved.row = 0
+      resolved.row_id = 0
     }
 
-    if (msg.xpos !== undefined) {
-      resolved.xpos = msg.xpos;
+    if (msg.x !== undefined) {
+      resolved.x = msg.x;
     }
     else {
-      resolved.xpos = 0
+      resolved.x = 0
     }
 
-    if (msg.ypos !== undefined) {
-      resolved.ypos = msg.ypos;
+    if (msg.y !== undefined) {
+      resolved.y = msg.y;
     }
     else {
-      resolved.ypos = 0
+      resolved.y = 0
     }
 
     return resolved;

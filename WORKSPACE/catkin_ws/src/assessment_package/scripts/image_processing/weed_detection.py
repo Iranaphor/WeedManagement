@@ -17,7 +17,7 @@ def basil(IMG_RAW, filter_type=""):
 	im_weed_1 = np.array(im_h>im_s, dtype='uint8')
 	im_weed_2 = imclose(im_weed_1, strel('square',5))
 	im_weed_3 = imerode(im_weed_2, strel('square',5))
-	weedMask = imreconstruct(imclearborder(im_weed_3), im_weed_2, strel('square',3))
+	weedMask = imclearborder(imreconstruct(im_weed_3, im_weed_2, strel('square',3))) #adjust border size
 
 	if filter_type=="weed_only":
                 return (weedMask)
@@ -62,7 +62,8 @@ def cabbage(IMG_RAW):
 	# Weed Mask
 	im_weed_1 = imdilate(plantMask, strel('disk',25)) + dirtMask
 	weedMask1 = imbinarize(im_weed_1,0)
-	weedMask = np.array(imclearborder(weedMask1==0), dtype='uint8')
+	weedMask2 = imopen(weedMask1,strel('disk',2))
+	weedMask = np.array(imclearborder(weedMask2==0), dtype='uint8')
 	
 	# Overlay
 	Overlay = IMG_RAW.copy()
@@ -91,6 +92,7 @@ def onion(IMG_RAW,n):
 	im_plant_1 = np.array(x<im_b, dtype='uint8')
 	im_plant_rot = imrotate(im_plant_1,n,'bilinear','crop') #DOES NOT WORK THE SAME AS MATLAB
 	im_plant_2 = T(T(im_plant_rot)*T(summ(im_plant_rot,'column')))
+	np.seterr(divide='ignore', invalid='ignore')
 	im_plant_3 = np.divide(im_plant_2.astype(float),np.amax(im_plant_2)) #Normalize image
 	im_plant_4 = imbinarize(im_plant_3,0.35)
 	im_plant_5 = imdilate(im_plant_4, strel('disk',25))
@@ -102,8 +104,8 @@ def onion(IMG_RAW,n):
 
 	# Weed Mask
 	weedMask1 = plantMask+dirtMask;
-	weedMask = np.array(weedMask1==0, dtype='uint8')
-	#weedMask = np.array(imclearborder(weedMask1==0), dtype='uint8')
+	weedMask = np.array(imerode(weedMask1==0, strel('disk',3)), dtype='uint8')
+	#weedMask = np.array(weedMask1==0, dtype='uint8')
 	im_weed_target_1b = imfill(weedMask, .5);
 	im_weed_target_2b = np.array(imclearborder(imerode(im_weed_target_1b, strel('disk',10))), dtype='uint8')
 
