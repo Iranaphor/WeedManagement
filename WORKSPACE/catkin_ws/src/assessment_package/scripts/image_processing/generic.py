@@ -20,7 +20,7 @@ def imreconstruct(img, mask, st): #img is dilated
 		img_new = img
 			
 
-def imfill(im_in, n): #swap this out to only accept binary images
+def imfill(im_in): #swap this out to only accept binary images
 	h, w = im_in.shape[:2]
 	
 	#invert im_in (padd by 2)
@@ -51,20 +51,23 @@ def imbinarizerange(im_in, minthreshold, maxthreshold):
 	bina2 = np.array(im_in<maxthreshold,dtype='uint8')
 	return bina1*bina2
 
+def iminvert(I):
+	return np.array(I==0, dtype='uint8')
+
 def imdilate(I, kernel):
-	return cv2.dilate(I.astype(np.uint8),  kernel, iterations=1)
+	return np.array(cv2.dilate(I.astype(np.uint8),  kernel, iterations=1), dtype='uint8')
 
 def imerode(I, kernel):
-	return cv2.erode(I.astype(np.uint8),  kernel, iterations=1)
+	return np.array(cv2.erode(I.astype(np.uint8),  kernel, iterations=1), dtype='uint8')
 
 def imclose(I, kernel):
-	return cv2.morphologyEx(I.astype(np.uint8), cv2.MORPH_CLOSE, kernel)
+	return np.array(cv2.morphologyEx(I.astype(np.uint8), cv2.MORPH_CLOSE, kernel), dtype='uint8')
 
 def imopen(I, kernel):
-	return cv2.morphologyEx(I.astype(np.uint8), cv2.MORPH_OPEN, kernel)
+	return np.array(cv2.morphologyEx(I.astype(np.uint8), cv2.MORPH_OPEN, kernel), dtype='uint8')
 
 def bgr2hsv(I):
-	return cv2.cvtColor(I.astype(np.uint8), cv2.COLOR_BGR2HSV)
+	return np.array(cv2.cvtColor(I.astype(np.uint8), cv2.COLOR_BGR2HSV), dtype='uint8')
 
 def imrotate(image, angle, null_1, null_2): #https://stackoverflow.com/a/9042907
 	image_center = tuple(np.array(image.shape[1::-1]) / 2)
@@ -92,40 +95,33 @@ def summ(I,dimension='column'):
 #Adapted from https://answers.opencv.org/question/173768/how-to-delete-those-border-component/?answer=173769#post-id-173769
 def imclearborder(I, border=10):
 
+	# Ensure type definition
 	I = np.array(I, dtype='uint8')
-	s=(I.shape[0], I.shape[1])
-	I_copy = I.copy()*0
 	
 	# Create Border
-	Mask = np.ones(I.shape,dtype='uint8')
-	Mask[border:s[0]-border,border:s[1]-border]=0
+	Mask = genborder(I, border)
 
 	# Extract Intersections of blobs and border
 	Intersections = np.array(Mask & I, dtype='uint8')
 	
-
 	# Reconstruct the mask containing only edges
-	rec = imreconstruct(I, Intersections, strel('square',10))
+	rec = imreconstruct(Intersections, I, strel('square',10))
 	
-	# Mask - edgepieces
+	# InputMask - Edgepieces
 	filtered = np.array(I - rec, dtype='uint8');
-
-	#cv2.imshow('cv2',np.array(filtered+I)*124)
-	#cv2.waitKey(1)
 	
 	return filtered
 
-
-	#CREATING BORDER OF 1 on mask
-	#take difference of border and original
-	#	these are the points
-	#imreconstruct them
-	#negate
 	
-	
+def genborder(I, border=20):
+	s=(I.shape[0], I.shape[1])
+	Mask = np.ones(s,dtype='uint8')
+	Mask[border:s[0]-border,border:s[1]-border]=0
+	return Mask
 
 
-
+def addborder(I, border=20):
+	return I|genborder(I, border)
 
 
 

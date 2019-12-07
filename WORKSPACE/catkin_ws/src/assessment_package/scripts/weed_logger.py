@@ -60,7 +60,7 @@ class pixel2pos:
 		
 
 if __name__ == '__main__':
-	rospy.init_node("f_testing")
+	rospy.init_node("tf_testing")
 
 	#Initialise Topic
 	cam_frame = '/thorvald_001/kinect2_rgb_optical_frame'

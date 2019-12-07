@@ -31,6 +31,7 @@ class detector:
 		self.path = path
 		self.robot_name = robot_name
 		self.plant_type = "null"
+		#self.plant_type = "cabbage"
 		self.P_List=[]
 
 		#
@@ -47,7 +48,7 @@ class detector:
 
 		#Define Image Subscriber
 		self.subscriber = rospy.Subscriber("/"+robot_name+"/kinect2_camera/hd/image_color_rect", Image, self.callback)
-		self.row_type_subscriber = rospy.Subscriber("/"+robot_name+"/row_type", String, self.row_type_callback)
+		self.row_type_subscriber = rospy.Subscriber("/thorvald_001/navigator/row_type", String, self.row_type_callback)
 		
 		
 
@@ -110,12 +111,12 @@ class detector:
 
 	def callback(self, data):
 		IMG_RAW = self.bridge.imgmsg_to_cv2(data, "bgr8")
-		t = rospy.Time.now()	
+		t = rospy.Time.now()
 
 		#Detect the weeds
 		if self.plant_type == "basil":
-			OVERLAY,WEED,_,_ = basil(cv2.resize(IMG_RAW, (160,90)))
-			
+			OVERLAY,WEED,_,_,crap = basil(cv2.resize(IMG_RAW, (160,90)))
+			self.pub_weed.publish(self.bridge.cv2_to_imgmsg(crap, "mono8"))
 			rad = 0.025;
 		elif self.plant_type == "cabbage":
 			OVERLAY,WEED,_,_,crap = cabbage(cv2.resize(IMG_RAW, (480, 270)))
@@ -137,7 +138,7 @@ class detector:
 				P=Point()
 				P.x=np.around(p[0], 2)
 				P.y=np.around(p[1], 2)
-				self.P_List.append( (str(P.x),str(P.y),str(rad)) )
+				self.P_List.append( (str(P.x), str(P.y), str(rad)) )
 
 			#self.pub_weed.publish(self.bridge.cv2_to_imgmsg(WEED*255, "mono8"))
 			self.pub_overlay.publish(self.bridge.cv2_to_imgmsg(OVERLAY,"bgr8"))

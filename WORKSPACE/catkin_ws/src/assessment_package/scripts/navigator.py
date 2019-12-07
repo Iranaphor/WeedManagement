@@ -15,45 +15,46 @@ import numpy as np
 
 class navigation_manager:
 
-	def __init__(self, robot_name, yaml_path):
+	def __init__(self, CONFIG):
 		print("navigation_manager.__init()__")
 
 		#Save inputs
-		self.robot_name = robot_name
-		self.yaml_path = yaml_path
+		self.CONFIG = CONFIG
+		self.robot_name = CONFIG['scanner_robot_name']
 		
 		#Variable initialisation
 		self.s=""
 		self.goal_send = rospy.Time.now()
 
-		#Read and format the robot path from the yaml
-		path_details = yaml.safe_load(open(yaml_path)) #TODO: Add condition to skip this and just input the path as a yaml itself
-		self.path_raw = self.generate_list(path_details)
+		#Format the robot path from the CONFIG
+		self.path_raw = self.generate_list(CONFIG)
 		self.path = self.path_raw[:]
 		print(self.path)
 
 		#Initialise Publishers and Subscribers
-		self.move_base_goal = rospy.Publisher("/"+robot_name+"/move_base/goal", MoveBaseActionGoal, queue_size = 2)
-		self.row_type = rospy.Publisher("/"+robot_name+"/row_type", String, queue_size = 2)
-		self.move_base_status = rospy.Subscriber("/"+robot_name+"/move_base/goal", MoveBaseActionGoal, self.movebase_goal_tracker)
-		self.move_base_status = rospy.Subscriber("/"+robot_name+"/move_base/status", GoalStatusArray, self.movebase_status)
+		self.row_type = rospy.Publisher("/"+CONFIG['sprayer_robot_name']+"/navigator/row_type", String, queue_size = 2)
+		self.move_base_goal = rospy.Publisher("/"+self.robot_name+"/move_base/goal", MoveBaseActionGoal, queue_size = 2)
+		self.move_base_goal_subscriber = rospy.Subscriber("/"+self.robot_name+"/move_base/goal", MoveBaseActionGoal, self.movebase_goal_tracker)
+		self.move_base_status = rospy.Subscriber("/"+self.robot_name+"/move_base/status", GoalStatusArray, self.movebase_status)
 		sleep(1) #sleep to enable the movebase publisher to respond
 
 		#Move to first position
 		self.move(self.path[0])
 	
-	#Generate path list from yaml input
+
+	#Generate path list from CONFIG input
 	def generate_list(self, path_details):
 		path = []
 		for row in enumerate(path_details['row_details']):
 			#Switch to enable snaking through rows
-			if (row[0]%2==0):
-				path.append((path_details['row_start_y'],row[1]['pos'],0,'null'))
-				path.append((path_details['row_end_y'],row[1]['pos'],0,row[1]['type']))
+			if (row[0]%2==1):
+				path.append((row[1]['start'][1], row[1]['start'][0], 180, 'null'))
+				path.append((row[1]['end'][1], row[1]['end'][0], 180, row[1]['type']))
 			else:
-				path.append((path_details['row_end_y'],row[1]['pos'],180,'null'))
-				path.append((path_details['row_start_y'],row[1]['pos'],180,row[1]['type']))
+				path.append((row[1]['end'][1], row[1]['end'][0], 0, 'null'))
+				path.append((row[1]['start'][1], row[1]['start'][0], 0, row[1]['type']))
 		return path
+
 	
 
 	#Publisher for move_base/goal
@@ -88,6 +89,7 @@ class navigation_manager:
 		
 		#Publish Goal
 		self.move_base_goal.publish(goal)
+		print("row: "+position[3])
 		self.row_type.publish(position[3])
 	
 	#Subscriber to track the publish time for the goal
@@ -96,14 +98,16 @@ class navigation_manager:
 		self.goal_send = data.goal.target_pose.header.stamp.secs
 		print("tracker: " + str(self.goal_send))
 	
+
 	#Tracker to see if the goal has been reached, and move the robot to the next goal
 	def movebase_status(self, data):
 		#http://docs.ros.org/melodic/api/actionlib_msgs/html/msg/GoalStatus.html
 
 		if (len(data.status_list)>0):
 
-			#Debug printout			
-			sn="(" + str(len(data.status_list)) + ")("+ str(data.status_list[-1].status)+")("+str(self.goal_send)+":"+str(data.status_list[-1].goal_id.stamp.secs)+")("+str(len(self.path))+")"
+			#Debug printout
+			sl = data.status_list
+			sn="("+str(len(sl))+")("+str(sl[-1].status)+")("+str(self.goal_send)+":"+str(sl[-1].goal_id.stamp.secs)+")("+str(len(self.path))+")"
 			if (self.s != sn):
 				print(self.s)
 				self.s = sn
@@ -128,13 +132,13 @@ if __name__ == '__main__':
 	path = os.path.dirname(argv[0])
 	
 	#Manage args
-	robot_name = "thorvald_001"
-	yamlpath = '/home/computing/Thorvald/WORKSPACE/catkin_ws/src/assessment_package/config/navigation_targets.yaml'
-	#robot_name = argv[1]
-	#yamlpath = argv[2]
+	yaml_path = '/home/computing/Thorvald/WORKSPACE/catkin_ws/src/assessment_package/config/navigation_targets.yaml'
+	#yaml_path = argv[1]
 	
+	CONFIG = yaml.safe_load(open(yaml_path))
+
 	rospy.init_node("navigator", anonymous=False)
-	nm = navigation_manager(robot_name, yamlpath)
+	nm = navigation_manager(CONFIG)
 	rospy.spin()
 
 

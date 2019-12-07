@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
-from generic import imreconstruct, imfill, imbinarize, imbinarizerange, imdilate, imerode, imclose, imopen, bgr2hsv, imrotate, strel, T, summ, imclearborder 
+from generic import *
 from sys import argv
 import os
 
@@ -11,35 +11,32 @@ def basil(IMG_RAW, filter_type=""):
 	im = IMG_RAW.copy()
 	im_hsv = im_hsv.copy()
 	im_h = im_hsv[:,:,0].astype(float)/180
-	im_s = im_hsv[:,:,1].astype(float)/256
+	im_s = im_hsv[:,:,1].astype(float)/255
 
 	# Weed Mask
 	im_weed_1 = np.array(im_h>im_s, dtype='uint8')
-	im_weed_2 = imclose(im_weed_1, strel('square',5))
-	im_weed_3 = imerode(im_weed_2, strel('square',5))
-	weedMask = imclearborder(imreconstruct(im_weed_3, im_weed_2, strel('square',3))) #adjust border size
-
+	im_weed_1 = imclose(im_weed_1, strel('disk',5))
+	im_weed_2 = imopen(im_weed_1, strel('disk',5))
+	im_weed_3 = imerode(im_weed_2, strel('disk',5))
+	#im_weed_4 = (im_weed_2+im_weed_3)*125
+	weedMask = imclearborder(imreconstruct(im_weed_3, im_weed_2, strel('disk',10)),2) #adjust border size
+	
 	if filter_type=="weed_only":
                 return (weedMask)
         
 	# Dirt Mask
-	dirtMask1 = 1-imbinarize(im_h, 0.2)
+	dirtMask1 = iminvert(imbinarize(im_h, 0.2))
 	dirtMask = ((dirtMask1+weedMask)>0)-weedMask
 	
 	
 	# Plant Mask 2
-	plantMask = 1-(dirtMask+weedMask)
+	plantMask = iminvert(dirtMask+weedMask)
 
 	# Overlay
 	Overlay = im.copy()
 	Overlay[:,:,2] = Overlay[:,:,2]+weedMask*100;
 	Overlay[:,:,1] = Overlay[:,:,1]+plantMask*100;
 	Overlay[:,:,0] = Overlay[:,:,0]+dirtMask*100;
-
-	#cv2.imwrite('out/Overlay.png', Overlay)
-	#cv2.imwrite('out/plantMask.png', plantMask*255)
-	#cv2.imwrite('out/weedMask.png', weedMask*255)
-	#cv2.imwrite('out/dirtMask.png', dirtMask*255)
 
 	return (Overlay, weedMask, plantMask, dirtMask)
 
@@ -55,9 +52,10 @@ def cabbage(IMG_RAW):
 	im_dirt_1 = np.array(im_dirt_1*255,dtype='uint8')*255
 	im_dirt_1 = imbinarizerange(im_dirt_1, 150,215)
 	#im_dirt_1 = imbinarize(im_h, .2)
-	dirtMask1 = imfill(im_dirt_1, .5)
+	dirtMask1 = imclearborder(imfill(im_dirt_1),2)
 	#dirtMask2 = imerode(dirtMask1,strel('disk', 7))
-	dirtMask = np.array(dirtMask1==0, dtype='uint8')
+	dirtMask3 = iminvert(dirtMask1)
+	dirtMask = addborder(dirtMask3, 20)
 	
 	# Plant Mask
 	plantMask = np.array(imopen(dirtMask1.astype(np.uint8), strel('disk',35)), dtype='uint8')
@@ -66,9 +64,8 @@ def cabbage(IMG_RAW):
 	im_weed_1 = imdilate(plantMask, strel('disk',25)) + dirtMask
 	weedMask1 = imbinarize(im_weed_1,0)
 	weedMask2 = imopen(weedMask1,strel('disk',2))
-	weedMask2 = imerode(weedMask2,strel('disk',10))==0
-	weedMask3 = np.array(imclearborder(weedMask2), dtype='uint8')
-	weedMask = np.array(imclearborder(weedMask2), dtype='uint8')
+	weedMask3 = iminvert(imerode(weedMask2,strel('disk',10)))
+	weedMask = imclearborder(weedMask3)
 	
 	# Overlay
 	Overlay = IMG_RAW.copy()
@@ -76,12 +73,7 @@ def cabbage(IMG_RAW):
 	Overlay[:,:,1] = Overlay[:,:,1]+plantMask*100;
 	Overlay[:,:,0] = Overlay[:,:,0]+dirtMask*100;
 	
-	#cv2.imwrite('out/Overlay.png', Overlay)
-	#cv2.imwrite('out/plantMask.png', plantMask*255)
-	#cv2.imwrite('out/weedMask.png', weedMask*255)
-	#cv2.imwrite('out/dirtMask.png', dirtMask*255)
-	
-	return (Overlay, weedMask, plantMask, dirtMask, np.array(weedMask3, dtype='uint8')*123)
+	return (Overlay, weedMask, plantMask, dirtMask)
 
 
 def onion(IMG_RAW,n):
@@ -109,24 +101,18 @@ def onion(IMG_RAW,n):
 
 	# Weed Mask
 	weedMask1 = plantMask+dirtMask;
-	weedMask = np.array(imerode(weedMask1==0, strel('disk',3)), dtype='uint8')
-	#weedMask = np.array(weedMask1==0, dtype='uint8')
-	im_weed_target_1b = imfill(weedMask, .5);
-	im_weed_target_2b = np.array(imclearborder(imerode(im_weed_target_1b, strel('disk',10))), dtype='uint8')
+	weedMask = imerode(iminvert(weedMask1), strel('disk',3))
+	im_weed_target_1b = imfill(weedMask);
+	im_weed_target_2b = imclearborder(imerode(im_weed_target_1b, strel('disk',10)))
 
 	# Overlay
 	Overlay = IMG_RAW.copy()
-	Overlay[:,:,2] = Overlay[:,:,2]+weedMask*100;
+	Overlay[:,:,2] = Overlay[:,:,2]+im_weed_target_2b*100;
 	Overlay[:,:,1] = Overlay[:,:,1]+plantMask*100;
 	Overlay[:,:,0] = Overlay[:,:,0]+dirtMask*100;
 	Overlay[:,:,0] = Overlay[:,:,0]+im_weed_target_2b*255
 	Overlay[:,:,1] = Overlay[:,:,1]+im_weed_target_2b*255
 	Overlay[:,:,2] = Overlay[:,:,2]+im_weed_target_2b*255
-
-	#cv2.imwrite(path+'/Overlay.png', Overlay)
-	#cv2.imwrite('out/plantMask.png', plantMask*255)
-	#cv2.imwrite('out/weedMask.png', weedMask*255)
-	#cv2.imwrite('out/dirtMask.png', dirtMask*255)
 
 	return (Overlay, im_weed_target_2b, plantMask, dirtMask)
 
