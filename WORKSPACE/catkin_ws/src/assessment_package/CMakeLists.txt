@@ -16,6 +16,7 @@ find_package(catkin REQUIRED COMPONENTS
 )
 add_message_files(
   FILES
+  WeedList.msg
   weed_location.msg
 )
 generate_messages(

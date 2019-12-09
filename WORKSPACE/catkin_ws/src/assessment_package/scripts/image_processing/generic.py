@@ -126,6 +126,28 @@ def addborder(I, border=20):
 
 
 
+#Adapted from https://www.learnopencv.com/find-center-of-blob-centroid-using-opencv-cpp-python/
+def imfindcentroids(I):
+	centroids = []
+	
+	# Find contours in the binary image
+	_,contours,_ = cv2.findContours(I, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+	
+	# Calculate centrepoint of each blob
+	for c in contours:
+		# calculate moments for each contour
+		M = cv2.moments(c)
+		
+		# calculate x,y coordinate of center
+		if M["m00"] != 0:
+			cX = int(M["m10"] / M["m00"])
+			cY = int(M["m01"] / M["m00"])
+		else:
+			cX, cY = 0, 0
+		
+		centroids.append((cX,cY))
+		
+	return centroids
 
 
 

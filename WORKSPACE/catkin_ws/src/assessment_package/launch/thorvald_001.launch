@@ -1,19 +1,19 @@
 <?xml version="1.0"?>
 
 <launch>
+	<arg name="system_config" default="$(find assessment_package)config/system_config.yaml"/>
 	<arg name="robot_name" default="thorvald_001"/>
-	<arg name="basil" default="false"/>
-	<arg name="cabbage" default="false"/>
-	<arg name="onion" default="false"/>
-	
-	<!-- Launch movement -->
+
+	<!-- Launch navigator -->
 	<include file="$(find assessment_package)/launch/navigator.launch">
-		<arg name="robot_name" value="$(arg robot_name)" />
+		<arg name="system_config" value="$(arg system_config)" />
+		<arg name="robot_name" value="$(arg robot_name)"/>
 	</include>
 
-	<!-- Launch detectors -->
-	<include file="$(find assessment_package)/launch/detectors.launch">
-		<arg name="robot_name" value="$(arg robot_name)" />
+	<!-- Launch detector -->
+	<include file="$(find assessment_package)/launch/detector.launch">
+		<arg name="system_config" value="$(arg system_config)" />
+		<arg name="robot_name" value="$(arg robot_name)"/>
 	</include>
 
 </launch>

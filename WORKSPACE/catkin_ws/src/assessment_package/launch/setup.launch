@@ -8,12 +8,7 @@
 		<arg name="map_server" value="true" />
 	</include>
 
-
-	<!-- map server 
-	<arg name="map_file" default="$(find uol_cmp9767m_base)maps/cropped.yaml"/>
-	<node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)"/> -->
-
-
+	
 	<!-- move_base -->
 	<include file="$(find assessment_package)/launch/move_base_robot.launch">
 		<arg name="robot_name" value="thorvald_001" />
@@ -23,21 +18,20 @@
 	</include>
 
 
-	<!-- weed_detection 
+	<!-- Configuration Components -->
+	<arg name="system_config" value="$(find assessment_package)config/system_config.yaml"/>
+
+
+	<!-- robot_001 -->
 	<include file="$(find assessment_package)/launch/thorvald_001.launch">
-		<arg name="robot_name" value="thorvald_001" />
-		<arg name="basil" value="true" />
-		<arg name="cabbage" value="true" />
-		<arg name="onion" value="true" />
-	</include> -->
+		<arg name="system_config" default="$(arg system_config)"/>
+	</include>
 	
 
-	<!-- sprayer_system 
-	<include file="$(find assessment_package)/launch/weed_tracker.launch">
-		<arg name="sprayer_robot_name" value="thorvald_002" />
-		<arg name="robot_name" value="thorvald_001" />
-	</include>-->
-	
+	<!-- robot_002 
+	<include file="$(find assessment_package)/launch/thorvald_002.launch">
+		<arg name="system_config" default="$(arg system_config)"/>
+	</include> -->
 	
 	
 </launch>

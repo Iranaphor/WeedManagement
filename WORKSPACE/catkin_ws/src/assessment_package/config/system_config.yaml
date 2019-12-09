@@ -1,0 +1,78 @@
+#Robots
+scanner_robot: '/thorvald_001'
+sprayer_robot: '/thorvald_002'
+
+#Movebase topics
+movebase_goal: '/move_base/goal'
+movebase_status: '/move_base/status'
+
+#Map details
+map_topic: '/map'
+map_frame: '/map'
+
+
+#REMAP /MOVEBASESIMLE TO /THORVALD_00X/MOVEBASESIMPLE
+
+#########
+# WORLD #
+#########
+
+#Crop row layout details
+row_details: [
+{start: [-3.75, 6.5], end: [-3.75, -6.5], type: 'basil'},
+{start: [-2.75, 6.5], end: [-2.75, -6.5], type: 'basil'}, 
+{start: [-0.75, 6.5], end: [-0.75, -6.5], type: 'cabbage'}, 
+{start: [ 0.25, 6.5], end: [ 0.25, -6.5], type: 'cabbage'}, 
+{start: [ 2.25, 6.5], end: [ 2.25, -6.5], type: 'onion'}, 
+{start: [ 3.25, 6.5], end: [ 3.25, -6.5], type: 'onion'}
+]
+
+#Crop type management details
+plant_management: {
+basil: {nozel_radius: 0.025},
+cabbage: {nozel_radius: 0.025},
+onion: {nozel_radius: 0.05}
+}
+
+
+
+################
+# NAVIGATOR.py #
+################
+
+#Topics to communicate with detector and hunter
+row_meta: '/NAVIGATOR/row_meta'
+row_data: '/NAVIGATOR/row_data'
+
+###############
+# DETECTOR.py #
+###############
+
+#Image Outputs
+weed_output: '/DETECTOR/WEED'
+overlay_output: '/DETECTOR/OVERLAY'
+
+#Camera details
+camera_topic: '/kinect2_camera/hd/image_color_rect'
+camera_info:  '/kinect2_camera/hd/camera_info'
+camera_frame: '/kinect2_rgb_optical_frame'
+
+
+#############
+# HUNTER.py #
+#############
+
+#Number of rows to leave between the detector and sprayer
+row_buffer: 2
+
+
+#############
+# KILLER.py #
+#############
+
+spray_point: '/KILLER/spray_point'
+spray_service: '/KILLER/spray'
+
+
+
+

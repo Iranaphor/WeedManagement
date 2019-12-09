@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+
+<launch>
+	<arg name="system_config" default="$(find assessment_package)config/system_config.yaml"/>
+	<arg name="robot_name" default="thorvald_002"/>
+
+	<!-- Launch detector -->
+	<group ns="$(arg robot_name)">
+		<node name="killer" pkg="assessment_package" type="killer.py" output="screen" args="$(arg system_config)"/>
+	</group>
+</launch>

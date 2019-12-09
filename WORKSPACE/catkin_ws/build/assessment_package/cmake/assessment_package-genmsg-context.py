@@ -1,6 +1,6 @@
 # generated from genmsg/cmake/pkg-genmsg.context.in
 
-messages_str = "/home/computing/Thorvald/WORKSPACE/catkin_ws/src/assessment_package/msg/weed_location.msg"
+messages_str = "/home/computing/Thorvald/WORKSPACE/catkin_ws/src/assessment_package/msg/WeedList.msg;/home/computing/Thorvald/WORKSPACE/catkin_ws/src/assessment_package/msg/weed_location.msg"
 services_str = ""
 pkg_name = "assessment_package"
 dependencies_str = "std_msgs"

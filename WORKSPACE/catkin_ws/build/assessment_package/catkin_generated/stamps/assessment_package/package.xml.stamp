@@ -2,12 +2,12 @@
 <package format="2">
   <name>assessment_package</name>
   <version>0.0.1</version>
-  <description>The a package</description>
-  <maintainer email="a@a.net">a</maintainer>
+  <description>Package to Locate and Kill Weeds using 2 Thorvald Autonomous Robots</description>
+  <maintainer email="15591313@students.lincoln.ac.uk">James Heselden</maintainer>
 
   <license>TODO</license>
 
-  <author email="a@a.net">a</author>
+  <author email="15591313@students.lincoln.ac.uk">James Heselden</author>
 
 
   <buildtool_depend>catkin</buildtool_depend>

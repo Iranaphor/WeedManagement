@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+
+<launch>
+	<arg name="system_config" default="$(find assessment_package)config/system_config.yaml"/>
+	<arg name="robot_name" default="thorvald_002"/>
+
+	<!-- Launch hunter -->
+	<include file="$(find assessment_package)/launch/hunter.launch">
+		<arg name="system_config" value="$(arg system_config)" />
+		<arg name="robot_name" value="$(arg robot_name)"/>
+	</include>
+
+	<!-- Launch killer -->
+	<include file="$(find assessment_package)/launch/killer.launch">
+		<arg name="system_config" value="$(arg system_config)" />
+		<arg name="robot_name" value="$(arg robot_name)"/>
+	</include>
+	
+</launch>
+

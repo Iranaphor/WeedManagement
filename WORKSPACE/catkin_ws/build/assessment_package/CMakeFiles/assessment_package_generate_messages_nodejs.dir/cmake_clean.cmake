@@ -1,5 +1,6 @@
 file(REMOVE_RECURSE
   "CMakeFiles/assessment_package_generate_messages_nodejs"
+  "/home/computing/Thorvald/WORKSPACE/catkin_ws/devel/share/gennodejs/ros/assessment_package/msg/WeedList.js"
   "/home/computing/Thorvald/WORKSPACE/catkin_ws/devel/share/gennodejs/ros/assessment_package/msg/weed_location.js"
 )
 

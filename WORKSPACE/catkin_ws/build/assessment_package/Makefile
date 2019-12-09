@@ -66,6 +66,17 @@ list_install_components/fast: list_install_components
 
 .PHONY : list_install_components/fast
 
+# Special rule for the target rebuild_cache
+rebuild_cache:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
+	/usr/bin/cmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+.PHONY : rebuild_cache
+
+# Special rule for the target rebuild_cache
+rebuild_cache/fast: rebuild_cache
+
+.PHONY : rebuild_cache/fast
+
 # Special rule for the target install
 install: preinstall
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
@@ -78,17 +89,6 @@ install/fast: preinstall/fast
 	/usr/bin/cmake -P cmake_install.cmake
 .PHONY : install/fast
 
-# Special rule for the target test
-test:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running tests..."
-	/usr/bin/ctest --force-new-ctest-process $(ARGS)
-.PHONY : test
-
-# Special rule for the target test
-test/fast: test
-
-.PHONY : test/fast
-
 # Special rule for the target install/local
 install/local: preinstall
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
@@ -100,6 +100,17 @@ install/local/fast: install/local
 
 .PHONY : install/local/fast
 
+# Special rule for the target test
+test:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running tests..."
+	/usr/bin/ctest --force-new-ctest-process $(ARGS)
+.PHONY : test
+
+# Special rule for the target test
+test/fast: test
+
+.PHONY : test/fast
+
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
@@ -110,17 +121,6 @@ edit_cache:
 edit_cache/fast: edit_cache
 
 .PHONY : edit_cache/fast
-
-# Special rule for the target rebuild_cache
-rebuild_cache:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
-	/usr/bin/cmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
-.PHONY : rebuild_cache
-
-# Special rule for the target rebuild_cache
-rebuild_cache/fast: rebuild_cache
-
-.PHONY : rebuild_cache/fast
 
 # Special rule for the target install/strip
 install/strip: preinstall
@@ -181,6 +181,21 @@ assessment_package_generate_messages_cpp/fast:
 .PHONY : assessment_package_generate_messages_cpp/fast
 
 # Convenience name for target.
+assessment_package/CMakeFiles/_assessment_package_generate_messages_check_deps_WeedList.dir/rule:
+	cd /home/computing/Thorvald/WORKSPACE/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 assessment_package/CMakeFiles/_assessment_package_generate_messages_check_deps_WeedList.dir/rule
+.PHONY : assessment_package/CMakeFiles/_assessment_package_generate_messages_check_deps_WeedList.dir/rule
+
+# Convenience name for target.
+_assessment_package_generate_messages_check_deps_WeedList: assessment_package/CMakeFiles/_assessment_package_generate_messages_check_deps_WeedList.dir/rule
+
+.PHONY : _assessment_package_generate_messages_check_deps_WeedList
+
+# fast build rule for target.
+_assessment_package_generate_messages_check_deps_WeedList/fast:
+	cd /home/computing/Thorvald/WORKSPACE/catkin_ws/build && $(MAKE) -f assessment_package/CMakeFiles/_assessment_package_generate_messages_check_deps_WeedList.dir/build.make assessment_package/CMakeFiles/_assessment_package_generate_messages_check_deps_WeedList.dir/build
+.PHONY : _assessment_package_generate_messages_check_deps_WeedList/fast
+
+# Convenience name for target.
 assessment_package/CMakeFiles/_assessment_package_generate_messages_check_deps_weed_location.dir/rule:
 	cd /home/computing/Thorvald/WORKSPACE/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 assessment_package/CMakeFiles/_assessment_package_generate_messages_check_deps_weed_location.dir/rule
 .PHONY : assessment_package/CMakeFiles/_assessment_package_generate_messages_check_deps_weed_location.dir/rule
@@ -224,21 +239,6 @@ assessment_package_generate_messages: assessment_package/CMakeFiles/assessment_p
 assessment_package_generate_messages/fast:
 	cd /home/computing/Thorvald/WORKSPACE/catkin_ws/build && $(MAKE) -f assessment_package/CMakeFiles/assessment_package_generate_messages.dir/build.make assessment_package/CMakeFiles/assessment_package_generate_messages.dir/build
 .PHONY : assessment_package_generate_messages/fast
-
-# Convenience name for target.
-assessment_package/CMakeFiles/assessment_package_generate_messages_eus.dir/rule:
-	cd /home/computing/Thorvald/WORKSPACE/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 assessment_package/CMakeFiles/assessment_package_generate_messages_eus.dir/rule
-.PHONY : assessment_package/CMakeFiles/assessment_package_generate_messages_eus.dir/rule
-
-# Convenience name for target.
-assessment_package_generate_messages_eus: assessment_package/CMakeFiles/assessment_package_generate_messages_eus.dir/rule
-
-.PHONY : assessment_package_generate_messages_eus
-
-# fast build rule for target.
-assessment_package_generate_messages_eus/fast:
-	cd /home/computing/Thorvald/WORKSPACE/catkin_ws/build && $(MAKE) -f assessment_package/CMakeFiles/assessment_package_generate_messages_eus.dir/build.make assessment_package/CMakeFiles/assessment_package_generate_messages_eus.dir/build
-.PHONY : assessment_package_generate_messages_eus/fast
 
 # Convenience name for target.
 assessment_package/CMakeFiles/assessment_package_gencpp.dir/rule:
@@ -361,6 +361,21 @@ assessment_package_gennodejs/fast:
 .PHONY : assessment_package_gennodejs/fast
 
 # Convenience name for target.
+assessment_package/CMakeFiles/assessment_package_generate_messages_eus.dir/rule:
+	cd /home/computing/Thorvald/WORKSPACE/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 assessment_package/CMakeFiles/assessment_package_generate_messages_eus.dir/rule
+.PHONY : assessment_package/CMakeFiles/assessment_package_generate_messages_eus.dir/rule
+
+# Convenience name for target.
+assessment_package_generate_messages_eus: assessment_package/CMakeFiles/assessment_package_generate_messages_eus.dir/rule
+
+.PHONY : assessment_package_generate_messages_eus
+
+# fast build rule for target.
+assessment_package_generate_messages_eus/fast:
+	cd /home/computing/Thorvald/WORKSPACE/catkin_ws/build && $(MAKE) -f assessment_package/CMakeFiles/assessment_package_generate_messages_eus.dir/build.make assessment_package/CMakeFiles/assessment_package_generate_messages_eus.dir/build
+.PHONY : assessment_package_generate_messages_eus/fast
+
+# Convenience name for target.
 assessment_package/CMakeFiles/assessment_package_genlisp.dir/rule:
 	cd /home/computing/Thorvald/WORKSPACE/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 assessment_package/CMakeFiles/assessment_package_genlisp.dir/rule
 .PHONY : assessment_package/CMakeFiles/assessment_package_genlisp.dir/rule
@@ -427,13 +442,13 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... list_install_components"
+	@echo "... rebuild_cache"
 	@echo "... assessment_package_generate_messages_cpp"
+	@echo "... _assessment_package_generate_messages_check_deps_WeedList"
 	@echo "... _assessment_package_generate_messages_check_deps_weed_location"
 	@echo "... topological_navigation_generate_messages_py"
 	@echo "... install"
 	@echo "... assessment_package_generate_messages"
-	@echo "... assessment_package_generate_messages_eus"
-	@echo "... test"
 	@echo "... assessment_package_gencpp"
 	@echo "... topological_navigation_generate_messages_cpp"
 	@echo "... assessment_package_generate_messages_lisp"
@@ -443,11 +458,12 @@ help:
 	@echo "... topological_navigation_generate_messages_eus"
 	@echo "... topological_navigation_generate_messages_nodejs"
 	@echo "... assessment_package_gennodejs"
+	@echo "... assessment_package_generate_messages_eus"
+	@echo "... test"
 	@echo "... assessment_package_genlisp"
 	@echo "... assessment_package_generate_messages_nodejs"
 	@echo "... edit_cache"
 	@echo "... assessment_package_generate_messages_py"
-	@echo "... rebuild_cache"
 	@echo "... assessment_package_genpy"
 	@echo "... install/strip"
 .PHONY : help

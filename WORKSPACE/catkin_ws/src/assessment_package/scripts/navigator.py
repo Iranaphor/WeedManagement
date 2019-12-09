@@ -2,7 +2,6 @@
 import rospy
 from std_msgs.msg import String
 from sensor_msgs.msg import Image
-from assessment_package.msg import weed_location
 from move_base_msgs.msg import MoveBaseActionGoal, MoveBaseActionFeedback
 from actionlib_msgs.msg import GoalStatusArray
 from tf.transformations import quaternion_from_euler
@@ -16,11 +15,10 @@ import numpy as np
 class navigation_manager:
 
 	def __init__(self, CONFIG):
-		print("navigation_manager.__init()__")
-
+		print("_NAVIGATOR_init_")
 		#Save inputs
 		self.CONFIG = CONFIG
-		self.robot_name = CONFIG['scanner_robot_name']
+		ROB = CONFIG['scanner_robot']
 		
 		#Variable initialisation
 		self.s=""
@@ -32,10 +30,10 @@ class navigation_manager:
 		print(self.path)
 
 		#Initialise Publishers and Subscribers
-		self.row_type = rospy.Publisher("/"+CONFIG['sprayer_robot_name']+"/navigator/row_type", String, queue_size = 2)
-		self.move_base_goal = rospy.Publisher("/"+self.robot_name+"/move_base/goal", MoveBaseActionGoal, queue_size = 2)
-		self.move_base_goal_subscriber = rospy.Subscriber("/"+self.robot_name+"/move_base/goal", MoveBaseActionGoal, self.movebase_goal_tracker)
-		self.move_base_status = rospy.Subscriber("/"+self.robot_name+"/move_base/status", GoalStatusArray, self.movebase_status)
+		self.row_type = rospy.Publisher(ROB+CONFIG['row_meta'], String, queue_size = 2)
+		self.move_base_goal = rospy.Publisher(ROB+CONFIG['movebase_goal'], MoveBaseActionGoal, queue_size = 2)
+		self.move_base_goal_subscriber = rospy.Subscriber(ROB+CONFIG['movebase_goal'], MoveBaseActionGoal, self.movebase_goal_tracker)
+		self.move_base_status = rospy.Subscriber(ROB+CONFIG['movebase_status'], GoalStatusArray, self.movebase_status)
 		sleep(1) #sleep to enable the movebase publisher to respond
 
 		#Move to first position
@@ -66,7 +64,7 @@ class navigation_manager:
 
 		#Format Header
 		goal.goal.target_pose.header.seq = 5
-		goal.goal.target_pose.header.frame_id = 'map'
+		goal.goal.target_pose.header.frame_id = CONFIG['map_frame']
 		
 		#Add Publish-Time to Stamp
 		a = rospy.Time.now()
@@ -132,12 +130,12 @@ if __name__ == '__main__':
 	path = os.path.dirname(argv[0])
 	
 	#Manage args
-	yaml_path = '/home/computing/Thorvald/WORKSPACE/catkin_ws/src/assessment_package/config/navigation_targets.yaml'
-	#yaml_path = argv[1]
+	#yaml_path = '/home/computing/Thorvald/WORKSPACE/catkin_ws/src/assessment_package/config/navigation_targets.yaml'
+	yaml_path = argv[1]
 	
 	CONFIG = yaml.safe_load(open(yaml_path))
 
-	rospy.init_node("navigator", anonymous=False)
+	rospy.init_node("NAVIGATOR", anonymous=False)
 	nm = navigation_manager(CONFIG)
 	rospy.spin()
 

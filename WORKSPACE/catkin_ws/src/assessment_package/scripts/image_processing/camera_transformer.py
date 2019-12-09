@@ -11,9 +11,11 @@ from tf.transformations import quaternion_from_euler, euler_from_quaternion
 
 class pixel2pos:
 
-	def __init__(self, cam_frame, cam_info_topic):
+	def __init__(self, cam_frame, cam_info_topic, global_frame):
 		self.cam_frame = cam_frame
 		self.tf_listener = tf.TransformListener()
+		self.global_frame = global_frame;
+
 		sleep(1)
 		self.caminfo = rospy.Subscriber(cam_info_topic, CameraInfo, self.info)
 
@@ -48,10 +50,10 @@ class pixel2pos:
 		p_robot.header.frame_id = self.cam_frame
 		p_robot.pose.position = Point(X*Z,Y*Z,Z)
 
-		p_cam = self.tf_listener.transformPose('map', p_robot)
+		p_cam = self.tf_listener.transformPose(self.global_frame, p_robot)
 		pos = p_cam.pose.position;
 
-		#print(self.tf_listener.lookupTransform('map', p_robot, t))
+		#print(self.tf_listener.lookupTransform(self.global_frame, p_robot, t))
 
 		return [pos.x, pos.y]
 			
