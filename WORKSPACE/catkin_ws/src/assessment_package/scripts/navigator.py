@@ -117,8 +117,13 @@ class navigation_manager:
 				#If loop completed, restart loop
 				if (len(self.path) == 0):
 					print("(6|PATH_LIST_EMPTY)")
-					self.path = self.path_raw[:]
-				
+					if self.CONFIG['run_loop'] == True:
+						self.path = self.path_raw[:]
+					else:
+						
+						self.path.append((self.CONFIG['sprayer_robot_base'][1],self.CONFIG['sprayer_robot_base'][0],180,'null'))
+						self.move_base_status.unregister()
+
 				#Move to next position
 				self.move(self.path[0])
 		else:

@@ -2,6 +2,10 @@
 scanner_robot: '/thorvald_001'
 sprayer_robot: '/thorvald_002'
 
+scanner_robot_base: [-4, -10]
+sprayer_robot_base: [4, -10]
+
+
 #Movebase topics
 movebase_goal: '/move_base/goal'
 movebase_status: '/move_base/status'
@@ -12,6 +16,7 @@ map_frame: '/map'
 
 
 #REMAP /MOVEBASESIMLE TO /THORVALD_00X/MOVEBASESIMPLE
+#add custom SDF to killey.py
 
 #########
 # WORLD #
@@ -43,6 +48,7 @@ onion: {nozel_radius: 0.05}
 #Topics to communicate with detector and hunter
 row_meta: '/NAVIGATOR/row_meta'
 row_data: '/NAVIGATOR/row_data'
+run_loop: False
 
 ###############
 # DETECTOR.py #
@@ -62,9 +68,14 @@ camera_frame: '/kinect2_rgb_optical_frame'
 # HUNTER.py #
 #############
 
-#Number of rows to leave between the detector and sprayer
+#Rows to leave between robots
 row_buffer: 2
 
+#Twist Publisher
+cmd_vel: /teleop_joy/cmd_vel
+wheel_radius: 0.2 #attained from /opt/ros/kinetic/share/thorvald_description/config/thorvald_ii_4wd4ws_std/thorvald_ii_4wd4ws_std.yaml
+const_velocity: 0.5
+movebase_timeout: 60
 
 #############
 # KILLER.py #

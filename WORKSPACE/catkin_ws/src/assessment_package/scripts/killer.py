@@ -68,8 +68,6 @@ BOX_SDF2="""
 	  
    </model>
 </sdf>
-
-
 """
 
 
@@ -97,11 +95,11 @@ class Killer:
 		#self.plot_point = rospy.Subscriber("weed_killer/reset", String, self.reset)
 
 	#def reset(self, data):
-	#print(self.allmodels)
-	#d = DeleteModelRequest()
-	#for model in self.allmodels:
-		#d.model_name = model
-		#self.remover(model)
+		#print(self.allmodels)
+		#d = DeleteModelRequest()
+		#for model in self.allmodels:
+			#d.model_name = model
+			#self.remover(model)
 
 
 	def spray(self, r):

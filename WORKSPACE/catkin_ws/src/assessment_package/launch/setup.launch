@@ -25,7 +25,7 @@
 	<!-- robot_001 -->
 	<include file="$(find assessment_package)/launch/thorvald_001.launch">
 		<arg name="system_config" default="$(arg system_config)"/>
-	</include>
+	</include> 
 	
 
 	<!-- robot_002 
