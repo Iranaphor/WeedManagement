@@ -65,7 +65,6 @@ BOX_SDF2="""
 			</material>
 		 </visual>
 	  </link>
-	  
    </model>
 </sdf>
 """
@@ -83,11 +82,12 @@ class Killer:
 		self.sdf2 = BOX_SDF2
 
 		#Define Service System for Spraying
-		rospy.Service(CONFIG['spray_service'], Empty, self.spray) #Define service listener
+		rospy.Service(self.robot_name+CONFIG['spray_service'], Empty, self.spray) #Define service listener
 		self.spawner = rospy.ServiceProxy("/gazebo/spawn_sdf_model", SpawnModel) #Define service publisher
 
 		#Subscriber to plot box on defined coordinate
-		self.plot_point = rospy.Subscriber(CONFIG['spray_point'], Point, self.plot_point)
+		self.plot_point = rospy.Subscriber(self.robot_name+CONFIG['spray_point'], Point, self.plot_point)
+
 
 		#Defunct Code (Systems related to the automated removal of killboxes)
 		#self.allmodels = []
@@ -103,23 +103,25 @@ class Killer:
 
 
 	def spray(self, r):
+		print("uwu")
 		request = SpawnModelRequest()
 		request.model_name = 'killbox_%s' % uuid4()
 		request.model_xml = self.sdf
-		request.reference_frame = self.robot_name+"/base_link"
+		request.reference_frame = "/thorvald_002/base_link"
 		request.initial_pose.position.z = 0.005
 		request.initial_pose.position.x = -0.45
 		request.initial_pose.orientation.w = 1.0
 		self.spawner(request)
+		print("owo")
 		return []
 
 	def plot_point(self, r):
 		request = SpawnModelRequest()
-		request.model_name = 'killbox_%s' % uuid4()
+		request.model_name = "point_"+str(r.x)+"_"+str(r.y)+"_"+str(uuid4())
 		#self.allmodels.append(str(request.model_name))
 		#print("PLOT: " + request.model_name)
 		request.model_xml = self.sdf2
-		request.reference_frame = self.CONFIG['map_frame']
+		request.reference_frame = "map"#self.CONFIG['map_frame']
 		request.initial_pose.position.x = r.x
 		request.initial_pose.position.y = r.y
 		request.initial_pose.position.z = 0.2

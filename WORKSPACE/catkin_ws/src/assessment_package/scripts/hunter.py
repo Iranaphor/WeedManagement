@@ -6,6 +6,7 @@ import numpy as np
 from sys import argv
 from time import sleep, time
 from std_srvs.srv import Empty
+from geometry_msgs.msg import Point
 from assessment_package.msg import WeedList
 from actionlib_msgs.msg import GoalStatusArray
 from move_base_msgs.msg import MoveBaseActionGoal
@@ -24,8 +25,9 @@ class Hunter:
 		self.spawner = rospy.ServiceProxy(CONFIG['spray_service'], Empty)
 		self.weed_sub = rospy.Subscriber(ROB+CONFIG['row_data'], WeedList, self.scan_row)
 		self.align = rospy.Publisher(ROB+CONFIG['movebase_goal'], MoveBaseActionGoal, queue_size = 2)
-		self.waiter_for_status = rospy.Subscriber("/move_base/status", GoalStatusArray, self.waiter_status)
-		self.waiter_for_publisher = rospy.Subscriber("/move_base/goal", MoveBaseActionGoal, self.waiter_publisher)
+		self.plot_point = rospy.Publisher(ROB+CONFIG['spray_point'], Point, queue_size = 2)
+		self.waiter_for_status = rospy.Subscriber(ROB+"/move_base/status", GoalStatusArray, self.waiter_status)
+		self.waiter_for_publisher = rospy.Subscriber(ROB+CONFIG['movebase_goal'], MoveBaseActionGoal, self.waiter_publisher)
 		#self.sway = rospy.Publisher(ROB+CONFIG['cmd_vel'], Twist, queue_size = 2)
 		
 		
@@ -50,11 +52,14 @@ class Hunter:
 				print(lst)
 				
 				for weed in lst:
+					self.plot_point.publish(Point(weed[0],weed[1],0))
+					print("Moving to Weed")
 					self.move(weed)
 					self.waiter()
-					self.move_relative()
-					self.waiter()
-				
+					print("Spray")
+					self.spawner()
+					sleep(5)
+					print("\\(^,^)/ next node!")
 				
 				
 				
@@ -71,9 +76,9 @@ class Hunter:
 		path = []
 		w = weed_list.weeds.data
 		
-		for i in range(6):#len(w)):
+		for i in range(len(w)):
 			if (i%2):
-				path.append((w[i], w[i-1], 0, weed_list.plant_type))
+				path.append((w[i]+0.5, w[i-1], 0, weed_list.plant_type))
 		
 		return path
 		
@@ -90,13 +95,14 @@ class Hunter:
 		goal.goal.target_pose.header.frame_id = CONFIG['map_frame']
 		
 		#Add Publish-Time to Stamp
-		a = rospy.Time.now()
-		goal.goal.target_pose.header.stamp = a
-		goal.goal_id.stamp = a
+		self.timestamp = rospy.Time.now()
+		goal.goal.target_pose.header.stamp = self.timestamp
+		goal.goal_id.stamp = self.timestamp
+		print(self.timestamp)
 
 		#Format Target-Pose Position
-		goal.goal.target_pose.pose.position.x = position[0]
-		goal.goal.target_pose.pose.position.y = position[1]
+		goal.goal.target_pose.pose.position.x = position[1]
+		goal.goal.target_pose.pose.position.y = position[0]
 		
 		#Format Target-Pose Orientation
 		#Resolve issues with invalid quarternians
@@ -113,24 +119,33 @@ class Hunter:
 		
 
 	def move_relative(self):
+		print("------------------------------")
+		print("Moving to: Spray")
 		goal = MoveBaseActionGoal()
+		
+		#Add Publish-Time to Stamp
+		self.timestamp = rospy.Time.now()
+		goal.goal.target_pose.header.stamp = self.timestamp
+		goal.goal_id.stamp = self.timestamp
+
 		goal.goal.target_pose.header.seq = 5 #optional (remove)
 		goal.goal.target_pose.header.frame_id = self.CONFIG['sprayer_robot']+"/base_link"
 		goal.goal.target_pose.pose.position.x = 0.5
+		goal.goal.target_pose.pose.orientation.z = 1
 		self.align.publish(goal)
 
 
 #--------------------------------------------------------------------------------------------------------
 	def waiter_status(self, data):
-		self.status = data.status
+		self.status = data.status_list[-1].status
 		self.movebase_stamp = data.status_list[-1].goal_id.stamp.secs
 	def waiter_publisher(self, data):
 		self.goal_send = data.goal.target_pose.header.stamp.secs
-	def waiter(self, time_publish=time()):
-		print(time_publish)
+	def waiter(self):
+		time_publish=rospy.Time.now()
 		timeout = self.CONFIG['movebase_timeout']
 		while True:
-			print("tt")
+			#print("looper for waiter: " + str(self.movebase_stamp) + "|" + str(self.goal_send) + " :: " + str(rospy.Time.now()-time_publish) + "|" + str(rospy.Duration.from_sec(timeout)))
 			if (self.movebase_stamp == self.goal_send):
 				if (self.status == 3):
 					print("Goal Aborted: COMPLETED")
@@ -138,7 +153,7 @@ class Hunter:
 				elif (self.status == 4):
 					print("Goal Aborted: ABORTED")
 					return
-			if (time()-time_publish > timeout):
+			if (rospy.Time.now()-time_publish > rospy.Duration.from_sec(timeout)):
 				print("Goal Aborted: TIMEOUT")
 				return
 		return
@@ -162,14 +177,16 @@ class Hunter:
 #		t.position.x = x
 #		t.position.y = y
 #		self.sway.publish(t)
-
+#
 #--------------------------------------------------------------------------------------------------------
 	def scan_row(self, data):
 		print("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=")
-		print("hihi")
+		print("Row Scan Incoming ...")
 		#print(data)
 		self.weed_data.append(data)
 		print(len(self.weed_data))
+		print("Row Scan Complete | len(self.weed_data)=" + str(len(self.weed_data)))
+		
 		
 		
 		

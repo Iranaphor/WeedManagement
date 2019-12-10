@@ -152,24 +152,25 @@ class detector:
 	def callback(self, data):
 		IMG_RAW = self.bridge.imgmsg_to_cv2(data, "bgr8")
 		t = rospy.Time.now()
-		
+		p=self.plant_type
+
 		#Detect the weeds
-		if self.plant_type == "basil":
+		if p == "basil":
 			OVERLAY,WEED,_,_ = basil(cv2.resize(IMG_RAW, (160,90)))
-		elif self.plant_type == "cabbage":
+		elif p == "cabbage":
 			OVERLAY,WEED,_,_ = cabbage(cv2.resize(IMG_RAW, (480, 270)))
-		elif self.plant_type == "onion":
+		elif p == "onion":
 			OVERLAY,WEED,_,_ = onion(cv2.resize(IMG_RAW, (240, 135)),0)
 		
 		#Publish Images
-		if self.plant_type != "null":
+		if p != "null":
 			
 			#Find Centre/Worldpoints of weed clusters
 			centres = imfindcentroids(cv2.resize(WEED, (1920, 1080)))
 			point=[]
 
 			#Identify size of spray region
-			rad = self.CONFIG['plant_management'][self.plant_type]['nozel_radius']
+			rad = self.CONFIG['plant_management'][p]['nozel_radius']
 
 			for c in centres:
 				p=self.pixel2pos.get_position(c,t)
