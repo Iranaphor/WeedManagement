@@ -36,7 +36,7 @@ Thorvald\_001 was used to survey the crops for weeds.
 Thorvald\_002 was used to target and spray the identified weeds.
 
 
-### Thorvald_001:
+#### Thorvald_001:
 Thorvald\_001 is started using `roslaunch assessment_package weed_detector.launch`
 This runs the script `navigator.py`, and 2 copies of `weed_detector.py`.
 
@@ -52,21 +52,24 @@ It is used to run individual scripts to identify weeds against the crops
 ---
 ## System Architecture
 
-# Setup.launch
-> # Move_Base
-> - Used to offer simple-to-use movement systems to the Scanner and Sprayer robots.
-> # Thorvald_001.launch
-> - Used to Manage the Scanner Robot and its 2 core processes.
-> > # NAVIGATOR.launch
-> > - Responsible for moving thorvald_001 throughout the crop_rows, NAVIGATOR works its way through an array of crop rows defined by system_config
-> > # DETECTOR.launch
-> > - Based on the row published by **NAVIGATOR** this node runs image processing to extract the weeds, and transforms their coordinates in the image to world coordinates before sending them through to the Scanner
-> # Thorvald_002.launch
-> - Used to Manage the Sprayer Robot and its 2 core processes.
-> > # HUNTER.launch
-> > - Once the Scanner has moved through the first 2 rows, the hunter is given the coordinates of each weed in the region, it goes to each one in turn and calls the **KILLER**
-> > # KILLER.launch
-> > - Host to 2 spawnmodel services, this node works to spray the weeds when given the order
+#### Setup.launch
+> Single launch file to launch the system.
+> #### Move_Base
+> Used to offer simple-to-use movement systems to the Scanner and Sprayer robots.
+
+> #### Scanner_Robot.launch
+> > #### NAVIGATOR.launch
+> > Responsible for moving thorvald_001 throughout the crop_rows, NAVIGATOR works its way through an array of crop rows defined by system_config
+
+> > #### DETECTOR.launch
+> > Based on the row published by NAVIGATOR this node runs image processing to extract the weeds, and transforms their coordinates in the image to world coordinates before sending them through to the Scanner
+
+> #### Sprayer_Robot.launch
+> > #### HUNTER.launch
+> > Once the Scanner has moved through the first 2 rows, the hunter is given the coordinates of each weed in the region, it goes to each one in turn and calls the KILLER
+
+> > #### KILLER.launch
+> > Host to 2 spawnmodel services, this node works to spray the weeds when given the order
 
 ---
 ## Running the system
@@ -80,5 +83,24 @@ It is used to run individual scripts to identify weeds against the crops
 # 3.
 > ``
 
+
+---
+## Known Issues
+
+# Sprayer
+> Occasionally the sprayer service call within **KILLER** does not work.
+> ```Python
+[ERROR] [1576073469.882153, 4537.860000]: bad callback: <bound method Killer.plot_point of <__main__.Killer instance at 0x7ff6d837bc20>>
+Traceback (most recent call last):
+  File "/opt/ros/kinetic/lib/python2.7/dist-packages/rospy/topics.py", line 750, in _invoke_callback
+    cb(msg)
+  File "/home/computing/Thorvald/WORKSPACE/catkin_ws/src/assessment_package/scripts/killer.py", line 125, in plot_point
+    self.spawner(request)
+  File "/opt/ros/kinetic/lib/python2.7/dist-packages/rospy/impl/tcpros_service.py", line 435, in __call__
+    return self.call(*args, **kwds)
+  File "/opt/ros/kinetic/lib/python2.7/dist-packages/rospy/impl/tcpros_service.py", line 525, in call
+    raise ServiceException("transport error completing service call: %s"%(str(e)))
+ServiceException: transport error completing service call: unable to receive data from sender, check sender's logs for details
+```
 
 ---
