@@ -104,20 +104,23 @@ class Killer:
 
 	def spray(self, r):
 		print("uwu")
-		request = SpawnModelRequest()
-		request.model_name = 'killbox_%s' % uuid4()
-		request.model_xml = self.sdf
-		request.reference_frame = "/thorvald_002/base_link"
-		request.initial_pose.position.z = 0.005
-		request.initial_pose.position.x = -0.45
-		request.initial_pose.orientation.w = 1.0
-		self.spawner(request)
+		try:
+			request = SpawnModelRequest()
+			request.model_name = 'killbox_%s' % uuid4()
+			request.model_xml = self.sdf
+			request.reference_frame = 'thorvald_002/base_link'
+			request.initial_pose.position.z = 0.005
+			request.initial_pose.position.x = -0.45
+			request.initial_pose.orientation.w = 1.0
+			self.spawner(request)
+		except rospy.ServiceException, e:
+			print "Service call failed: %s"%e
 		print("owo")
 		return []
 
 	def plot_point(self, r):
 		request = SpawnModelRequest()
-		request.model_name = "point_"+str(r.x)+"_"+str(r.y)+"_"+str(uuid4())
+		request.model_name = 'killbox_%s' % uuid4()#"point_"+str(r.x)+"_"+str(r.y)+"_"+str(uuid4())
 		#self.allmodels.append(str(request.model_name))
 		#print("PLOT: " + request.model_name)
 		request.model_xml = self.sdf2
@@ -127,7 +130,6 @@ class Killer:
 		request.initial_pose.position.z = 0.2
 		request.initial_pose.orientation.w = 1.0
 		self.spawner(request)
-		return []
 
 
 if __name__ == "__main__":

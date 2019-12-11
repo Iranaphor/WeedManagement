@@ -57,8 +57,7 @@ class detector:
 	def mapper(self, data):
 		self.map.unregister()
 		scale = 10
-		self.weed_map = np.array(255*np.ones(((data.info.height*0.6)*scale, (data.info.width*0.45)*scale)),dtype='uint8')
-		#self.weed_map[2:self.weed_map.shape[0]-4,2:self.weed_map.shape[1]-4]=0
+		self.weed_map = np.array(255*np.ones((np.int((data.info.height*0.6)*scale), np.int((data.info.width*0.45)*scale))),dtype='uint8')
 		self.weed_map *= 0
 		self.weed_map_resolution = data.info.resolution/scale #m/cell 0.5m/10 = 0.05 (5cm/cell) #DISTANCE PER CELL
 		

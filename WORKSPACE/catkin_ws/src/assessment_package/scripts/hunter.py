@@ -22,23 +22,17 @@ class Hunter:
 		self.movebase_stamp = []
 		self.goal_send = 0
 		
-		self.spawner = rospy.ServiceProxy(CONFIG['spray_service'], Empty)
-		self.weed_sub = rospy.Subscriber(ROB+CONFIG['row_data'], WeedList, self.scan_row)
-		self.align = rospy.Publisher(ROB+CONFIG['movebase_goal'], MoveBaseActionGoal, queue_size = 2)
+		#Sprayer Systems
+		self.spawner = rospy.ServiceProxy(ROB+CONFIG['spray_service'], Empty)
 		self.plot_point = rospy.Publisher(ROB+CONFIG['spray_point'], Point, queue_size = 2)
+
+		#Data stream
+		self.weed_sub = rospy.Subscriber(ROB+CONFIG['row_data'], WeedList, self.scan_row)
+
+		#Movement Systems
+		self.align = rospy.Publisher(ROB+CONFIG['movebase_goal'], MoveBaseActionGoal, queue_size = 2)
 		self.waiter_for_status = rospy.Subscriber(ROB+"/move_base/status", GoalStatusArray, self.waiter_status)
 		self.waiter_for_publisher = rospy.Subscriber(ROB+CONFIG['movebase_goal'], MoveBaseActionGoal, self.waiter_publisher)
-		#self.sway = rospy.Publisher(ROB+CONFIG['cmd_vel'], Twist, queue_size = 2)
-		
-		
-		
-		#when row detected, increment index
-		#when row and sprayer are 2 apart, plot dijkstra against row data
-		#move to each one in turn, 
-		#when at the weed, 
-		#move relative 0.5 forward, 
-		#call sprayer
-		#move to next node
 		
 		#Wait for thorvald_001 to complete the first 2 rows
 		while not(rospy.is_shutdown()):
@@ -46,18 +40,16 @@ class Hunter:
 				sleep(10)
 				print("Row_count: " + str(len(self.weed_data)))
 			else:
-				print("yaya")
 				lst = self.generate_list(self.weed_data.pop(0))
-				
 				print(lst)
-				
 				for weed in lst:
-					self.plot_point.publish(Point(weed[0],weed[1],0))
+					print("~~~~~~~~~~~~~~~~~~~~~~~~~~")
+					self.plot_point.publish(Point(weed[1],weed[0]-0.5,0))
 					print("Moving to Weed")
-					self.move(weed)
-					self.waiter()
+					#self.move(weed)
+					#self.waiter()
 					print("Spray")
-					self.spawner()
+					#self.spawner()
 					sleep(5)
 					print("\\(^,^)/ next node!")
 				
@@ -86,7 +78,6 @@ class Hunter:
 	#Publisher for move_base/goal
 	#INPUT: (position) must be a 3 element list defining [xcoord, ycoord, angle(degrees)]
 	def move(self, position):
-		print("------------------------------")
 		print("Moving to: " + str(position[0]) + ", " + str(position[1]))
 		goal = MoveBaseActionGoal()
 
@@ -98,7 +89,6 @@ class Hunter:
 		self.timestamp = rospy.Time.now()
 		goal.goal.target_pose.header.stamp = self.timestamp
 		goal.goal_id.stamp = self.timestamp
-		print(self.timestamp)
 
 		#Format Target-Pose Position
 		goal.goal.target_pose.pose.position.x = position[1]
@@ -119,7 +109,6 @@ class Hunter:
 		
 
 	def move_relative(self):
-		print("------------------------------")
 		print("Moving to: Spray")
 		goal = MoveBaseActionGoal()
 		
@@ -137,15 +126,15 @@ class Hunter:
 
 #--------------------------------------------------------------------------------------------------------
 	def waiter_status(self, data):
-		self.status = data.status_list[-1].status
-		self.movebase_stamp = data.status_list[-1].goal_id.stamp.secs
+		if len(data.status_list)>0:
+			self.status = data.status_list[-1].status
+			self.movebase_stamp = data.status_list[-1].goal_id.stamp.secs
 	def waiter_publisher(self, data):
 		self.goal_send = data.goal.target_pose.header.stamp.secs
 	def waiter(self):
 		time_publish=rospy.Time.now()
 		timeout = self.CONFIG['movebase_timeout']
 		while True:
-			#print("looper for waiter: " + str(self.movebase_stamp) + "|" + str(self.goal_send) + " :: " + str(rospy.Time.now()-time_publish) + "|" + str(rospy.Duration.from_sec(timeout)))
 			if (self.movebase_stamp == self.goal_send):
 				if (self.status == 3):
 					print("Goal Aborted: COMPLETED")
@@ -159,28 +148,8 @@ class Hunter:
 		return
 		
 #--------------------------------------------------------------------------------------------------------
-#	def twist_distance(self, d):
-#		#twist takes velocity
-#		#we want distance
-#		#calculation:
-#		# v=rw
-#		d = 1
-#
-#		r = CONFIG['wheel_radius'] #radius
-#		c = 1 #(2*np.pi*r) #circumfrance
-#		
-#		v = 1/c#m/s #CONFIG['const_velocity'] #velocity
-#		t = d
-#		
-#	def twist(self, y, x=0):
-#		t = Twist()
-#		t.position.x = x
-#		t.position.y = y
-#		self.sway.publish(t)
-#
-#--------------------------------------------------------------------------------------------------------
 	def scan_row(self, data):
-		print("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=")
+		print("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
 		print("Row Scan Incoming ...")
 		#print(data)
 		self.weed_data.append(data)

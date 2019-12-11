@@ -27,7 +27,7 @@ class navigation_manager:
 		#Format the robot path from the CONFIG
 		self.path_raw = self.generate_list(CONFIG)
 		self.path = self.path_raw[:]
-		print(self.path)
+		#print(self.path)
 
 		#Initialise Publishers and Subscribers
 		self.row_type = rospy.Publisher(ROB+CONFIG['row_meta'], String, queue_size = 2)
@@ -116,7 +116,7 @@ class navigation_manager:
 
 				#If loop completed, restart loop
 				if (len(self.path) == 0):
-					print("(6|PATH_LIST_EMPTY)")
+					print("(5|PATH_LIST_EMPTY)")
 					if self.CONFIG['run_loop'] == True:
 						self.path = self.path_raw[:]
 					else:
@@ -131,13 +131,10 @@ class navigation_manager:
 
 
 if __name__ == '__main__':
-	print("---------------------------------------")
 	path = os.path.dirname(argv[0])
 	
 	#Manage args
-	#yaml_path = '/home/computing/Thorvald/WORKSPACE/catkin_ws/src/assessment_package/config/navigation_targets.yaml'
 	yaml_path = argv[1]
-	
 	CONFIG = yaml.safe_load(open(yaml_path))
 
 	rospy.init_node("NAVIGATOR", anonymous=False)

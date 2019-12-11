@@ -29,8 +29,8 @@ class pixel2pos:
 			cy=K[5]
 			self.PRINC = [cx,cy]
 			self.FOCAL = [fx,fy]
-			print("princ " + str(self.PRINC))
-			print("focal " + str(self.FOCAL))
+			#print("princ " + str(self.PRINC))
+			#print("focal " + str(self.FOCAL))
 
 		except (tf.Exception) as e:
 			print(e)

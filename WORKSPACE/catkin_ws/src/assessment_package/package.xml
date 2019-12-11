@@ -42,6 +42,10 @@
   <exec_depend>nodelet</exec_depend>
   <exec_depend>pcl_ros</exec_depend>
 
+  <depend>robot_localization</depend>
+  <depend>fake_localization</depend>
+  <depend>carrot_planner</depend>
+
   <build_depend>message_generation</build_depend>
   <exec_depend>message_runtime</exec_depend>
 
