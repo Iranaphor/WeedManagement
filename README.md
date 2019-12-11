@@ -85,10 +85,16 @@ It is used to run individual scripts to identify weeds against the crops
 ---
 ## Known Flaws
 
-####
-> The Sprayer Robot takes no penalty for driving over the crops to spray.  
-> **Possible soluition:**  
-> Restructure Hunter to drive down the centre of the row, drifting side to side to reach the targets.
+
+**Flaw:**  
+The Sprayer Robot takes no penalty for driving over the crops to spray.  
+**Possible soluition:**  
+Restructure Hunter to drive down the centre of the row, drifting side to side to reach the targets.  
+
+**Flaw:**  
+Lack of elegent management for Robot Locations.  
+**Possible soluition:**  
+Model the field as a topological map, and manage the robots using an system to lock edges in use, define a series of one-way systems, and setup a give-way policy for edge merging.
 
 
 ---
