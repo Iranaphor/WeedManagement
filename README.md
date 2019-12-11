@@ -3,7 +3,7 @@
 ---
 ## TODO:
 :D - Swap out Thorvald_001 launch file names  
-:| - Fix the sprayer alignment and spraying bugs  
+:( - Fix the sprayer alignment and spraying bugs  
 :D - Rename the killbox  
 Convert KILLER to CONFIG  
 Write rest of readme.md  
@@ -89,24 +89,41 @@ Includes the following Files
 The Sprayer Robot takes no penalty for driving over the crops to spray.  
 **Possible soluition:**  
 Restructure Hunter to drive down the centre of the row, drifting side to side to reach the targets.  
-**Files Affected:**  
+**Associated Files:**   
 `scripts/hunter.py`  
 
 **Flaw:**  
 Lack of elegent management for Robot Locations.  
 **Possible soluition:**  
 Model the field as a topological map, and manage the robots using an system to lock edges in use, define a series of one-way systems, and setup a give-way policy for edge merging.  
-**Files Affected:**  
+**Associated Files:**  
 `scripts/navigator.py`  
 `scripts/hunter.py`  
 
 **Flaw:**  
 Translation issue between taking image, processing image and converting using tf.  
 **Possible soluition:**  
-The system currently makes use of the TransformPose function to move between the CameraFrame and the MapFrame. This can be replaced with use of `lookupTransform('map', 'robot_frame', t)`. The only element missing is a method to transform the pose along the same translation.  
-**Files Affected:**  
+The system currently makes use of the TransformPose function to move between the CameraFrame and the MapFrame. This can be replaced with use of `lookupTransform('map', 'robot_frame', t)`. The only element missing is a method to transform the pose along the same translation.   
+**Associated Files:**  
 `scripts/image_processing/camera_transformations.py`  
 
+**Flaw:**  
+Sprayer is not aligned properly.  
+**Associated Files:**  
+`scripts/hunter.py`    
+`scripts/killer.py`  
+
+**Flaw:**  
+Weeds beyond region of camera are never picked up.  
+**Associated Files:**  
+`scripts/navigator.py`  
+`scripts/detector.py`  
+
+**Flaw:**  
+Hunter plots points with no attempt to go to them.  
+**Associated Files:**  
+`scripts/hunter.py`    
+`scripts/killer.py`  
 
 
 ---

@@ -79,7 +79,7 @@ class detector:
 			cv2.imwrite(self.path+"/mapp.png", cv2.rotate(self.weed_map, cv2.ROTATE_90_COUNTERCLOCKWISE))
 		elif self.CONFIG['map_path'] == "none":
 			pass
-		else
+		else:
 			cv2.imwrite(self.CONFIG['map_path']+"/mapp.png", cv2.rotate(self.weed_map, cv2.ROTATE_90_COUNTERCLOCKWISE))
 
 
