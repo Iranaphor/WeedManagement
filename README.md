@@ -101,9 +101,8 @@ Model the field as a topological map, and manage the robots using an system to l
 ## Known Issues
 
 #### Sprayer
-> Occasionally the sprayer service call within **KILLER.py** does not work.  
->
-> ``` python
+Occasionally the sprayer service call within **KILLER.py** does not work.  
+``` python
 [ERROR] [1576073469.882153, 4537.860000]: bad callback: <bound method Killer.plot_point of <__main__.Killer instance at 0x7ff6d837bc20>>
 Traceback (most recent call last):
   File "/opt/ros/kinetic/lib/python2.7/dist-packages/rospy/topics.py", line 750, in _invoke_callback
