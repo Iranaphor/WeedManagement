@@ -62,10 +62,10 @@ It is used to run individual scripts to identify weeds against the crops
 > > Responsible for moving thorvald_001 throughout the crop_rows, NAVIGATOR works its way through an array of crop rows defined by system_config
 > > ##### DETECTOR.launch
 > > Based on the row published by NAVIGATOR this node runs image processing to extract the weeds, and transforms their coordinates in the image to world coordinates before sending them through to the Scanner
-
+>
 > ##### Sprayer_Robot.launch
 > > ##### HUNTER.launch
-> > Once the Scanner has moved through the first 2 rows, the hunter is given the coordinates of each weed in the region, it goes to each one in turn and calls the KILLER
+> > Move to weed coordinates passed by detector, and call KILLER
 > > ##### KILLER.launch
 > > Host to 2 spawnmodel services, this node works to spray the weeds when given the order
 
@@ -83,18 +83,30 @@ It is used to run individual scripts to identify weeds against the crops
 
 
 ---
-## Known Flaws
-
+## Known System-Design Flaws
 
 **Flaw:**  
 The Sprayer Robot takes no penalty for driving over the crops to spray.  
 **Possible soluition:**  
 Restructure Hunter to drive down the centre of the row, drifting side to side to reach the targets.  
+**Files Affected:**  
+`scripts/hunter.py`  
 
 **Flaw:**  
 Lack of elegent management for Robot Locations.  
 **Possible soluition:**  
-Model the field as a topological map, and manage the robots using an system to lock edges in use, define a series of one-way systems, and setup a give-way policy for edge merging.
+Model the field as a topological map, and manage the robots using an system to lock edges in use, define a series of one-way systems, and setup a give-way policy for edge merging.  
+**Files Affected:**  
+`scripts/navigator.py`  
+`scripts/hunter.py`  
+
+**Flaw:**  
+Translation issue between taking image, processing image and converting using tf.  
+**Possible soluition:**  
+The system currently makes use of the TransformPose function to move between the CameraFrame and the MapFrame. This can be replaced with use of `lookupTransform('map', 'robot_frame', t)`. The only element missing is a method to transform the pose along the same translation.  
+**Files Affected:**  
+`scripts/image_processing/camera_transformations.py`  
+
 
 
 ---
