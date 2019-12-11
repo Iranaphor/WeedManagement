@@ -83,11 +83,21 @@ It is used to run individual scripts to identify weeds against the crops
 
 
 ---
+## Known Flaws
+
+####
+> The Sprayer Robot takes no penalty for driving over the crops to spray.  
+> **Possible soluition:**  
+> Restructure Hunter to drive down the centre of the row, drifting side to side to reach the targets.
+
+
+---
 ## Known Issues
 
-# Sprayer
-> Occasionally the sprayer service call within **KILLER** does not work.
-> `Python
+#### Sprayer
+> Occasionally the sprayer service call within **KILLER.py** does not work.  
+>
+> ```python
 [ERROR] [1576073469.882153, 4537.860000]: bad callback: <bound method Killer.plot_point of <__main__.Killer instance at 0x7ff6d837bc20>>
 Traceback (most recent call last):
   File "/opt/ros/kinetic/lib/python2.7/dist-packages/rospy/topics.py", line 750, in _invoke_callback
@@ -99,6 +109,6 @@ Traceback (most recent call last):
   File "/opt/ros/kinetic/lib/python2.7/dist-packages/rospy/impl/tcpros_service.py", line 525, in call
     raise ServiceException("transport error completing service call: %s"%(str(e)))
 ServiceException: transport error completing service call: unable to receive data from sender, check sender's logs for details
-`
+```
 
 ---
