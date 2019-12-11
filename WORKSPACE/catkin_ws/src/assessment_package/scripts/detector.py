@@ -79,7 +79,7 @@ class detector:
 			cv2.imwrite(self.path+"/mapp.png", cv2.rotate(self.weed_map, cv2.ROTATE_90_COUNTERCLOCKWISE))
 		elif self.CONFIG['map_path'] == "none":
 			pass
-		else
+		else:
 			cv2.imwrite(self.CONFIG['map_path']+"/mapp.png", cv2.rotate(self.weed_map, cv2.ROTATE_90_COUNTERCLOCKWISE))
 
 
@@ -162,10 +162,11 @@ class detector:
 #-------------------------------------------------------------------------------------------------------- Image Processing
 	#Image Callback
 	def callback(self, data):
+		#self.subscriber.unregister()
 		IMG_RAW = self.bridge.imgmsg_to_cv2(data, "bgr8")
 		t = rospy.Time.now()
 		p=self.plant_type
-
+		
 		#Detect the weeds
 		if p == "basil":
 			OVERLAY,WEED,_,_ = basil(cv2.resize(IMG_RAW, (160,90)))
@@ -176,24 +177,22 @@ class detector:
 		
 		#Publish Images
 		if p != "null":
-			
-			#Find Centre/Worldpoints of weed clusters
-			centres = imfindcentroids(cv2.resize(WEED, (1920, 1080)))
-			point=[]
-
-			#Identify size of spray region
-			rad = self.CONFIG['plant_management'][p]['nozel_radius']
-
-			for c in centres:
-				p=self.pixel2pos.get_position(c,t)
-				point.append(p)
-				P=Point()
-				P.x=np.around(p[0], 2)
-				P.y=np.around(p[1], 2)
-				self.P_List.append( (str(P.x), str(P.y), str(rad)) )
-
 			#self.pub_weed.publish(self.bridge.cv2_to_imgmsg(WEED*255, "mono8"))
 			self.pub_overlay.publish(self.bridge.cv2_to_imgmsg(OVERLAY,"bgr8"))
+
+			#Find Centre/Worldpoints of weed clusters
+			centres = imfindcentroids(cv2.resize(WEED, (1920, 1080)))
+			rad = self.CONFIG['plant_management'][p]['nozel_radius']
+			self.pixel2pos.geolocate_positions(centres, t, rad)
+
+			#Identify size of spray region
+			#for c in centres:
+			#	p=self.pixel2pos.get_position(c,t)
+			#	P=Point()
+			#	P.x=np.around(p[0], 2)
+			#	P.y=np.around(p[1], 2)
+			#	self.P_List.append( (str(P.x), str(P.y), str(rad)) )
+
 		else:
 			self.pub_overlay.publish(self.bridge.cv2_to_imgmsg(IMG_RAW,"bgr8"))
 
