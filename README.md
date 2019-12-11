@@ -53,21 +53,21 @@ It is used to run individual scripts to identify weeds against the crops
 ## System Architecture
 
 #### Setup.launch
-> Single launch file to launch the system.
+Includes the following Files
 > ##### Move_Base
-> Used to offer simple-to-use movement systems to the Scanner and Sprayer robots.
-
+> Initialise Navigation Stack
+>
 > ##### Scanner_Robot.launch
 > > ##### NAVIGATOR.launch
-> > Responsible for moving thorvald_001 throughout the crop_rows, NAVIGATOR works its way through an array of crop rows defined by system_config
+> > Direct Scanner_Robot through a list of waypoints
 > > ##### DETECTOR.launch
-> > Based on the row published by NAVIGATOR this node runs image processing to extract the weeds, and transforms their coordinates in the image to world coordinates before sending them through to the Scanner
+> > Runs image classification dependent on the row defined by NAVIGATOR
 >
 > ##### Sprayer_Robot.launch
 > > ##### HUNTER.launch
 > > Move to weed coordinates passed by detector, and call KILLER
 > > ##### KILLER.launch
-> > Host to 2 spawnmodel services, this node works to spray the weeds when given the order
+> > Host spawnmodel services, to spray weeds and mark simulation as required
 
 ---
 ## Running the system
@@ -113,7 +113,7 @@ The system currently makes use of the TransformPose function to move between the
 ## Known Issues
 
 #### Sprayer
-Occasionally the sprayer service call within **KILLER.py** does not work.  
+Occasionally the sprayer service call within `killer.py` does not work.  
 ``` python
 [ERROR] [1576073469.882153, 4537.860000]: bad callback: <bound method Killer.plot_point of <__main__.Killer instance at 0x7ff6d837bc20>>
 Traceback (most recent call last):
