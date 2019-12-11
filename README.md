@@ -1,5 +1,22 @@
 # Thorvald_Weed_Sprayer
 
+---
+## TODO:
+Swap out Thorvald_001 launch file names
+Fix the sprayer alignment and spraying bugs
+Rename the killbox
+Convert KILLER to CONFIG
+Write rest of readme.md
+Copy movebase stuffs to assessment_package
+Test package.xml
+Remove unneccessary comments
+Rename Package
+Remove extra .msg
+Remove map folder
+Comment ALL functions
+Remove ALL unused code
+
+---
 ## Coordination:
 
 Task: Spray all Weeds, while limiting the amount of spray on crops. Complete the task while controlling multiple Thorvald robots.
