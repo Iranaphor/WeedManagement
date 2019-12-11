@@ -54,21 +54,19 @@ It is used to run individual scripts to identify weeds against the crops
 
 #### Setup.launch
 > Single launch file to launch the system.
-> #### Move_Base
+> ##### Move_Base
 > Used to offer simple-to-use movement systems to the Scanner and Sprayer robots.
 
-> #### Scanner_Robot.launch
-> > #### NAVIGATOR.launch
+> ##### Scanner_Robot.launch
+> > ##### NAVIGATOR.launch
 > > Responsible for moving thorvald_001 throughout the crop_rows, NAVIGATOR works its way through an array of crop rows defined by system_config
-
-> > #### DETECTOR.launch
+> > ##### DETECTOR.launch
 > > Based on the row published by NAVIGATOR this node runs image processing to extract the weeds, and transforms their coordinates in the image to world coordinates before sending them through to the Scanner
 
-> #### Sprayer_Robot.launch
-> > #### HUNTER.launch
+> ##### Sprayer_Robot.launch
+> > ##### HUNTER.launch
 > > Once the Scanner has moved through the first 2 rows, the hunter is given the coordinates of each weed in the region, it goes to each one in turn and calls the KILLER
-
-> > #### KILLER.launch
+> > ##### KILLER.launch
 > > Host to 2 spawnmodel services, this node works to spray the weeds when given the order
 
 ---
@@ -89,7 +87,7 @@ It is used to run individual scripts to identify weeds against the crops
 
 # Sprayer
 > Occasionally the sprayer service call within **KILLER** does not work.
-> ```Python
+> `Python
 [ERROR] [1576073469.882153, 4537.860000]: bad callback: <bound method Killer.plot_point of <__main__.Killer instance at 0x7ff6d837bc20>>
 Traceback (most recent call last):
   File "/opt/ros/kinetic/lib/python2.7/dist-packages/rospy/topics.py", line 750, in _invoke_callback
@@ -101,6 +99,6 @@ Traceback (most recent call last):
   File "/opt/ros/kinetic/lib/python2.7/dist-packages/rospy/impl/tcpros_service.py", line 525, in call
     raise ServiceException("transport error completing service call: %s"%(str(e)))
 ServiceException: transport error completing service call: unable to receive data from sender, check sender's logs for details
-```
+`
 
 ---
