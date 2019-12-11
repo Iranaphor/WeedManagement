@@ -52,7 +52,8 @@ class detector:
 		self.row_meta_subscriber = rospy.Subscriber(ROB+CONFIG['row_meta'], String, self.row_type_callback)
 		self.row_data_publisher = rospy.Publisher(CONFIG['sprayer_robot']+CONFIG['row_data'], WeedList, queue_size=10)
 		
-		
+
+#-------------------------------------------------------------------------------------------------------- Mapping	
 
 	def mapper(self, data):
 		self.map.unregister()
@@ -70,7 +71,17 @@ class detector:
 		#	self.plot_to_map((-5,r), 0.1)
 		
 		#Write clean map
-		cv2.imwrite(self.path+"/mapp.png", cv2.rotate(self.weed_map, cv2.ROTATE_90_COUNTERCLOCKWISE))
+		self.print_map()
+
+
+	def print_map(self):
+		if self.CONFIG['map_path'] == "default":
+			cv2.imwrite(self.path+"/mapp.png", cv2.rotate(self.weed_map, cv2.ROTATE_90_COUNTERCLOCKWISE))
+		elif self.CONFIG['map_path'] == "none":
+			pass
+		else
+			cv2.imwrite(self.CONFIG['map_path']+"/mapp.png", cv2.rotate(self.weed_map, cv2.ROTATE_90_COUNTERCLOCKWISE))
+
 
 	#Plot coordinates in respective position on map
 	def plot_to_map(self, map_coord_tuple, radius, gray = 255):
@@ -97,7 +108,9 @@ class detector:
 
 		#print(str(pix) + str(center) + str(rel_pix) + str(pos))
 		return (str(np.around(pos[0],2)), str(np.around(pos[1],2)))
-		
+
+
+#-------------------------------------------------------------------------------------------------------- Weed Management
 		
 	#Called at End of Row 
 	def row_type_callback(self, data):
@@ -108,7 +121,7 @@ class detector:
 				self.cluster_data()
 
 				#Write Map of Current Row
-				cv2.imwrite(self.path+"/mapp.png", cv2.rotate(self.weed_map, cv2.ROTATE_90_COUNTERCLOCKWISE))
+				self.print_map()
 			
 				#Reset for Next Row
 				self.weed_map *= 0
@@ -146,7 +159,7 @@ class detector:
 			array.weeds.data.append(float(p[1]))
 		self.row_data_publisher.publish(array)
 
-
+#-------------------------------------------------------------------------------------------------------- Image Processing
 	#Image Callback
 	def callback(self, data):
 		IMG_RAW = self.bridge.imgmsg_to_cv2(data, "bgr8")
@@ -183,6 +196,8 @@ class detector:
 			self.pub_overlay.publish(self.bridge.cv2_to_imgmsg(OVERLAY,"bgr8"))
 		else:
 			self.pub_overlay.publish(self.bridge.cv2_to_imgmsg(IMG_RAW,"bgr8"))
+
+
 
 if __name__ == '__main__':
 	path = os.path.dirname(argv[0])

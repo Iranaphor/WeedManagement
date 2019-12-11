@@ -36,8 +36,9 @@ class navigation_manager:
 		self.move_base_status = rospy.Subscriber(ROB+CONFIG['movebase_status'], GoalStatusArray, self.movebase_status)
 		sleep(1) #sleep to enable the movebase publisher to respond
 
-		#Move to first position
-		self.move(self.path[0])
+		#Begin by moving to base
+		home = CONFIG['scanner_robot_base']
+		self.move([home[1], home[0], 0, 'null'])
 	
 
 	#Generate path list from CONFIG input
@@ -121,7 +122,7 @@ class navigation_manager:
 						self.path = self.path_raw[:]
 					else:
 						
-						self.path.append((self.CONFIG['sprayer_robot_base'][1],self.CONFIG['sprayer_robot_base'][0],180,'null'))
+						self.path.append((self.CONFIG['scanner_robot_base'][1],self.CONFIG['scanner_robot_base'][0],180,'null'))
 						self.move_base_status.unregister()
 
 				#Move to next position

@@ -2,19 +2,28 @@
 
 ---
 ## TODO:
-Swap out Thorvald_001 launch file names
-Fix the sprayer alignment and spraying bugs
-Rename the killbox
+:D - Swap out Thorvald_001 launch file names
+:| - Fix the sprayer alignment and spraying bugs
+:D - Rename the killbox
 Convert KILLER to CONFIG
 Write rest of readme.md
-Copy movebase stuffs to assessment_package
+:D - Copy movebase stuffs to assessment_package
 Test package.xml
 Remove unneccessary comments
 Rename Package
-Remove extra .msg
-Remove map folder
-Comment ALL functions
-Remove ALL unused code
+:D - Remove extra .msg
+:D - Remove map folder
+:D - Comment /launch
+:D - Clean /launch
+Comment /scripts
+Clean /scripts
+Comment /config
+Clean /config
+:D - Comment /msg
+:D - Clean /msg
+Comment /scripts/image_processing
+Clean /scripts/image_processing
+:D - Custom sized XML objects
 
 ---
 ## Coordination:
@@ -62,17 +71,14 @@ It is used to run individual scripts to identify weeds against the crops
 ---
 ## Running the system
 
-# 1. 
+# 1.
 > ``
 
-# 2. 
+# 2.
 > ``
 
-# 3. 
+# 3.
 > ``
 
 
 ---
-
-
-

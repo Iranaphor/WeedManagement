@@ -6,6 +6,7 @@ import numpy as np
 from sys import argv
 from time import sleep, time
 from std_srvs.srv import Empty
+from std_msgs.msg import String
 from geometry_msgs.msg import Point
 from assessment_package.msg import WeedList
 from actionlib_msgs.msg import GoalStatusArray
@@ -24,6 +25,7 @@ class Hunter:
 		
 		#Sprayer Systems
 		self.spawner = rospy.ServiceProxy(ROB+CONFIG['spray_service'], Empty)
+		self.plot_type = rospy.Publisher(ROB+CONFIG['spray_type'], String, queue_size = 2)
 		self.plot_point = rospy.Publisher(ROB+CONFIG['spray_point'], Point, queue_size = 2)
 
 		#Data stream
@@ -33,36 +35,21 @@ class Hunter:
 		self.align = rospy.Publisher(ROB+CONFIG['movebase_goal'], MoveBaseActionGoal, queue_size = 2)
 		self.waiter_for_status = rospy.Subscriber(ROB+"/move_base/status", GoalStatusArray, self.waiter_status)
 		self.waiter_for_publisher = rospy.Subscriber(ROB+CONFIG['movebase_goal'], MoveBaseActionGoal, self.waiter_publisher)
+		sleep(1)
+		
+		#Begin at home station 
+		self.move_home()
+		self.waiter()
 		
 		#Wait for thorvald_001 to complete the first 2 rows
-		while not(rospy.is_shutdown()):
-			if (len(self.weed_data) < 2):
-				sleep(10)
-				print("Row_count: " + str(len(self.weed_data)))
-			else:
-				lst = self.generate_list(self.weed_data.pop(0))
-				print(lst)
-				for weed in lst:
-					print("~~~~~~~~~~~~~~~~~~~~~~~~~~")
-					self.plot_point.publish(Point(weed[1],weed[0]-0.5,0))
-					print("Moving to Weed")
-					#self.move(weed)
-					#self.waiter()
-					print("Spray")
-					#self.spawner()
-					sleep(5)
-					print("\\(^,^)/ next node!")
-				
-				
-				
-				
-				
-				
-				
-				
-				
+		self.move_through_weeds()			
 		
-#--------------------------------------------------------------------------------------------------------	
+		#Once complete, return to home station 
+		self.move_home()
+		self.waiter()
+		rospy.shutdown()
+		
+#-------------------------------------------------------------------------------------------------------- Path Generation
 	#Generate path list from CONFIG input
 	def generate_list(self, weed_list):
 		path = []
@@ -70,11 +57,41 @@ class Hunter:
 		
 		for i in range(len(w)):
 			if (i%2):
-				path.append((w[i]+0.5, w[i-1], 0, weed_list.plant_type))
+				path.append((w[i-1], w[i], 0, weed_list.plant_type))
 		
 		return path
+
+#-------------------------------------------------------------------------------------------------------- Navigation					
+	def move_through_weeds(self):
+		while not(rospy.is_shutdown()):
+			try:
+				if (len(self.weed_data) < 2):
+					sleep(10)
+					print("Row_count: " + str(len(self.weed_data)))
+				else:
+					lst = self.generate_list(self.weed_data.pop(0))
+					print(lst)
+					for weed in lst:
+						print("~~~~~~~~~~~~~~~~~~~~~~~~~~")
+						self.plot_point.publish(Point(weed[0],weed[1],0))
+						print("Moving to Weed")
+						self.move(weed)
+						self.waiter()
+						print("Spraying ...")
+						self.plot_type.publish(String(weed[3]))
+						print("Spraying Complete")
+						sleep(1)
+						print("\\(^,^)/ next node!")
+			except e:
+				print(e)
+				return
+				
+	def move_home(self):
+		home = self.CONFIG['sprayer_robot_base']
+		self.move([home[1], home[0], 0, 'null'])
 		
-#--------------------------------------------------------------------------------------------------------	
+		
+		
 	#Publisher for move_base/goal
 	#INPUT: (position) must be a 3 element list defining [xcoord, ycoord, angle(degrees)]
 	def move(self, position):
@@ -91,8 +108,8 @@ class Hunter:
 		goal.goal_id.stamp = self.timestamp
 
 		#Format Target-Pose Position
-		goal.goal.target_pose.pose.position.x = position[1]
-		goal.goal.target_pose.pose.position.y = position[0]
+		goal.goal.target_pose.pose.position.x = position[0]+0.5
+		goal.goal.target_pose.pose.position.y = position[1]
 		
 		#Format Target-Pose Orientation
 		#Resolve issues with invalid quarternians
@@ -106,25 +123,9 @@ class Hunter:
 		
 		#Publish Goal
 		self.align.publish(goal)
-		
-
-	def move_relative(self):
-		print("Moving to: Spray")
-		goal = MoveBaseActionGoal()
-		
-		#Add Publish-Time to Stamp
-		self.timestamp = rospy.Time.now()
-		goal.goal.target_pose.header.stamp = self.timestamp
-		goal.goal_id.stamp = self.timestamp
-
-		goal.goal.target_pose.header.seq = 5 #optional (remove)
-		goal.goal.target_pose.header.frame_id = self.CONFIG['sprayer_robot']+"/base_link"
-		goal.goal.target_pose.pose.position.x = 0.5
-		goal.goal.target_pose.pose.orientation.z = 1
-		self.align.publish(goal)
 
 
-#--------------------------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------------------------------- Movebase Progress Management
 	def waiter_status(self, data):
 		if len(data.status_list)>0:
 			self.status = data.status_list[-1].status
@@ -134,20 +135,24 @@ class Hunter:
 	def waiter(self):
 		time_publish=rospy.Time.now()
 		timeout = self.CONFIG['movebase_timeout']
-		while True:
-			if (self.movebase_stamp == self.goal_send):
-				if (self.status == 3):
-					print("Goal Aborted: COMPLETED")
-					return
-				elif (self.status == 4):
-					print("Goal Aborted: ABORTED")
-					return
-			if (rospy.Time.now()-time_publish > rospy.Duration.from_sec(timeout)):
-				print("Goal Aborted: TIMEOUT")
-				return
+		try:
+			while True:
+				if (self.movebase_stamp == self.goal_send):
+					if (self.status == 3):
+						print("Goal Aborted: COMPLETED")
+						break
+					elif (self.status == 4):
+						print("Goal Aborted: ABORTED")
+						break
+				if (rospy.Time.now()-time_publish > rospy.Duration.from_sec(timeout)):
+					print("Goal Aborted: TIMEOUT")
+					break
+		except e:
+			print(e)
+			return
 		return
 		
-#--------------------------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------------------------------- Communications
 	def scan_row(self, data):
 		print("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
 		print("Row Scan Incoming ...")

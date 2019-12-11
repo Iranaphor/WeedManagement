@@ -15,9 +15,6 @@ map_topic: '/map'
 map_frame: '/map'
 
 
-#REMAP /MOVEBASESIMLE TO /THORVALD_00X/MOVEBASESIMPLE
-#add custom SDF to killey.py
-
 #########
 # WORLD #
 #########
@@ -25,10 +22,10 @@ map_frame: '/map'
 #Crop row layout details
 row_details: [
 {start: [-3.75, 6.5], end: [-3.75, -6.5], type: 'basil'},
-{start: [-2.75, 6.5], end: [-2.75, -6.5], type: 'basil'}, 
-{start: [-0.75, 6.5], end: [-0.75, -6.5], type: 'cabbage'}, 
-{start: [ 0.25, 6.5], end: [ 0.25, -6.5], type: 'cabbage'}, 
-{start: [ 2.25, 6.5], end: [ 2.25, -6.5], type: 'onion'}, 
+{start: [-2.75, 6.5], end: [-2.75, -6.5], type: 'basil'},
+{start: [-0.75, 6.5], end: [-0.75, -6.5], type: 'cabbage'},
+{start: [ 0.25, 6.5], end: [ 0.25, -6.5], type: 'cabbage'},
+{start: [ 2.25, 6.5], end: [ 2.25, -6.5], type: 'onion'},
 {start: [ 3.25, 6.5], end: [ 3.25, -6.5], type: 'onion'}
 ]
 
@@ -58,6 +55,11 @@ run_loop: False
 weed_output: '/DETECTOR/WEED'
 overlay_output: '/DETECTOR/OVERLAY'
 
+#Weed Map Output Path ('default', 'none', ${path})
+map_path: 'default'
+#map_path: 'none'
+#map_path: '~/computing/desktop'
+
 #Camera details
 camera_topic: '/kinect2_camera/hd/image_color_rect'
 camera_info:  '/kinect2_camera/hd/camera_info'
@@ -82,8 +84,83 @@ movebase_timeout: 60
 #############
 
 spray_point: '/KILLER/spray_point'
+spray_type: '/KILLER/spray_type'
 spray_service: '/KILLER/spray'
 
+killbox_basil: '
+<?xml version="1.0" encoding="UTF-8"?>
+<sdf version="1.4">
+  <model name="killbox">
+    <pose>0 0 0 0 0 0</pose>
+    <static>true</static>
+    <link name="link_box">
+      <visual name="visual">
+        <geometry>
+           <cylinder>
+              <radius>.025</radius>
+              <length>.01</length>
+           </cylinder>
+        </geometry>
+        <material>
+            <ambient>0 0 0 .5</ambient>
+            <diffuse>0 0 0 .5</diffuse>
+            <specular>0 0 0 0</specular>
+            <emissive>1 1 1 .5</emissive>
+        </material>
+      </visual>
+    </link>
+  </model>
+</sdf>
+'
 
+killbox_cabbage: '
+<?xml version="1.0" encoding="UTF-8"?>
+<sdf version="1.4">
+  <model name="killbox">
+    <pose>0 0 0 0 0 0</pose>
+    <static>true</static>
+    <link name="link_box">
+      <visual name="visual">
+        <geometry>
+           <cylinder>
+              <radius>.025</radius>
+              <length>.01</length>
+           </cylinder>
+        </geometry>
+        <material>
+            <ambient>0 0 0 .5</ambient>
+            <diffuse>0 0 0 .5</diffuse>
+            <specular>0 0 0 0</specular>
+            <emissive>1 1 1 .5</emissive>
+        </material>
+      </visual>
+    </link>
+  </model>
+</sdf>
+'
 
-
+killbox_onion: '
+<?xml version="1.0" encoding="UTF-8"?>
+<sdf version="1.4">
+  <model name="killbox">
+    <pose>0 0 0 0 0 0</pose>
+    <static>true</static>
+    <link name="link_box">
+      <visual name="visual">
+        <geometry>
+           <cylinder>
+              <radius>.05</radius>
+              <length>.01</length>
+           </cylinder>
+        </geometry>
+        <material>
+            <ambient>0 0 0 .5</ambient>
+            <diffuse>0 0 0 .5</diffuse>
+            <specular>0 0 0 0</specular>
+            <emissive>1 1 1 .5</emissive>
+        </material>
+      </visual>
+    </link>
+  </model>
+</sdf>
+'

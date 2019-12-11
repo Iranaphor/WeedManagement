@@ -61,14 +61,13 @@ BOX_SDF2="""
 			   <ambient>0 0 0 1</ambient>
 			   <diffuse>0 0 0 1</diffuse>
 			   <specular>0 0 0 0</specular>
-			   <emissive>1 1 0 1</emissive>
+			   <emissive>1 0 1 1</emissive>
 			</material>
 		 </visual>
 	  </link>
    </model>
 </sdf>
 """
-
 
 class Killer:
 
@@ -82,24 +81,17 @@ class Killer:
 		self.sdf2 = BOX_SDF2
 
 		#Define Service System for Spraying
-		rospy.Service(self.robot_name+CONFIG['spray_service'], Empty, self.spray) #Define service listener
-		self.spawner = rospy.ServiceProxy("/gazebo/spawn_sdf_model", SpawnModel) #Define service publisher
+		rospy.Service(self.robot_name+CONFIG['spray_service'], Empty, self.spray) #base spray
+		self.spray_type = rospy.Subscriber(self.robot_name+CONFIG['spray_type'], String, self.spray_type) #spray plant_type
+		self.plot_point = rospy.Subscriber(self.robot_name+CONFIG['spray_point'], Point, self.plot_point) #spray coordinates
 
-		#Subscriber to plot box on defined coordinate
-		self.plot_point = rospy.Subscriber(self.robot_name+CONFIG['spray_point'], Point, self.plot_point)
+		#Define service publisher
+		self.spawner = rospy.ServiceProxy("/gazebo/spawn_sdf_model", SpawnModel)
 
-
-		#Defunct Code (Systems related to the automated removal of killboxes)
+		#Systems related to the automated removal of killboxes
 		#self.allmodels = []
 		#self.remover = rospy.ServiceProxy("/gazebo/delete_model", DeleteModel)
 		#self.plot_point = rospy.Subscriber("weed_killer/reset", String, self.reset)
-
-	#def reset(self, data):
-		#print(self.allmodels)
-		#d = DeleteModelRequest()
-		#for model in self.allmodels:
-			#d.model_name = model
-			#self.remover(model)
 
 
 	def spray(self, r):
@@ -118,18 +110,47 @@ class Killer:
 		print("owo")
 		return []
 
+
 	def plot_point(self, r):
 		request = SpawnModelRequest()
-		request.model_name = 'killbox_%s' % uuid4()#"point_"+str(r.x)+"_"+str(r.y)+"_"+str(uuid4())
+		request.model_name = "point_"+str(r.x)+"_"+str(r.y)+"_"+str(uuid4())
 		#self.allmodels.append(str(request.model_name))
 		#print("PLOT: " + request.model_name)
 		request.model_xml = self.sdf2
-		request.reference_frame = "map"#self.CONFIG['map_frame']
+		request.reference_frame = self.CONFIG['map_frame']
 		request.initial_pose.position.x = r.x
 		request.initial_pose.position.y = r.y
 		request.initial_pose.position.z = 0.2
 		request.initial_pose.orientation.w = 1.0
 		self.spawner(request)
+
+
+	def spray_type(self, data):
+		request = SpawnModelRequest()
+		request.model_name = str(data.data)+"_spray_"+str(uuid4())
+
+		if data.data == "basil":
+			request.model_xml = self.CONFIG['killbox_basil']
+		elif data.data == "cabbage":
+			request.model_xml = self.CONFIG['killbox_cabbage']
+		elif data.data == "onion":
+			request.model_xml = self.CONFIG['killbox_onion']
+		else:
+			request.model_xml = BOX_SDF2
+
+		request.reference_frame = 'thorvald_002/base_link'
+		request.initial_pose.position.z = 0.005
+		request.initial_pose.position.x = -0.45
+		request.initial_pose.orientation.w = 1.0
+		self.spawner(request)
+
+
+	#def reset(self, data):
+		#print(self.allmodels)
+		#d = DeleteModelRequest()
+		#for model in self.allmodels:
+			#d.model_name = model
+			#self.remover(model)
 
 
 if __name__ == "__main__":
