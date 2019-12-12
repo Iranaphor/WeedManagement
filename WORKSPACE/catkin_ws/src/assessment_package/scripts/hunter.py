@@ -18,7 +18,7 @@ class Hunter:
 		print("_HUNTER_init_")
 		self.CONFIG = CONFIG
 		ROB = CONFIG['sprayer_robot']
-		
+
 		self.weed_data = []
 		self.movebase_stamp = []
 		self.goal_send = 0
@@ -37,19 +37,19 @@ class Hunter:
 		self.waiter_for_status = rospy.Subscriber(ROB+CONFIG['movebase_status'], GoalStatusArray, self.waiter_status)
 		self.waiter_for_publisher = rospy.Subscriber(ROB+CONFIG['movebase_goal'], MoveBaseActionGoal, self.waiter_publisher)
 		sleep(1)
-		
-		#Begin at home station 
+
+		#Begin at home station
 		self.move_home()
 		self.waiter()
-		
+
 		#Wait for thorvald_001 to complete the first 2 rows
-		self.move_through_weeds()			
-		
-		#Once complete, return to home station 
+		self.move_through_weeds()
+
+		#Once complete, return to home station
 		self.move_home()
 		self.waiter()
 		rospy.shutdown()
-		
+
 
 #-------------------------------------------------------------------------------------------------------- Communications
 	#Save input from detector
@@ -59,21 +59,21 @@ class Hunter:
 		#print(data)
 		self.weed_data.append(data)
 		print("Row Scan Complete | "+data.plant_type+" | len(self.weed_data)=" + str(len(self.weed_data)))
-		
-		
+
+
 #-------------------------------------------------------------------------------------------------------- Path Generation
 	#Generate path list from row_scan
 	def generate_list(self, weed_list):
 		path = []
 		w = weed_list.weeds.data
-		
+
 		for i in range(len(w)):
 			if (i%2):
 				path.append((w[i-1], w[i], 0, weed_list.plant_type))
-		
+
 		return path
 
-#-------------------------------------------------------------------------------------------------------- Navigation					
+#-------------------------------------------------------------------------------------------------------- Navigation
 	def move_through_weeds(self):
 		while not(rospy.is_shutdown()): #total_rows_completed < len(self.CONFIG['row_details'])
 			#try:
@@ -87,29 +87,30 @@ class Hunter:
 				print(self.weed_data)
 				print("Row_count: " + str(len(self.weed_data)))
 			else:
-				print("\\(^,^)/ Node printing! :D  |  " + self.weed_data[0].plant_type)
+				print("Weed Killing in Progress... | " + self.weed_data[0].plant_type)
 				lst = self.generate_list(self.weed_data.pop(0))
 				print(lst[0:10])
 				for weed in lst:
-					#print("~~~~~~~~~~~~~~~~~~~~~~~~~~")
-					self.plot_point.publish(Point(weed[0],weed[1],0))
+					print("~~~~~~~~~~~~~~~~~~~~~~~~~~")
+					if self.CONFIG['optimal_weed_marking']:
+						self.plot_point.publish(Point(weed[0],weed[1],0))
 					print("Moving to Weed")
 					self.move(weed)
 					self.waiter()
-					print("Spraying ...")
-					self.plot_type.publish(String(weed[3]))
-					print("Spraying Complete")
-					sleep(0.05)
-					print("\\(^,^)/ next node! ")# + lst.plant_type)
+					if self.CONFIG['real_weed_marking']:
+						print("Spraying ...")
+						self.plot_type.publish(String(weed[3]))
+						print("Spraying Complete")
+						sleep(0.05)
 			#except:
 			#	print("Unknown Error")
-				
+
 	def move_home(self):
 		home = self.CONFIG['sprayer_robot_base']
 		self.move([home[1], home[0], 0, 'null'])
-		
-		
-		
+
+
+
 	#Publisher for move_base/goal
 	#INPUT: (position) must be a 3 element list defining [xcoord, ycoord, angle(degrees)]
 	def move(self, position):
@@ -119,7 +120,7 @@ class Hunter:
 		#Format Header
 		goal.goal.target_pose.header.seq = 5
 		goal.goal.target_pose.header.frame_id = CONFIG['map_frame']
-		
+
 		#Add Publish-Time to Stamp
 		self.timestamp = rospy.Time.now()
 		goal.goal.target_pose.header.stamp = self.timestamp
@@ -128,7 +129,7 @@ class Hunter:
 		#Format Target-Pose Position
 		goal.goal.target_pose.pose.position.x = position[0]+0.5
 		goal.goal.target_pose.pose.position.y = position[1]
-		
+
 		#Format Target-Pose Orientation
 		#Resolve issues with invalid quarternians
 		angle = position[2]
@@ -138,7 +139,7 @@ class Hunter:
 		goal.goal.target_pose.pose.orientation.y = orientat[1]
 		goal.goal.target_pose.pose.orientation.z = orientat[2]
 		goal.goal.target_pose.pose.orientation.w = orientat[3]
-		
+
 		#Publish Goal
 		self.align.publish(goal)
 
@@ -169,7 +170,7 @@ class Hunter:
 			print(e)
 			return
 		return
-		
+
 #-------------------------------------------------------------------------------------------------------- Communications
 	def scan_row(self, data):
 		print("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
@@ -177,15 +178,15 @@ class Hunter:
 		#print(data)
 		self.weed_data.append(data)
 		print("Row Scan Complete | "+data.plant_type+" |len(self.weed_data)=" + str(len(self.weed_data)))
-		
-		
-		
-		
-		
+
+
+
+
+
 if __name__ == '__main__':
 	yaml_path = argv[1]
 	CONFIG = yaml.safe_load(open(yaml_path))
-	
+
 	rospy.init_node("HUNTER", anonymous=False)
 	h = Hunter(CONFIG)
 	rospy.spin()

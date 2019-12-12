@@ -1,10 +1,10 @@
 ## TODO:
 
 :D - Swap out Thorvald_001 launch file names  
-:( - Fix the sprayer alignment and spraying bugs  
+Branch Opened: - Fix the sprayer alignment and spraying bugs  
 :D - Rename the killbox  
 :D - Convert KILLER to CONFIG  
-Write README.md (100 word limit)  
+:D - Write README.md (100 word limit)  
 :D - Copy movebase stuffs to assessment_package  
 Test package.xml  
 Remove unneccessary comments  
@@ -22,4 +22,5 @@ Clean /config
 Comment /scripts/image_processing  
 Clean /scripts/image_processing  
 :D - Custom sized XML objects  
-Fix final crop_row marking
+:D - Fix final crop_row marking
+Replace `import cv2` with the rospack equivilant

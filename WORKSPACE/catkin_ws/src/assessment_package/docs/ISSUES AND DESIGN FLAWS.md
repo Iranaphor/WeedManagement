@@ -99,3 +99,7 @@ tracker: 5639
 ```
 **Results:**
 Observation still required, appending home point onto self.path seems to have resolved tyhe issue.
+
+
+### SETUP.LAUNCH
+Running scanner_robot.launch and sprayer_robot.launch within setup.launch doesnt work.

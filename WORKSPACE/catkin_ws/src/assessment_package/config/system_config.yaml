@@ -29,7 +29,7 @@ row_details: [
 {start: [ 3.25, 6.5], end: [ 3.25, -6.5], type: 'onion'}
 ]
 
-#Crop type management details
+#Crop type management details (If any of these are changed, ensure the XML is also updated to match)
 plant_management: {
 basil: {nozel_radius: 0.025},
 cabbage: {nozel_radius: 0.025},
@@ -83,6 +83,11 @@ movebase_timeout: 60
 # KILLER.py #
 #############
 
+#Gazebo slows when both are active
+optimal_weed_marking: True
+real_weed_marking: False
+
+#Spray services and topics
 spray_point: '/KILLER/spray_point'
 spray_type: '/KILLER/spray_type'
 spray_service: '/KILLER/spray'
