@@ -7,7 +7,6 @@ from time import sleep
 from sensor_msgs.msg import CameraInfo
 from geometry_msgs.msg import PoseStamped, Quaternion, Point
 from tf.transformations import quaternion_from_euler, euler_from_quaternion
-#import image_geometry
 
 class pixel2pos:
 
@@ -19,6 +18,7 @@ class pixel2pos:
 		sleep(1)
 		self.caminfo = rospy.Subscriber(cam_info_topic, CameraInfo, self.info)
 
+	# Download the camera data used for transformation of pixels to camera_frame
 	def info(self, data):
 		try:
 			#Calculate Position of pixel in 3D Space
@@ -29,16 +29,14 @@ class pixel2pos:
 			cy=K[5]
 			self.PRINC = [cx,cy]
 			self.FOCAL = [fx,fy]
-			#print("princ " + str(self.PRINC))
-			#print("focal " + str(self.FOCAL))
 
 		except (tf.Exception) as e:
 			print(e)
 
 		self.caminfo.unregister()
 
+	# Convert the input pixel to the camera frame, then to the global_frame
 	def get_position(self,PIXEL,t):
-		#print("pixel " + str(PIXEL))
 
 		#Calculate ray vector
 		X = (PIXEL[0]-self.PRINC[0])/self.FOCAL[0] #vertical
@@ -52,7 +50,8 @@ class pixel2pos:
 
 		p_cam = self.tf_listener.transformPose(self.global_frame, p_robot)
 		pos = p_cam.pose.position;
-
+	
+		#Second branch was set up to handle this, the code was 
 		#print(self.tf_listener.lookupTransform(self.global_frame, p_robot, t))
 
 		return [pos.x, pos.y]

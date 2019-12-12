@@ -5,6 +5,7 @@ from generic import *
 from sys import argv
 import os
 
+#Classify the weeds, dirt and basil
 def basil(IMG_RAW, filter_type=""):
 	im_hsv = bgr2hsv(IMG_RAW)
 	
@@ -40,7 +41,7 @@ def basil(IMG_RAW, filter_type=""):
 
 	return (Overlay, weedMask, plantMask, dirtMask)
 
-
+#Classify the weeds, dirt and cabbage
 def cabbage(IMG_RAW):
 
 	im_hsv = bgr2hsv(IMG_RAW)
@@ -75,7 +76,7 @@ def cabbage(IMG_RAW):
 	
 	return (Overlay, weedMask, plantMask, dirtMask)
 
-
+#Classify the weeds, dirt and onion
 def onion(IMG_RAW,n):
 
 	im_hsv = bgr2hsv(IMG_RAW)

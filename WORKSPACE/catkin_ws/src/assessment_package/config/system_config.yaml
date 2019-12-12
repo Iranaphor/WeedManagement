@@ -91,6 +91,7 @@ real_weed_marking: False
 spray_point: '/KILLER/spray_point'
 spray_type: '/KILLER/spray_type'
 spray_service: '/KILLER/spray'
+baselink: 'thorvald_002/base_link'
 
 killbox_basil: '
 <?xml version="1.0" encoding="UTF-8"?>

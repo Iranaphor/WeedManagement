@@ -54,7 +54,8 @@ class detector:
 		
 
 #-------------------------------------------------------------------------------------------------------- Mapping	
-
+	
+	#Create a weed_map object based on the size of the /map
 	def mapper(self, data):
 		self.map.unregister()
 		scale = 10
@@ -74,7 +75,7 @@ class detector:
 		#Write clean map
 		self.print_map()
 
-
+	#Print the map to a file defined by system_config.yaml
 	def print_map(self):
 		if self.CONFIG['map_path'] == "default":
 			cv2.imwrite(self.path+"/mapp.png", cv2.rotate(self.weed_map, cv2.ROTATE_90_COUNTERCLOCKWISE))

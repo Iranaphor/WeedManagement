@@ -74,36 +74,38 @@ class Hunter:
 		return path
 
 #-------------------------------------------------------------------------------------------------------- Navigation
+	#Move through each of the weeds passed to the robot, so long as the second robot is at least 2 rows ahead
 	def move_through_weeds(self):
+		#The following line is what prevents the setup.launch from running `sprayer_robot.launch`
 		while not(rospy.is_shutdown()): #total_rows_completed < len(self.CONFIG['row_details'])
-			#try:
-			if (len(self.weed_data) < 2):
-				if (len(self.weed_data) == 1):
-					if self.weed_data[0].plant_type == "home":
-						return
-				sleep(10)
-				print("----------------------")
-				print("----------------------")
-				print(self.weed_data)
-				print("Row_count: " + str(len(self.weed_data)))
-			else:
-				print("Weed Killing in Progress... | " + self.weed_data[0].plant_type)
-				lst = self.generate_list(self.weed_data.pop(0))
-				print(lst[0:10])
-				for weed in lst:
-					print("~~~~~~~~~~~~~~~~~~~~~~~~~~")
-					if self.CONFIG['optimal_weed_marking']:
-						self.plot_point.publish(Point(weed[0],weed[1],0))
-					print("Moving to Weed")
-					self.move(weed)
-					self.waiter()
-					if self.CONFIG['real_weed_marking']:
-						print("Spraying ...")
-						self.plot_type.publish(String(weed[3]))
-						print("Spraying Complete")
-						sleep(0.05)
-			#except:
-			#	print("Unknown Error")
+			try:
+				if (len(self.weed_data) < self.CONFIG['row_buffer']):
+					if (len(self.weed_data) == 1):
+						if self.weed_data[0].plant_type == "home":
+							return
+					sleep(10)
+					print("----------------------")
+					print("----------------------")
+					print(self.weed_data)
+					print("Row_count: " + str(len(self.weed_data)))
+				else:
+					print("Weed Killing in Progress... | " + self.weed_data[0].plant_type)
+					lst = self.generate_list(self.weed_data.pop(0))
+					print(lst[0:10])
+					for weed in lst:
+						print("~~~~~~~~~~~~~~~~~~~~~~~~~~")
+						if self.CONFIG['optimal_weed_marking']:
+							self.plot_point.publish(Point(weed[0],weed[1],0))
+						print("Moving to Weed")
+						self.move(weed)
+						self.waiter()
+						if self.CONFIG['real_weed_marking']:
+							print("Spraying ...")
+							self.plot_type.publish(String(weed[3]))
+							print("Spraying Complete")
+							sleep(0.05)
+			except:
+				print("Unknown Error")
 
 	def move_home(self):
 		home = self.CONFIG['sprayer_robot_base']
@@ -145,6 +147,7 @@ class Hunter:
 
 
 #-------------------------------------------------------------------------------------------------------- Movebase Progress Management
+	#This system works by pausing the runniong of the main loop whilst the robot
 	def waiter_status(self, data):
 		if len(data.status_list)>0:
 			self.status = data.status_list[-1].status

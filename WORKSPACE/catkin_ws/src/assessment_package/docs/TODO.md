@@ -6,21 +6,19 @@ Branch Opened: - Fix the sprayer alignment and spraying bugs
 :D - Convert KILLER to CONFIG  
 :D - Write README.md (100 word limit)  
 :D - Copy movebase stuffs to assessment_package  
-Test package.xml  
-Remove unneccessary comments  
+Test package.xml on fresh ubuntu system
+Remove unneccessary comments/printouts  
 Rename Package  
 :D - Remove extra .msg  
 :D - Remove map folder  
 :D - Comment /launch  
 :D - Clean /launch  
-Comment /scripts  
-Clean /scripts  
-Comment /config  
-Clean /config  
+:D - Comment /scripts  
+:D - Comment /config  
 :D - Comment /msg  
 :D - Clean /msg  
-Comment /scripts/image_processing  
-Clean /scripts/image_processing  
+:D - Comment /scripts/image_processing  
+:D - Clean /scripts/image_processing  
 :D - Custom sized XML objects  
 :D - Fix final crop_row marking
 Replace `import cv2` with the rospack equivilant

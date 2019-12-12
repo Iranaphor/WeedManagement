@@ -94,12 +94,13 @@ class Killer:
 		#self.plot_point = rospy.Subscriber("weed_killer/reset", String, self.reset)
 
 
+	# Run default spray
 	def spray(self, r):
 		try:
 			request = SpawnModelRequest()
 			request.model_name = 'killbox_%s' % uuid4()
 			request.model_xml = self.sdf
-			request.reference_frame = self.robot_name+'/base_link'
+			request.reference_frame = self.CONFIG['baselink']
 			request.initial_pose.position.z = 0.005
 			request.initial_pose.position.x = -0.45
 			request.initial_pose.orientation.w = 1.0
@@ -108,7 +109,7 @@ class Killer:
 			print "Service call failed: %s"%e
 		return []
 
-
+	# Plot box at custom point in gazebo
 	def plot_point(self, r):
 		request = SpawnModelRequest()
 		request.model_name = "point_"+str(r.x)+"_"+str(r.y)+"_"+str(uuid4())
@@ -122,7 +123,7 @@ class Killer:
 		request.initial_pose.orientation.w = 1.0
 		self.spawner(request)
 
-
+	# Plot custom box at position relative to baselink
 	def spray_type(self, data):
 		request = SpawnModelRequest()
 		request.model_name = str(data.data)+"_spray_"+str(uuid4())
@@ -132,7 +133,7 @@ class Killer:
 		except:
 			request.model_xml = BOX_SDF2
 
-		request.reference_frame = 'thorvald_002/base_link'
+		request.reference_frame = self.CONFIG['baselink']
 		request.initial_pose.position.z = 0.005
 		request.initial_pose.position.x = -0.45
 		request.initial_pose.orientation.w = 1.0
