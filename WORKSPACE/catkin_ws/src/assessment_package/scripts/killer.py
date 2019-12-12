@@ -95,19 +95,17 @@ class Killer:
 
 
 	def spray(self, r):
-		print("uwu")
 		try:
 			request = SpawnModelRequest()
 			request.model_name = 'killbox_%s' % uuid4()
 			request.model_xml = self.sdf
-			request.reference_frame = 'thorvald_002/base_link'
+			request.reference_frame = self.robot_name+'/base_link'
 			request.initial_pose.position.z = 0.005
 			request.initial_pose.position.x = -0.45
 			request.initial_pose.orientation.w = 1.0
 			self.spawner(request)
 		except rospy.ServiceException, e:
 			print "Service call failed: %s"%e
-		print("owo")
 		return []
 
 
@@ -128,17 +126,23 @@ class Killer:
 	def spray_type(self, data):
 		request = SpawnModelRequest()
 		request.model_name = str(data.data)+"_spray_"+str(uuid4())
+		
+		
+#		if data.data == "basil":
+			#request.model_xml = self.CONFIG['killbox_basil']
+#		elif data.data == "cabbage":
+			#request.model_xml = self.CONFIG['killbox_cabbage']
+#		elif data.data == "onion":
+			#request.model_xml = self.CONFIG['killbox_onion']
+#		else:
+			#request.model_xml = BOX_SDF2
 
-		if data.data == "basil":
-			request.model_xml = self.CONFIG['killbox_basil']
-		elif data.data == "cabbage":
-			request.model_xml = self.CONFIG['killbox_cabbage']
-		elif data.data == "onion":
-			request.model_xml = self.CONFIG['killbox_onion']
-		else:
+		try:
+			request.model_xml = self.CONFIG['killbox_'+data.data]
+		except:
 			request.model_xml = BOX_SDF2
 
-		request.reference_frame = 'thorvald_002/base_link'
+		request.reference_frame = self.robot_name+'/base_link'
 		request.initial_pose.position.z = 0.005
 		request.initial_pose.position.x = -0.45
 		request.initial_pose.orientation.w = 1.0

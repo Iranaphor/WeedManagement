@@ -22,7 +22,8 @@ class Hunter:
 		self.weed_data = []
 		self.movebase_stamp = []
 		self.goal_send = 0
-		
+		self.total_rows_completed = 0
+
 		#Sprayer Systems
 		self.spawner = rospy.ServiceProxy(ROB+CONFIG['spray_service'], Empty)
 		self.plot_type = rospy.Publisher(ROB+CONFIG['spray_type'], String, queue_size = 2)
@@ -33,7 +34,7 @@ class Hunter:
 
 		#Movement Systems
 		self.align = rospy.Publisher(ROB+CONFIG['movebase_goal'], MoveBaseActionGoal, queue_size = 2)
-		self.waiter_for_status = rospy.Subscriber(ROB+"/move_base/status", GoalStatusArray, self.waiter_status)
+		self.waiter_for_status = rospy.Subscriber(ROB+CONFIG['movebase_status'], GoalStatusArray, self.waiter_status)
 		self.waiter_for_publisher = rospy.Subscriber(ROB+CONFIG['movebase_goal'], MoveBaseActionGoal, self.waiter_publisher)
 		sleep(1)
 		
@@ -49,8 +50,19 @@ class Hunter:
 		self.waiter()
 		rospy.shutdown()
 		
+
+#-------------------------------------------------------------------------------------------------------- Communications
+	#Save input from detector
+	def scan_row(self, data):
+		print("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
+		print("Row Scan Incoming ...")
+		#print(data)
+		self.weed_data.append(data)
+		print("Row Scan Complete | "+data.plant_type+" | len(self.weed_data)=" + str(len(self.weed_data)))
+		
+		
 #-------------------------------------------------------------------------------------------------------- Path Generation
-	#Generate path list from CONFIG input
+	#Generate path list from row_scan
 	def generate_list(self, weed_list):
 		path = []
 		w = weed_list.weeds.data
@@ -63,28 +75,34 @@ class Hunter:
 
 #-------------------------------------------------------------------------------------------------------- Navigation					
 	def move_through_weeds(self):
-		while not(rospy.is_shutdown()):
-			try:
-				if (len(self.weed_data) < 2):
-					sleep(10)
-					print("Row_count: " + str(len(self.weed_data)))
-				else:
-					lst = self.generate_list(self.weed_data.pop(0))
-					print(lst)
-					for weed in lst:
-						print("~~~~~~~~~~~~~~~~~~~~~~~~~~")
-						self.plot_point.publish(Point(weed[0],weed[1],0))
-						print("Moving to Weed")
-						self.move(weed)
-						self.waiter()
-						print("Spraying ...")
-						self.plot_type.publish(String(weed[3]))
-						print("Spraying Complete")
-						sleep(1)
-						print("\\(^,^)/ next node!")
-			except e:
-				print(e)
-				return
+		while not(rospy.is_shutdown()): #total_rows_completed < len(self.CONFIG['row_details'])
+			#try:
+			if (len(self.weed_data) < 2):
+				if (len(self.weed_data) == 1):
+					if self.weed_data[0].plant_type == "home":
+						return
+				sleep(10)
+				print("----------------------")
+				print("----------------------")
+				print(self.weed_data)
+				print("Row_count: " + str(len(self.weed_data)))
+			else:
+				print("\\(^,^)/ Node printing! :D  |  " + self.weed_data[0].plant_type)
+				lst = self.generate_list(self.weed_data.pop(0))
+				print(lst[0:10])
+				for weed in lst:
+					#print("~~~~~~~~~~~~~~~~~~~~~~~~~~")
+					self.plot_point.publish(Point(weed[0],weed[1],0))
+					print("Moving to Weed")
+					self.move(weed)
+					self.waiter()
+					print("Spraying ...")
+					self.plot_type.publish(String(weed[3]))
+					print("Spraying Complete")
+					sleep(0.05)
+					print("\\(^,^)/ next node! ")# + lst.plant_type)
+			#except:
+			#	print("Unknown Error")
 				
 	def move_home(self):
 		home = self.CONFIG['sprayer_robot_base']
@@ -139,13 +157,13 @@ class Hunter:
 			while True:
 				if (self.movebase_stamp == self.goal_send):
 					if (self.status == 3):
-						print("Goal Aborted: COMPLETED")
+						print("Goal Status: COMPLETED")
 						break
 					elif (self.status == 4):
-						print("Goal Aborted: ABORTED")
+						print("Goal Status: ABORTED")
 						break
 				if (rospy.Time.now()-time_publish > rospy.Duration.from_sec(timeout)):
-					print("Goal Aborted: TIMEOUT")
+					print("Goal Status: TIMEOUT")
 					break
 		except e:
 			print(e)
@@ -158,8 +176,7 @@ class Hunter:
 		print("Row Scan Incoming ...")
 		#print(data)
 		self.weed_data.append(data)
-		print(len(self.weed_data))
-		print("Row Scan Complete | len(self.weed_data)=" + str(len(self.weed_data)))
+		print("Row Scan Complete | "+data.plant_type+" |len(self.weed_data)=" + str(len(self.weed_data)))
 		
 		
 		

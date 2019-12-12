@@ -38,12 +38,15 @@ class navigation_manager:
 
 		#Begin by moving to base
 		home = CONFIG['scanner_robot_base']
-		self.move([home[1], home[0], 0, 'null'])
+		self.move([home[1], home[0], 0, 'home'])
 	
 
 	#Generate path list from CONFIG input
 	def generate_list(self, path_details):
 		path = []
+
+		path.append((self.CONFIG['scanner_robot_base'][1],self.CONFIG['scanner_robot_base'][0],180,'home'))
+
 		for row in enumerate(path_details['row_details']):
 			#Switch to enable snaking through rows
 			if (row[0]%2==1):
@@ -52,6 +55,10 @@ class navigation_manager:
 			else:
 				path.append((row[1]['end'][1], row[1]['end'][0], 0, 'null'))
 				path.append((row[1]['start'][1], row[1]['start'][0], 0, row[1]['type']))
+
+		path.append((self.CONFIG['scanner_robot_base'][1],self.CONFIG['scanner_robot_base'][0],180,'home'))
+		path.append((self.CONFIG['scanner_robot_base'][1],self.CONFIG['scanner_robot_base'][0],180,'shutdown'))
+
 		return path
 
 	
@@ -121,8 +128,7 @@ class navigation_manager:
 					if self.CONFIG['run_loop'] == True:
 						self.path = self.path_raw[:]
 					else:
-						
-						self.path.append((self.CONFIG['scanner_robot_base'][1],self.CONFIG['scanner_robot_base'][0],180,'null'))
+						self.path.append((self.CONFIG['scanner_robot_base'][1],self.CONFIG['scanner_robot_base'][0],180,'home'))
 						self.move_base_status.unregister()
 
 				#Move to next position

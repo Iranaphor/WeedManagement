@@ -58,7 +58,8 @@ class detector:
 	def mapper(self, data):
 		self.map.unregister()
 		scale = 10
-		self.weed_map = np.array(255*np.ones((np.int((data.info.height*0.6)*scale), np.int((data.info.width*0.45)*scale))),dtype='uint8')
+		#self.weed_map = np.array(255*np.ones((np.int((data.info.height*0.6)*scale), np.int((data.info.width*0.45)*scale))),dtype='uint8')
+		self.weed_map = np.array(255*np.ones((np.int((data.info.height)*scale), np.int((data.info.width)*scale))),dtype='uint8')
 		self.weed_map *= 0
 		self.weed_map_resolution = data.info.resolution/scale #m/cell 0.5m/10 = 0.05 (5cm/cell) #DISTANCE PER CELL
 		
@@ -115,7 +116,13 @@ class detector:
 	#Called at End of Row 
 	def row_type_callback(self, data):
 		if self.plant_type != data.data:
-			if self.plant_type != "null":
+			if data == "home":
+				print("hooome")
+				array=WeedList()
+				array.plant_type = self.plant_type
+				self.row_data_publisher.publish(array)
+
+			elif self.plant_type != "null":
 				
 				#Filter out Overlaying Points
 				self.cluster_data()
@@ -126,7 +133,7 @@ class detector:
 				#Reset for Next Row
 				self.weed_map *= 0
 				self.P_List = []
-				
+
 			self.plant_type = data.data
 
 
@@ -175,7 +182,7 @@ class detector:
 			OVERLAY,WEED,_,_ = onion(cv2.resize(IMG_RAW, (240, 135)),0)
 		
 		#Publish Images
-		if p != "null":
+		if p != "null" and p != "home" and p != "shutdown":
 			
 			#Find Centre/Worldpoints of weed clusters
 			centres = imfindcentroids(cv2.resize(WEED, (1920, 1080)))
