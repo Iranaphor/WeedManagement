@@ -1,0 +1,15 @@
+basil:: Detect~1064|Filter~559|Cluster~109
+basil:: Detect~1252|Filter~614|Cluster~111
+cabbage:: Detect~3784|Filter~1705|Cluster~276
+cabbage:: Detect~3747|Filter~1665|Cluster~275
+onion:: Detect~351|Filter~256|Cluster~46
+onion:: Detect~235|Filter~168|Cluster~32
+
+
+Total Weeds
+-----------
+Basil: 200
+Cabbage: 494
+Onion: 76
+
+

@@ -1,0 +1,39 @@
+We care about analysing the number of false positive... crops labelled as weed.
+
+Basil:
+Testing the system on a single row, the results are as follows...
+
+
+
+
+
+		Actual
+Predicted	Weed	Crop
+	Weed	TP	FN
+	Crop	FP	TN
+
+
+
+confusion matrixo (3 meters)
+		Actual
+Predicted	Weed	Crop
+	Weed	31	0
+	Crop	8	34
+
+
+Cabbage:
+confusion matrixo (3 meters)
+				Actual
+				Weed	Crop
+Guess	Weed	69		29		98
+		Crop	0		14
+
+Onion:
+confusion matrixo (3 meters)
+				Actual
+				Weed	Crop
+Guess	Weed	16		0
+		Crop	0		100%
+
+
+TRANSPOSE THE MATRIX YOU DIMWIT
